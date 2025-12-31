@@ -44,4 +44,4 @@ phpstan.neon
 # Local development
 /.playwright-mcp/
 /backlog/
-laravel-autobuilder-documentation.md
+CLAUDE.md
