@@ -8,6 +8,19 @@
 
 ---
 
+> **Looking for Testers & Feedback!**
+>
+> This is the first public release of Laravel AutoBuilder. I'm actively looking for testers and feedback from the Laravel community to help improve this package.
+>
+> - **Try it out** and share your experience
+> - **Report bugs** via [GitHub Issues](https://github.com/Grazulex/laravel-autobuilder/issues)
+> - **Suggest features** or improvements
+> - **Share your flows** and use cases
+>
+> Your feedback is invaluable! Let's build something great together.
+
+---
+
 ## What is Laravel AutoBuilder?
 
 Laravel AutoBuilder is a visual automation builder inspired by Node-RED, n8n, and Zapier. It allows you to create complex automations using a **drag-and-drop interface** directly in your Laravel application.
