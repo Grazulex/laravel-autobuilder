@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Vue Flow customizations */
+.vue-flow {
+    @apply bg-gray-50;
+}
+
+.vue-flow__node {
+    @apply rounded-lg shadow-md;
+}
+
+.vue-flow__edge-path {
+    @apply stroke-gray-400;
+    stroke-width: 2;
+}
+
+.vue-flow__edge.selected .vue-flow__edge-path {
+    @apply stroke-blue-500;
+    stroke-width: 3;
+}
+
+.vue-flow__handle {
+    @apply w-3 h-3 bg-gray-400 border-2 border-white;
+}
+
+.vue-flow__handle-top {
+    @apply -top-1.5;
+}
+
+.vue-flow__handle-bottom {
+    @apply -bottom-1.5;
+}
+
+/* Node palette items */
+.palette-item {
+    @apply flex items-center gap-2 px-3 py-2 rounded-md cursor-grab
+           border border-gray-200 bg-white hover:bg-gray-50
+           transition-colors duration-150;
+}
+
+.palette-item:active {
+    @apply cursor-grabbing;
+}
+
+.palette-item.trigger {
+    @apply border-l-4 border-l-trigger-500;
+}
+
+.palette-item.condition {
+    @apply border-l-4 border-l-condition-500;
+}
+
+.palette-item.action {
+    @apply border-l-4 border-l-action-500;
+}
+
+.palette-item.gate {
+    @apply border-l-4 border-l-purple-500;
+}
+
+/* Properties panel */
+.properties-field {
+    @apply mb-4;
+}
+
+.properties-field label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.properties-field input,
+.properties-field select,
+.properties-field textarea {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+}
+
+.properties-field input[type="checkbox"] {
+    @apply w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
+}
+
+/* Animations */
+@keyframes pulse-border {
+    0%, 100% { border-color: theme('colors.blue.400'); }
+    50% { border-color: theme('colors.blue.600'); }
+}
+
+.node-selected {
+    animation: pulse-border 1.5s ease-in-out infinite;
+}

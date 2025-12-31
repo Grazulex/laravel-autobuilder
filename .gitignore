@@ -1,0 +1,47 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Build
+/build/
+/dist/
+/resources/dist/
+
+# IDE
+/.idea/
+/.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Testing
+/.phpunit.cache/
+/coverage/
+.phpunit.result.cache
+
+# Laravel
+.env
+.env.backup
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Composer
+composer.lock
+
+# PHPStan
+phpstan.neon
+
+# Docker (local volumes)
+/docker/volumes/
+
+# Misc
+*.cache
+.php-cs-fixer.cache
+
+# Local development
+/.playwright-mcp/
+/backlog/
+laravel-autobuilder-documentation.md

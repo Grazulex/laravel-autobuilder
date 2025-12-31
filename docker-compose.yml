@@ -1,0 +1,65 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: autobuilder-php
+    volumes:
+      - .:/var/www/html
+    networks:
+      - autobuilder-network
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    image: nginx:alpine
+    container_name: autobuilder-nginx
+    ports:
+      - "80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - autobuilder-network
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:8.0
+    container_name: autobuilder-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: autobuilder
+      MYSQL_USER: autobuilder
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306"
+    volumes:
+      - autobuilder-mysql-data:/var/lib/mysql
+    networks:
+      - autobuilder-network
+
+  redis:
+    image: redis:alpine
+    container_name: autobuilder-redis
+    ports:
+      - "6379"
+    networks:
+      - autobuilder-network
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: autobuilder-mailpit
+    ports:
+      - "1025"
+      - "8025"
+    networks:
+      - autobuilder-network
+
+networks:
+  autobuilder-network:
+    driver: bridge
+
+volumes:
+  autobuilder-mysql-data:

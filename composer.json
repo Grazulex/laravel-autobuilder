@@ -1,0 +1,69 @@
+{
+    "name": "grazulex/laravel-autobuilder",
+    "description": "A visual automation builder for Laravel applications - Build workflows like Node-RED, directly in your Laravel app",
+    "keywords": [
+        "laravel",
+        "automation",
+        "workflow",
+        "visual-builder",
+        "node-red",
+        "n8n",
+        "zapier"
+    ],
+    "homepage": "https://github.com/grazulex/laravel-autobuilder",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Marc Strauven",
+            "email": "jm@grazulex.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^10.0|^11.0|^12.0",
+        "illuminate/support": "^10.0|^11.0|^12.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.0|^8.0",
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "pestphp/pest": "^2.0|^3.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
+        "phpstan/phpstan": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Grazulex\\AutoBuilder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Grazulex\\AutoBuilder\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Grazulex\\AutoBuilder\\AutoBuilderServiceProvider"
+            ],
+            "aliases": {
+                "AutoBuilder": "Grazulex\\AutoBuilder\\Facades\\AutoBuilder"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
