@@ -13,10 +13,15 @@ use Grazulex\AutoBuilder\Http\Middleware\AutoBuilderAuth;
 use Grazulex\AutoBuilder\Listeners\TriggerDispatchedListener;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Observers\FlowObserver;
+use Grazulex\AutoBuilder\Policies\FlowPolicy;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
 use Grazulex\AutoBuilder\Trigger\TriggerManager;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AutoBuilderServiceProvider extends ServiceProvider
@@ -47,6 +52,8 @@ class AutoBuilderServiceProvider extends ServiceProvider
         $this->discoverBricks();
         $this->registerEventListeners();
         $this->registerModelObservers();
+        $this->registerPolicies();
+        $this->configureRateLimiting();
         $this->bootTriggers();
     }
 
@@ -136,6 +143,11 @@ class AutoBuilderServiceProvider extends ServiceProvider
         Flow::observe($this->app->make(FlowObserver::class));
     }
 
+    protected function registerPolicies(): void
+    {
+        Gate::policy(Flow::class, FlowPolicy::class);
+    }
+
     protected function bootTriggers(): void
     {
         // Only boot triggers if not running in console (migrations, etc.)
@@ -145,5 +157,20 @@ class AutoBuilderServiceProvider extends ServiceProvider
                 $this->app->make(TriggerManager::class)->bootActiveFlows();
             });
         }
+    }
+
+    protected function configureRateLimiting(): void
+    {
+        if (! config('autobuilder.rate_limiting.enabled', true)) {
+            return;
+        }
+
+        RateLimiter::for('autobuilder-webhooks', function (Request $request) {
+            $maxAttempts = config('autobuilder.rate_limiting.webhooks.max_attempts', 60);
+            $decayMinutes = config('autobuilder.rate_limiting.webhooks.decay_minutes', 1);
+
+            return Limit::perMinutes($decayMinutes, $maxAttempts)
+                ->by($request->ip());
+        });
     }
 }

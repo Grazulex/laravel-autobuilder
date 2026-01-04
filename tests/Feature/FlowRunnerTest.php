@@ -235,3 +235,50 @@ it('passes payload data through context', function () {
     expect($result->context->get('user.email'))->toBe('john@example.com');
     expect($result->context->get('order_id'))->toBe('ORD-123');
 });
+
+it('protects against infinite loops by limiting node executions', function () {
+    // Set a low limit for testing
+    config(['autobuilder.execution.max_node_executions' => 3]);
+
+    // Create a flow with a self-referencing loop (action points back to itself)
+    $flow = Flow::create([
+        'name' => 'Loop Test Flow',
+        'nodes' => [
+            [
+                'id' => 'trigger-1',
+                'type' => 'trigger',
+                'brick' => OnManualTrigger::class,
+                'config' => [],
+            ],
+            [
+                'id' => 'action-loop',
+                'type' => 'action',
+                'brick' => SetVariable::class,
+                'config' => [
+                    'mode' => 'single',
+                    'variable_name' => 'counter',
+                    'variable_value' => '1',
+                    'value_type' => 'string',
+                ],
+            ],
+        ],
+        'edges' => [
+            ['source' => 'trigger-1', 'target' => 'action-loop'],
+            ['source' => 'action-loop', 'target' => 'action-loop'], // Self-referencing loop
+        ],
+        'is_active' => true,
+    ]);
+
+    $result = $this->runner->run($flow);
+
+    // Flow should complete (not hang forever)
+    expect($result->status)->toBe('completed');
+
+    // Should have a warning about the loop
+    $warnings = array_filter($result->context->logs, fn ($log) => $log['level'] === 'warning');
+    expect($warnings)->not->toBeEmpty();
+
+    // The warning should mention the node and loop detection
+    $warningMessages = array_map(fn ($log) => $log['message'], $warnings);
+    expect(implode(' ', $warningMessages))->toContain('action-loop');
+});

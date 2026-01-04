@@ -29,6 +29,11 @@ class FlowRunner
 
     protected array $executedNodes = [];
 
+    /**
+     * Track execution count per node to detect loops
+     */
+    protected array $nodeExecutionCounts = [];
+
     public function __construct(BrickRegistry $registry)
     {
         $this->registry = $registry;
@@ -42,6 +47,7 @@ class FlowRunner
         $this->flow = $flow;
         $this->context = new FlowContext((string) $flow->id, $payload);
         $this->executedNodes = [];
+        $this->nodeExecutionCounts = [];
 
         event(new FlowStarted($flow, $this->context));
 
@@ -113,15 +119,28 @@ class FlowRunner
      */
     protected function executeNode(array $node): void
     {
-        // Prevent infinite loops
-        $nodeExecutionKey = $node['id'].'_'.count($this->executedNodes);
-        if (in_array($node['id'], $this->executedNodes) && count($this->executedNodes) > config('autobuilder.execution.max_nodes', 100)) {
-            $this->context->warning("Max node execution limit reached: {$node['id']}");
+        $nodeId = $node['id'];
+
+        // Track execution count for this specific node
+        $this->nodeExecutionCounts[$nodeId] = ($this->nodeExecutionCounts[$nodeId] ?? 0) + 1;
+
+        // Check if this specific node has been executed too many times (loop detection)
+        $maxNodeExecutions = config('autobuilder.execution.max_node_executions', 10);
+        if ($this->nodeExecutionCounts[$nodeId] > $maxNodeExecutions) {
+            $this->context->warning("Node '{$nodeId}' exceeded max execution count ({$maxNodeExecutions}). Possible infinite loop detected.");
 
             return;
         }
 
-        $this->executedNodes[] = $node['id'];
+        // Check total node execution limit
+        $maxTotalNodes = config('autobuilder.execution.max_nodes', 100);
+        if (count($this->executedNodes) >= $maxTotalNodes) {
+            $this->context->warning("Flow exceeded max total node executions ({$maxTotalNodes}).");
+
+            return;
+        }
+
+        $this->executedNodes[] = $nodeId;
 
         // Support both flat structure and nested data structure (Vue Flow format)
         $brickClass = $node['data']['brick'] ?? $node['brick'] ?? null;

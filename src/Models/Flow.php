@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Models;
 
+use Grazulex\AutoBuilder\Database\Factories\FlowFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,8 +14,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Flow extends Model
 {
+    /** @use HasFactory<FlowFactory> */
+    use HasFactory;
+
     use HasUlids;
     use SoftDeletes;
+
+    protected static function newFactory(): FlowFactory
+    {
+        return FlowFactory::new();
+    }
 
     protected $table = 'autobuilder_flows';
 

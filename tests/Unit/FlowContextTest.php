@@ -56,6 +56,26 @@ it('can log messages', function () {
     expect($context->logs[2]['level'])->toBe('error');
 });
 
+it('log() accepts level as first parameter and message as second', function () {
+    $context = new FlowContext('flow-123');
+
+    $context->log('info', 'Info message');
+    $context->log('warning', 'Warning message');
+    $context->log('error', 'Error message', ['key' => 'value']);
+
+    expect($context->logs)->toHaveCount(3);
+
+    expect($context->logs[0]['level'])->toBe('info');
+    expect($context->logs[0]['message'])->toBe('Info message');
+
+    expect($context->logs[1]['level'])->toBe('warning');
+    expect($context->logs[1]['message'])->toBe('Warning message');
+
+    expect($context->logs[2]['level'])->toBe('error');
+    expect($context->logs[2]['message'])->toBe('Error message');
+    expect($context->logs[2]['data'])->toBe(['key' => 'value']);
+});
+
 it('can be paused', function () {
     $context = new FlowContext('flow-123');
 
@@ -130,4 +150,37 @@ it('preserves gate inputs during serialization', function () {
     expect($inputs)->toHaveCount(2);
     expect($inputs['condition-1'])->toBeTrue();
     expect($inputs['condition-2'])->toBeFalse();
+});
+
+it('can get all data merged from payload and variables', function () {
+    $context = new FlowContext('flow-123', [
+        'user' => 'john',
+        'email' => 'john@example.com',
+    ]);
+
+    $context->set('status', 'active');
+    $context->set('count', 42);
+
+    $all = $context->all();
+
+    expect($all)->toBe([
+        'user' => 'john',
+        'email' => 'john@example.com',
+        'status' => 'active',
+        'count' => 42,
+    ]);
+});
+
+it('all() gives variables precedence over payload', function () {
+    $context = new FlowContext('flow-123', [
+        'key' => 'from_payload',
+        'other' => 'unchanged',
+    ]);
+
+    $context->set('key', 'from_variable');
+
+    $all = $context->all();
+
+    expect($all['key'])->toBe('from_variable');
+    expect($all['other'])->toBe('unchanged');
 });

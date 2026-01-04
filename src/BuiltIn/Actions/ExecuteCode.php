@@ -56,6 +56,13 @@ return [\'total\' => $total];')
 
     public function handle(FlowContext $context): FlowContext
     {
+        // Security check: verify custom code execution is enabled
+        if (! config('autobuilder.security.allow_custom_code', false)) {
+            $context->log('error', 'ExecuteCode: Custom code execution is disabled in configuration. Enable it with config("autobuilder.security.allow_custom_code", true)');
+
+            return $context;
+        }
+
         $code = $this->config('code');
         $storeResult = $this->config('store_result', 'code_result');
 

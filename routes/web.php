@@ -3,6 +3,7 @@
 use Grazulex\AutoBuilder\Http\Controllers\BrickController;
 use Grazulex\AutoBuilder\Http\Controllers\ExecutionController;
 use Grazulex\AutoBuilder\Http\Controllers\FlowController;
+use Grazulex\AutoBuilder\Http\Controllers\HealthController;
 use Grazulex\AutoBuilder\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,10 +41,19 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
         });
     });
 
-// Webhook Routes (public, no auth)
+// Webhook Routes (public, no auth, rate limited)
 Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
+    ->middleware(config('autobuilder.rate_limiting.enabled', true) ? ['throttle:autobuilder-webhooks'] : [])
     ->group(function () {
         Route::any('webhook/{path}', [WebhookController::class, 'handle'])
             ->where('path', '.*')
             ->name('autobuilder.webhook');
+    });
+
+// Health Check Routes (public, no auth)
+Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
+    ->group(function () {
+        Route::get('health', [HealthController::class, 'check'])->name('autobuilder.health');
+        Route::get('health/detailed', [HealthController::class, 'detailed'])->name('autobuilder.health.detailed');
+        Route::get('health/stats', [HealthController::class, 'stats'])->name('autobuilder.health.stats');
     });

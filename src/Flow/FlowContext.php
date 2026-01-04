@@ -71,7 +71,7 @@ class FlowContext
     /**
      * Add a log entry
      */
-    public function log(string $message, string $level = 'info', array $data = []): static
+    public function log(string $level, string $message, array $data = []): static
     {
         $this->logs[] = [
             'timestamp' => now()->toIso8601String(),
@@ -88,7 +88,7 @@ class FlowContext
      */
     public function info(string $message, array $data = []): static
     {
-        return $this->log($message, 'info', $data);
+        return $this->log('info', $message, $data);
     }
 
     /**
@@ -96,7 +96,7 @@ class FlowContext
      */
     public function warning(string $message, array $data = []): static
     {
-        return $this->log($message, 'warning', $data);
+        return $this->log('warning', $message, $data);
     }
 
     /**
@@ -104,7 +104,7 @@ class FlowContext
      */
     public function error(string $message, array $data = []): static
     {
-        return $this->log($message, 'error', $data);
+        return $this->log('error', $message, $data);
     }
 
     /**
@@ -174,6 +174,15 @@ class FlowContext
         $this->payload = array_merge($this->payload, $data);
 
         return $this;
+    }
+
+    /**
+     * Get all data (payload merged with variables)
+     * Variables take precedence over payload for duplicate keys
+     */
+    public function all(): array
+    {
+        return array_merge($this->payload, $this->variables);
     }
 
     /**
