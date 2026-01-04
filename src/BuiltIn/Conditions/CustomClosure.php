@@ -50,6 +50,13 @@ class CustomClosure extends Condition
 
     public function evaluate(FlowContext $context): bool
     {
+        // Security check: verify custom code execution is enabled
+        if (! config('autobuilder.security.allow_custom_code', false)) {
+            $context->log('error', 'CustomClosure: Custom code execution is disabled in configuration. Enable it with config("autobuilder.security.allow_custom_code", true)');
+
+            return false;
+        }
+
         $closureCode = $this->config('closure');
 
         if (empty($closureCode)) {

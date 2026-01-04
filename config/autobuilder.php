@@ -72,7 +72,8 @@ return [
         'async' => env('AUTOBUILDER_ASYNC', true), // Queue flow execution
         'queue' => env('AUTOBUILDER_QUEUE', 'default'),
         'timeout' => 300, // seconds
-        'max_nodes' => 100, // prevent infinite loops
+        'max_nodes' => 100, // Max total node executions per flow run
+        'max_node_executions' => 10, // Max times a single node can execute (loop detection)
         'retry_attempts' => 3,
         'retry_delay' => 60, // seconds
     ],
@@ -105,6 +106,19 @@ return [
     'security' => [
         'allow_custom_code' => false, // Enable CustomClosure brick
         'webhook_signature_header' => 'X-Webhook-Secret',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rate Limiting
+    |--------------------------------------------------------------------------
+    */
+    'rate_limiting' => [
+        'enabled' => env('AUTOBUILDER_RATE_LIMITING', true),
+        'webhooks' => [
+            'max_attempts' => env('AUTOBUILDER_WEBHOOK_RATE_LIMIT', 60), // per minute
+            'decay_minutes' => 1,
+        ],
     ],
 
 ];

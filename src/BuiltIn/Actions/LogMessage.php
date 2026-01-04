@@ -93,7 +93,7 @@ class LogMessage extends Action
         }
 
         if ($logToContext) {
-            $context->log($message, $level);
+            $context->log($level, $message);
         }
 
         return $context;

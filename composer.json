@@ -34,7 +34,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Grazulex\\AutoBuilder\\": "src/"
+            "Grazulex\\AutoBuilder\\": "src/",
+            "Grazulex\\AutoBuilder\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {

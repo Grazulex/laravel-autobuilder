@@ -73,9 +73,9 @@ class StopFlow extends Action
         $context->set('_stop_reason', $reason);
 
         match ($stopType) {
-            'fail' => $context->log("Flow stopped with failure: {$reason}", 'error'),
-            'cancel' => $context->log("Flow cancelled: {$reason}", 'warning'),
-            default => $context->log("Flow completed: {$reason}", 'info'),
+            'fail' => $context->log('error', "Flow stopped with failure: {$reason}"),
+            'cancel' => $context->log('warning', "Flow cancelled: {$reason}"),
+            default => $context->log('info', "Flow completed: {$reason}"),
         };
 
         return $context;

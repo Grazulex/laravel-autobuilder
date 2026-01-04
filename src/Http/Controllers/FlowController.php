@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Grazulex\AutoBuilder\Http\Controllers;
 
 use Grazulex\AutoBuilder\Flow\FlowValidator;
+use Grazulex\AutoBuilder\Http\Requests\ImportFlowRequest;
+use Grazulex\AutoBuilder\Http\Requests\StoreFlowRequest;
+use Grazulex\AutoBuilder\Http\Requests\UpdateFlowRequest;
 use Grazulex\AutoBuilder\Http\Resources\FlowCollection;
 use Grazulex\AutoBuilder\Http\Resources\FlowResource;
 use Grazulex\AutoBuilder\Models\Flow;
@@ -31,16 +34,9 @@ class FlowController extends Controller
         return new FlowCollection($flows);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(StoreFlowRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'nodes' => 'nullable|array',
-            'edges' => 'nullable|array',
-            'active' => 'nullable|boolean',
-            'sync' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $flow = Flow::create([
             ...$validated,
@@ -66,17 +62,9 @@ class FlowController extends Controller
         return view('autobuilder::editor', compact('flow'));
     }
 
-    public function update(Request $request, Flow $flow): FlowResource
+    public function update(UpdateFlowRequest $request, Flow $flow): FlowResource
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
-            'nodes' => 'nullable|array',
-            'edges' => 'nullable|array',
-            'viewport' => 'nullable|array',
-            'active' => 'nullable|boolean',
-            'sync' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $flow->update([
             ...$validated,
@@ -130,14 +118,9 @@ class FlowController extends Controller
         ]);
     }
 
-    public function import(Request $request): JsonResponse
+    public function import(ImportFlowRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'nodes' => 'required|array',
-            'edges' => 'required|array',
-        ]);
+        $validated = $request->validated();
 
         $flow = Flow::import($validated);
 

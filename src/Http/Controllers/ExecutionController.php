@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\AutoBuilder\Http\Controllers;
 
 use Grazulex\AutoBuilder\Flow\FlowRunner;
+use Grazulex\AutoBuilder\Http\Requests\RunFlowRequest;
 use Grazulex\AutoBuilder\Http\Resources\ExecutionResultResource;
 use Grazulex\AutoBuilder\Http\Resources\FlowRunCollection;
 use Grazulex\AutoBuilder\Http\Resources\FlowRunResource;
@@ -20,26 +21,22 @@ class ExecutionController extends Controller
         protected FlowRunner $runner
     ) {}
 
-    public function test(Request $request, Flow $flow): ExecutionResultResource
+    public function test(RunFlowRequest $request, Flow $flow): ExecutionResultResource
     {
-        $validated = $request->validate([
-            'payload' => 'nullable|array',
-        ]);
+        $validated = $request->validated();
 
         $result = $this->runner->run($flow, $validated['payload'] ?? []);
 
         return new ExecutionResultResource($result);
     }
 
-    public function run(Request $request, Flow $flow): ExecutionResultResource
+    public function run(RunFlowRequest $request, Flow $flow): ExecutionResultResource
     {
         if (! $flow->active) {
             abort(422, 'Flow is not active');
         }
 
-        $validated = $request->validate([
-            'payload' => 'nullable|array',
-        ]);
+        $validated = $request->validated();
 
         $result = $this->runner->run($flow, $validated['payload'] ?? []);
 
