@@ -5,7 +5,7 @@
 # Build
 /build/
 /dist/
-/resources/dist/
+# Note: /resources/dist/ is NOT ignored - compiled assets must be included in package
 
 # IDE
 /.idea/

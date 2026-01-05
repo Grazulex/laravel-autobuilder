@@ -1,0 +1,11 @@
+{
+  "resources/js/autobuilder.js": {
+    "file": "js/autobuilder.js",
+    "name": "autobuilder",
+    "src": "resources/js/autobuilder.js",
+    "isEntry": true,
+    "css": [
+      "css/autobuilder.css"
+    ]
+  }
+}
