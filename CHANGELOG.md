@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.1) (2026-01-05)
+
+### Bug Fixes
+
+- include compiled assets in package distribution ([b6bdf99](https://github.com/Grazulex/laravel-autobuilder/commit/b6bdf99bad7553acfbfe0128e43635b1e89a416d))
 ## [1.0.0](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.0) (2026-01-04)
 
 ### Features
