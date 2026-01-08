@@ -129,7 +129,7 @@ describe('chained states', function () {
             ->active()
             ->sync()
             ->withWebhook('test-hook')
-            ->complete()
+            ->withEdges()
             ->create();
 
         expect($flow->active)->toBeTrue();
