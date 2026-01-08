@@ -65,6 +65,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Scheduling
+    |--------------------------------------------------------------------------
+    |
+    | Configure scheduled flow execution. The autobuilder:schedule-run command
+    | will be registered with Laravel's scheduler and run every minute.
+    |
+    | IMPORTANT: You must have Laravel's scheduler running for scheduled flows
+    | to work. Add this to your crontab:
+    |
+    | * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+    |
+    */
+    'scheduling' => [
+        'enabled' => env('AUTOBUILDER_SCHEDULING_ENABLED', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Execution Settings
     |--------------------------------------------------------------------------
     */
