@@ -8,6 +8,7 @@ use Grazulex\AutoBuilder\Console\Commands\InstallCommand;
 use Grazulex\AutoBuilder\Console\Commands\ListBricksCommand;
 use Grazulex\AutoBuilder\Console\Commands\MakeBrickCommand;
 use Grazulex\AutoBuilder\Console\Commands\RunFlowCommand;
+use Grazulex\AutoBuilder\Console\Commands\ScheduleRunCommand;
 use Grazulex\AutoBuilder\Events\TriggerDispatched;
 use Grazulex\AutoBuilder\Http\Middleware\AutoBuilderAuth;
 use Grazulex\AutoBuilder\Listeners\TriggerDispatchedListener;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Console\Scheduling\Schedule;
 
 class AutoBuilderServiceProvider extends ServiceProvider
 {
@@ -54,6 +56,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
         $this->registerModelObservers();
         $this->registerPolicies();
         $this->configureRateLimiting();
+        $this->registerScheduledTasks();
         $this->bootTriggers();
     }
 
@@ -105,6 +108,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
                 MakeBrickCommand::class,
                 RunFlowCommand::class,
                 ListBricksCommand::class,
+                ScheduleRunCommand::class,
             ]);
         }
     }
@@ -157,6 +161,20 @@ class AutoBuilderServiceProvider extends ServiceProvider
                 $this->app->make(TriggerManager::class)->bootActiveFlows();
             });
         }
+    }
+
+    protected function registerScheduledTasks(): void
+    {
+        if (! config('autobuilder.scheduling.enabled', true)) {
+            return;
+        }
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->command('autobuilder:schedule-run')
+                ->everyMinute()
+                ->withoutOverlapping()
+                ->runInBackground();
+        });
     }
 
     protected function configureRateLimiting(): void
