@@ -580,9 +580,9 @@ describe('field configuration', function () {
         // Options are now in {value, label} format
         $optionLabels = array_column($options, 'label');
         expect($optionLabels)->toContain('No retry');
-        expect($optionValues)->toContain('1 retry');
-        expect($optionValues)->toContain('2 retries');
-        expect($optionValues)->toContain('3 retries');
+        expect($optionLabels)->toContain('1 retry');
+        expect($optionLabels)->toContain('2 retries');
+        expect($optionLabels)->toContain('3 retries');
     });
 });
 
