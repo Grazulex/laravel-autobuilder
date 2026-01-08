@@ -174,7 +174,7 @@ describe('field configuration', function () {
 
         expect($options)->toHaveCount(7);
         // Keys can be strings or integers depending on PHP version
-        $keys = array_map('strval', array_keys($options));
+        $keys = array_map('strval', array_column($options, 'value'));
         expect($keys)->toContain('0'); // Sunday
         expect($keys)->toContain('1'); // Monday
         expect($keys)->toContain('6'); // Saturday

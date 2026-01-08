@@ -89,9 +89,9 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'guard');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('');
-        expect(array_keys($options))->toContain('web');
-        expect(array_keys($options))->toContain('api');
+        expect(array_column($options, 'value'))->toContain('');
+        expect(array_column($options, 'value'))->toContain('web');
+        expect(array_column($options, 'value'))->toContain('api');
     });
 
     it('guard field has default of empty string', function () {

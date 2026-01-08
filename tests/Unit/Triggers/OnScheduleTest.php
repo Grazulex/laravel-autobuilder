@@ -202,12 +202,12 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'frequency');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('everyMinute');
-        expect(array_keys($options))->toContain('hourly');
-        expect(array_keys($options))->toContain('daily');
-        expect(array_keys($options))->toContain('weekly');
-        expect(array_keys($options))->toContain('monthly');
-        expect(array_keys($options))->toContain('custom');
+        expect(array_column($options, 'value'))->toContain('everyMinute');
+        expect(array_column($options, 'value'))->toContain('hourly');
+        expect(array_column($options, 'value'))->toContain('daily');
+        expect(array_column($options, 'value'))->toContain('weekly');
+        expect(array_column($options, 'value'))->toContain('monthly');
+        expect(array_column($options, 'value'))->toContain('custom');
     });
 
     it('time field is visible when frequency is dailyAt', function () {

@@ -188,9 +188,9 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'payload_mode');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('current');
-        expect(array_keys($options))->toContain('custom');
-        expect(array_keys($options))->toContain('merge');
+        expect(array_column($options, 'value'))->toContain('current');
+        expect(array_column($options, 'value'))->toContain('custom');
+        expect(array_column($options, 'value'))->toContain('merge');
     });
 
     it('custom_payload field supports variables', function () {

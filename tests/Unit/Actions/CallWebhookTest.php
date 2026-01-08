@@ -551,11 +551,11 @@ describe('field configuration', function () {
         $methodField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
         $options = array_values($methodField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('GET');
-        expect(array_keys($options))->toContain('POST');
-        expect(array_keys($options))->toContain('PUT');
-        expect(array_keys($options))->toContain('PATCH');
-        expect(array_keys($options))->toContain('DELETE');
+        expect(array_column($options, 'value'))->toContain('GET');
+        expect(array_column($options, 'value'))->toContain('POST');
+        expect(array_column($options, 'value'))->toContain('PUT');
+        expect(array_column($options, 'value'))->toContain('PATCH');
+        expect(array_column($options, 'value'))->toContain('DELETE');
     });
 
     it('body_format field has correct options', function () {
@@ -565,9 +565,9 @@ describe('field configuration', function () {
         $bodyFormatField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'body_format');
         $options = array_values($bodyFormatField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('json');
-        expect(array_keys($options))->toContain('form');
-        expect(array_keys($options))->toContain('multipart');
+        expect(array_column($options, 'value'))->toContain('json');
+        expect(array_column($options, 'value'))->toContain('form');
+        expect(array_column($options, 'value'))->toContain('multipart');
     });
 
     it('retry_times field has correct options', function () {
@@ -577,12 +577,12 @@ describe('field configuration', function () {
         $retryField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'retry_times');
         $options = array_values($retryField)[0]->toArray()['options'] ?? [];
 
-        // Options may be keyed as strings or integers
-        $optionValues = array_values($options);
-        expect($optionValues)->toContain('No retry');
-        expect($optionValues)->toContain('1 retry');
-        expect($optionValues)->toContain('2 retries');
-        expect($optionValues)->toContain('3 retries');
+        // Options are now in {value, label} format
+        $optionLabels = array_column($options, 'label');
+        expect($optionLabels)->toContain('No retry');
+        expect($optionLabels)->toContain('1 retry');
+        expect($optionLabels)->toContain('2 retries');
+        expect($optionLabels)->toContain('3 retries');
     });
 });
 

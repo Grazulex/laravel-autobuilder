@@ -141,10 +141,10 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'channels');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('mail');
-        expect(array_keys($options))->toContain('database');
-        expect(array_keys($options))->toContain('broadcast');
-        expect(array_keys($options))->toContain('slack');
+        expect(array_column($options, 'value'))->toContain('mail');
+        expect(array_column($options, 'value'))->toContain('database');
+        expect(array_column($options, 'value'))->toContain('broadcast');
+        expect(array_column($options, 'value'))->toContain('slack');
     });
 
     it('notification_class field is required', function () {
