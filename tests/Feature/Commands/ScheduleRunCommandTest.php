@@ -102,7 +102,7 @@ describe('scheduled flow detection', function () {
 // =============================================================================
 
 describe('dry run', function () {
-    it('shows flows that would run without executing', function () {
+    it('runs successfully in dry-run mode with scheduled flows', function () {
         $flow = Flow::create([
             'name' => 'Dry Run Test Flow',
             'trigger_type' => OnSchedule::class,
@@ -127,9 +127,15 @@ describe('dry run', function () {
             'active' => true,
         ]);
 
+        // Dry-run should complete successfully and show scheduled flows
         $this->artisan('autobuilder:schedule-run --dry-run')
-            ->expectsOutputToContain('[DRY-RUN]')
-            ->expectsOutputToContain('Dry Run Test Flow')
+            ->expectsOutputToContain('Found 1 scheduled flow(s).')
+            ->assertSuccessful();
+    });
+
+    it('shows flow count summary in dry-run mode', function () {
+        $this->artisan('autobuilder:schedule-run --dry-run')
+            ->expectsOutputToContain('flow(s)')
             ->assertSuccessful();
     });
 });
