@@ -71,6 +71,46 @@ describe('store', function () {
         $response->assertStatus(201);
         expect($response->json('data.active'))->toBeFalse();
     });
+
+    it('validates node structure requires data and position', function () {
+        $response = $this->postJson('/autobuilder/api/flows', [
+            'name' => 'Invalid Nodes',
+            'nodes' => [['id' => 'node-1', 'type' => 'trigger']],
+            'edges' => [],
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['nodes.0.data', 'nodes.0.position']);
+    });
+
+    it('validates edge structure requires id', function () {
+        $response = $this->postJson('/autobuilder/api/flows', [
+            'name' => 'Invalid Edges',
+            'nodes' => [],
+            'edges' => [['source' => 'node-1', 'target' => 'node-2']],
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['edges.0.id']);
+    });
+
+    it('creates flow with complete node structure', function () {
+        $response = $this->postJson('/autobuilder/api/flows', [
+            'name' => 'Complete Flow',
+            'nodes' => [
+                [
+                    'id' => 'node-1',
+                    'type' => 'trigger',
+                    'data' => ['brick' => 'OnManualTrigger'],
+                    'position' => ['x' => 100, 'y' => 100],
+                ],
+            ],
+            'edges' => [],
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.name', 'Complete Flow');
+    });
 });
 
 // =============================================================================
@@ -111,8 +151,27 @@ describe('export and import', function () {
         $response = $this->postJson('/autobuilder/api/flows/import', [
             'name' => 'Imported Flow',
             'description' => 'Imported description',
-            'nodes' => [['id' => 'node-1']],
-            'edges' => [['source' => 'node-1', 'target' => 'node-2']],
+            'nodes' => [
+                [
+                    'id' => 'node-1',
+                    'type' => 'trigger',
+                    'data' => ['brick' => 'OnManualTrigger'],
+                    'position' => ['x' => 100, 'y' => 100],
+                ],
+                [
+                    'id' => 'node-2',
+                    'type' => 'action',
+                    'data' => ['brick' => 'LogMessage'],
+                    'position' => ['x' => 300, 'y' => 100],
+                ],
+            ],
+            'edges' => [
+                [
+                    'id' => 'edge-1',
+                    'source' => 'node-1',
+                    'target' => 'node-2',
+                ],
+            ],
         ]);
 
         $response->assertStatus(201);
