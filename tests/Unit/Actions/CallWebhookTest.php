@@ -577,9 +577,9 @@ describe('field configuration', function () {
         $retryField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'retry_times');
         $options = array_values($retryField)[0]->toArray()['options'] ?? [];
 
-        // Options may be keyed as strings or integers
-        $optionValues = array_values($options);
-        expect($optionValues)->toContain('No retry');
+        // Options are now in {value, label} format
+        $optionLabels = array_column($options, 'label');
+        expect($optionLabels)->toContain('No retry');
         expect($optionValues)->toContain('1 retry');
         expect($optionValues)->toContain('2 retries');
         expect($optionValues)->toContain('3 retries');
