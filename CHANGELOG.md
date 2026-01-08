@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.7) (2026-01-08)
+
+### Bug Fixes
+
+- Select field now sends value instead of label to backend (#18) ([19e81be](https://github.com/Grazulex/laravel-autobuilder/commit/19e81be98b34e90b2844f50158f21c3baff7498b))
+
+### Documentation
+
+- add matt7ds to contributors ([107d681](https://github.com/Grazulex/laravel-autobuilder/commit/107d6819a92d03bbb46915d43e17c1ab52fce020))
 ## [1.0.6](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.6) (2026-01-08)
 
 ### Bug Fixes
