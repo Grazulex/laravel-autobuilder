@@ -133,9 +133,9 @@ describe('dry run', function () {
             ->assertSuccessful();
     });
 
-    it('shows flow count summary in dry-run mode', function () {
+    it('handles empty scheduled flows gracefully in dry-run mode', function () {
         $this->artisan('autobuilder:schedule-run --dry-run')
-            ->expectsOutputToContain('flow(s)')
+            ->expectsOutput('No scheduled flows found.')
             ->assertSuccessful();
     });
 });
