@@ -105,12 +105,9 @@ class ScheduleRunCommand extends Command
             return false;
         }
 
-        // Resolve the OnSchedule trigger to get the cron expression
-        $trigger = $registry->resolve(OnSchedule::class, $triggerConfig);
-
-        if (! $trigger instanceof OnSchedule) {
-            return false;
-        }
+        // Create OnSchedule trigger directly with config
+        $trigger = new OnSchedule();
+        $trigger->configure($triggerConfig);
 
         $cronExpression = $trigger->getCronExpression();
         $timezone = new DateTimeZone($triggerConfig['timezone'] ?? config('app.timezone'));
