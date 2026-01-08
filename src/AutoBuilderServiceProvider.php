@@ -8,6 +8,7 @@ use Grazulex\AutoBuilder\Console\Commands\InstallCommand;
 use Grazulex\AutoBuilder\Console\Commands\ListBricksCommand;
 use Grazulex\AutoBuilder\Console\Commands\MakeBrickCommand;
 use Grazulex\AutoBuilder\Console\Commands\RunFlowCommand;
+use Grazulex\AutoBuilder\Console\Commands\ScheduleRunCommand;
 use Grazulex\AutoBuilder\Events\TriggerDispatched;
 use Grazulex\AutoBuilder\Http\Middleware\AutoBuilderAuth;
 use Grazulex\AutoBuilder\Listeners\TriggerDispatchedListener;
