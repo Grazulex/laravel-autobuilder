@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.6) (2026-01-08)
+
+### Bug Fixes
+
+- auto-extract webhook_path from trigger nodes (#14) ([a39cd0e](https://github.com/Grazulex/laravel-autobuilder/commit/a39cd0e9e39e5a073705eb084ce7c49f680ea72d))
 ## [1.0.5](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.5) (2026-01-08)
 
 ### Features
