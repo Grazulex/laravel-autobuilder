@@ -52,9 +52,37 @@ class Select extends Field
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'options' => $this->getOptions(),
+            'options' => $this->formatOptionsForFrontend(),
             'searchable' => $this->searchable,
             'multiple' => $this->multiple,
         ]);
+    }
+
+    /**
+     * Format options as array of {value, label} objects for frontend.
+     *
+     * Converts associative array ['key' => 'Label'] to [{value: 'key', label: 'Label'}, ...]
+     */
+    protected function formatOptionsForFrontend(): array
+    {
+        $options = $this->getOptions();
+        $formatted = [];
+
+        foreach ($options as $key => $value) {
+            // If already in {value, label} format (numeric key with array value)
+            if (is_int($key) && is_array($value) && isset($value['value'])) {
+                $formatted[] = $value;
+            }
+            // Associative array: key is value, value is label
+            elseif (is_string($key)) {
+                $formatted[] = ['value' => $key, 'label' => $value];
+            }
+            // Simple array of strings
+            else {
+                $formatted[] = ['value' => $value, 'label' => $value];
+            }
+        }
+
+        return $formatted;
     }
 }
