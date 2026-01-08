@@ -253,3 +253,11 @@ Creator of 17+ Laravel packages with 6,000+ downloads, including:
 - Architecture consulting
 
 Contact: [GitHub](https://github.com/Grazulex)
+
+---
+
+## Contributors
+
+Thanks to these wonderful people for their contributions:
+
+- [@matt7ds](https://github.com/matt7ds) - Bug reports and testing
