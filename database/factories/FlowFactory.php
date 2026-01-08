@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Database\Factories;
 
+use Grazulex\AutoBuilder\BuiltIn\Triggers\OnWebhookReceived;
 use Grazulex\AutoBuilder\Models\Flow;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -61,23 +62,53 @@ class FlowFactory extends Factory
     }
 
     /**
-     * Add a webhook path to the flow.
+     * Add a webhook trigger to the flow.
      */
     public function withWebhook(?string $path = null): static
     {
+        $webhookPath = $path ?? $this->faker->slug();
+
         return $this->state(fn (array $attributes) => [
-            'webhook_path' => $path ?? $this->faker->slug(),
+            'nodes' => [
+                [
+                    'id' => 'trigger-1',
+                    'type' => 'trigger',
+                    'position' => ['x' => 100, 'y' => 100],
+                    'data' => [
+                        'brick' => OnWebhookReceived::class,
+                        'config' => [
+                            'path' => $webhookPath,
+                            'method' => 'POST',
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
     /**
-     * Add a webhook with secret.
+     * Add a webhook trigger with secret.
      */
     public function withWebhookSecret(string $secret, ?string $path = null): static
     {
+        $webhookPath = $path ?? $this->faker->slug();
+
         return $this->state(fn (array $attributes) => [
-            'webhook_path' => $path ?? $this->faker->slug(),
-            'trigger_config' => ['secret' => $secret],
+            'nodes' => [
+                [
+                    'id' => 'trigger-1',
+                    'type' => 'trigger',
+                    'position' => ['x' => 100, 'y' => 100],
+                    'data' => [
+                        'brick' => OnWebhookReceived::class,
+                        'config' => [
+                            'path' => $webhookPath,
+                            'method' => 'POST',
+                            'secret' => $secret,
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -92,7 +123,13 @@ class FlowFactory extends Factory
                     'id' => 'trigger-1',
                     'type' => 'trigger',
                     'position' => ['x' => 100, 'y' => 100],
-                    'data' => ['brick' => 'OnWebhookReceived'],
+                    'data' => [
+                        'brick' => OnWebhookReceived::class,
+                        'config' => [
+                            'path' => $this->faker->slug(),
+                            'method' => 'POST',
+                        ],
+                    ],
                 ],
                 [
                     'id' => 'action-1',
