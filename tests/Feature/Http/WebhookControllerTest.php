@@ -2,7 +2,33 @@
 
 declare(strict_types=1);
 
+use Grazulex\AutoBuilder\BuiltIn\Triggers\OnWebhookReceived;
 use Grazulex\AutoBuilder\Models\Flow;
+
+/**
+ * Helper to create a webhook trigger node.
+ */
+function webhookTriggerNode(string $path, ?string $secret = null, string $method = 'POST'): array
+{
+    $config = [
+        'path' => $path,
+        'method' => $method,
+    ];
+
+    if ($secret !== null) {
+        $config['secret'] = $secret;
+    }
+
+    return [
+        'id' => 'trigger-1',
+        'type' => 'trigger',
+        'position' => ['x' => 100, 'y' => 100],
+        'data' => [
+            'brick' => OnWebhookReceived::class,
+            'config' => $config,
+        ],
+    ];
+}
 
 // =============================================================================
 // Handle Webhook Tests
@@ -19,10 +45,9 @@ describe('handle', function () {
     it('returns 404 for inactive flow', function () {
         Flow::create([
             'name' => 'Inactive Webhook Flow',
-            'webhook_path' => 'my-webhook',
-            'active' => false,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('my-webhook')],
             'edges' => [],
+            'active' => false,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/my-webhook');
@@ -33,10 +58,9 @@ describe('handle', function () {
     it('processes webhook for active flow', function () {
         Flow::create([
             'name' => 'Active Webhook Flow',
-            'webhook_path' => 'active-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('active-webhook')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/active-webhook', [
@@ -55,11 +79,9 @@ describe('handle', function () {
     it('rejects webhook with invalid secret', function () {
         Flow::create([
             'name' => 'Secret Webhook Flow',
-            'webhook_path' => 'secret-webhook',
-            'active' => true,
-            'trigger_config' => ['secret' => 'correct-secret'],
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('secret-webhook', 'correct-secret')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/secret-webhook', [], [
@@ -73,11 +95,9 @@ describe('handle', function () {
     it('accepts webhook with valid secret', function () {
         Flow::create([
             'name' => 'Valid Secret Webhook Flow',
-            'webhook_path' => 'valid-secret-webhook',
-            'active' => true,
-            'trigger_config' => ['secret' => 'my-secret'],
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('valid-secret-webhook', 'my-secret')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/valid-secret-webhook', [
@@ -92,10 +112,9 @@ describe('handle', function () {
     it('accepts GET requests', function () {
         Flow::create([
             'name' => 'GET Webhook Flow',
-            'webhook_path' => 'get-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('get-webhook', null, 'GET')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->get('/autobuilder/webhook/get-webhook?param=value');
@@ -106,10 +125,9 @@ describe('handle', function () {
     it('accepts PUT requests', function () {
         Flow::create([
             'name' => 'PUT Webhook Flow',
-            'webhook_path' => 'put-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('put-webhook', null, 'PUT')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->putJson('/autobuilder/webhook/put-webhook', [
@@ -122,10 +140,9 @@ describe('handle', function () {
     it('handles nested webhook paths', function () {
         Flow::create([
             'name' => 'Nested Webhook Flow',
-            'webhook_path' => 'nested/path/webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('nested/path/webhook')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/nested/path/webhook');
@@ -145,10 +162,9 @@ describe('rate limiting', function () {
 
         Flow::create([
             'name' => 'Rate Limited Flow',
-            'webhook_path' => 'rate-limited-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('rate-limited-webhook')],
             'edges' => [],
+            'active' => true,
         ]);
 
         // First two requests should succeed
@@ -165,10 +181,9 @@ describe('rate limiting', function () {
 
         Flow::create([
             'name' => 'Headers Flow',
-            'webhook_path' => 'headers-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('headers-webhook')],
             'edges' => [],
+            'active' => true,
         ]);
 
         $response = $this->postJson('/autobuilder/webhook/headers-webhook');
@@ -183,10 +198,9 @@ describe('rate limiting', function () {
 
         Flow::create([
             'name' => 'No Rate Limit Flow',
-            'webhook_path' => 'no-rate-limit-webhook',
-            'active' => true,
-            'nodes' => [],
+            'nodes' => [webhookTriggerNode('no-rate-limit-webhook')],
             'edges' => [],
+            'active' => true,
         ]);
 
         // Many requests should all succeed
