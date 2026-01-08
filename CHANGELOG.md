@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.5](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.5) (2026-01-08)
+
+### Features
+
+- **scheduler:** implement OnSchedule trigger with Laravel scheduler integration (#11) ([0acb56b](https://github.com/Grazulex/laravel-autobuilder/commit/0acb56be5b054261155edaad208df66258aa8ba7))
+
+### Bug Fixes
+
+- resolve pint code style issues (#12) ([f3f39a1](https://github.com/Grazulex/laravel-autobuilder/commit/f3f39a11a7a35eacfb2f06de0220eef93e179a75))
 ## [1.0.4](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.4) (2026-01-08)
 
 ### Features
