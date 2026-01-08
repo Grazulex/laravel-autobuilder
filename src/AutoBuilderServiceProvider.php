@@ -107,6 +107,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
                 MakeBrickCommand::class,
                 RunFlowCommand::class,
                 ListBricksCommand::class,
+                ScheduleRunCommand::class,
             ]);
         }
     }
