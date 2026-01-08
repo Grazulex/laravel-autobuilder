@@ -163,6 +163,20 @@ class AutoBuilderServiceProvider extends ServiceProvider
         }
     }
 
+    protected function registerScheduledTasks(): void
+    {
+        if (! config('autobuilder.scheduling.enabled', true)) {
+            return;
+        }
+
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+            $schedule->command('autobuilder:schedule-run')
+                ->everyMinute()
+                ->withoutOverlapping()
+                ->runInBackground();
+        });
+    }
+
     protected function configureRateLimiting(): void
     {
         if (! config('autobuilder.rate_limiting.enabled', true)) {
