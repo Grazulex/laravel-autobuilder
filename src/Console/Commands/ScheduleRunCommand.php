@@ -56,15 +56,15 @@ class ScheduleRunCommand extends Command
                     $result = $runner->run($flow, $payload);
 
                     if ($result->isCompleted()) {
-                        $this->info("    Completed successfully.");
+                        $this->info('    Completed successfully.');
                         $executedCount++;
                     } elseif ($result->isFailed()) {
-                        $this->error("    Failed: " . $result->error?->getMessage());
+                        $this->error('    Failed: '.$result->error?->getMessage());
                         Log::error("[AutoBuilder] Scheduled flow {$flow->id} failed", [
                             'error' => $result->error?->getMessage(),
                         ]);
                     } elseif ($result->isPaused()) {
-                        $this->warn("    Paused. Run ID: " . $result->context->runId);
+                        $this->warn('    Paused. Run ID: '.$result->context->runId);
                         $executedCount++;
                     }
                 }
@@ -106,7 +106,7 @@ class ScheduleRunCommand extends Command
         }
 
         // Create OnSchedule trigger directly with config
-        $trigger = new OnSchedule();
+        $trigger = new OnSchedule;
         $trigger->configure($triggerConfig);
 
         $cronExpression = $trigger->getCronExpression();
