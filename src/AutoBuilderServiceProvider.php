@@ -56,6 +56,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
         $this->registerModelObservers();
         $this->registerPolicies();
         $this->configureRateLimiting();
+        $this->registerScheduledTasks();
         $this->bootTriggers();
     }
 
