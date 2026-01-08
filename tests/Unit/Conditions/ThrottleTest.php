@@ -292,7 +292,7 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'on_throttle');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('false');
-        expect(array_keys($options))->toContain('skip');
+        expect(array_column($options, 'value'))->toContain('false');
+        expect(array_column($options, 'value'))->toContain('skip');
     });
 });

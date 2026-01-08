@@ -375,11 +375,11 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'comparison');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('loose');
-        expect(array_keys($options))->toContain('strict');
-        expect(array_keys($options))->toContain('contains');
-        expect(array_keys($options))->toContain('starts_with');
-        expect(array_keys($options))->toContain('ends_with');
-        expect(array_keys($options))->toContain('regex');
+        expect(array_column($options, 'value'))->toContain('loose');
+        expect(array_column($options, 'value'))->toContain('strict');
+        expect(array_column($options, 'value'))->toContain('contains');
+        expect(array_column($options, 'value'))->toContain('starts_with');
+        expect(array_column($options, 'value'))->toContain('ends_with');
+        expect(array_column($options, 'value'))->toContain('regex');
     });
 });

@@ -113,9 +113,9 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'wait_type');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('duration');
-        expect(array_keys($options))->toContain('until_time');
-        expect(array_keys($options))->toContain('pause');
+        expect(array_column($options, 'value'))->toContain('duration');
+        expect(array_column($options, 'value'))->toContain('until_time');
+        expect(array_column($options, 'value'))->toContain('pause');
     });
 
     it('duration_unit has correct options', function () {
@@ -125,10 +125,10 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'duration_unit');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('seconds');
-        expect(array_keys($options))->toContain('minutes');
-        expect(array_keys($options))->toContain('hours');
-        expect(array_keys($options))->toContain('days');
+        expect(array_column($options, 'value'))->toContain('seconds');
+        expect(array_column($options, 'value'))->toContain('minutes');
+        expect(array_column($options, 'value'))->toContain('hours');
+        expect(array_column($options, 'value'))->toContain('days');
     });
 
     it('has 7 fields total', function () {

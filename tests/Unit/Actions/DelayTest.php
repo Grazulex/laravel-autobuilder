@@ -265,9 +265,9 @@ describe('field configuration', function () {
         $unitField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'unit');
         $options = array_values($unitField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('seconds');
-        expect(array_keys($options))->toContain('minutes');
-        expect(array_keys($options))->toContain('hours');
+        expect(array_column($options, 'value'))->toContain('seconds');
+        expect(array_column($options, 'value'))->toContain('minutes');
+        expect(array_column($options, 'value'))->toContain('hours');
     });
 
     it('mode field has sync and pause options', function () {
@@ -277,7 +277,7 @@ describe('field configuration', function () {
         $modeField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'mode');
         $options = array_values($modeField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('sync');
-        expect(array_keys($options))->toContain('pause');
+        expect(array_column($options, 'value'))->toContain('sync');
+        expect(array_column($options, 'value'))->toContain('pause');
     });
 });

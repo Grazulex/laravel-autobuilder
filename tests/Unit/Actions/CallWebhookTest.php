@@ -551,11 +551,11 @@ describe('field configuration', function () {
         $methodField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
         $options = array_values($methodField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('GET');
-        expect(array_keys($options))->toContain('POST');
-        expect(array_keys($options))->toContain('PUT');
-        expect(array_keys($options))->toContain('PATCH');
-        expect(array_keys($options))->toContain('DELETE');
+        expect(array_column($options, 'value'))->toContain('GET');
+        expect(array_column($options, 'value'))->toContain('POST');
+        expect(array_column($options, 'value'))->toContain('PUT');
+        expect(array_column($options, 'value'))->toContain('PATCH');
+        expect(array_column($options, 'value'))->toContain('DELETE');
     });
 
     it('body_format field has correct options', function () {
@@ -565,9 +565,9 @@ describe('field configuration', function () {
         $bodyFormatField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'body_format');
         $options = array_values($bodyFormatField)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('json');
-        expect(array_keys($options))->toContain('form');
-        expect(array_keys($options))->toContain('multipart');
+        expect(array_column($options, 'value'))->toContain('json');
+        expect(array_column($options, 'value'))->toContain('form');
+        expect(array_column($options, 'value'))->toContain('multipart');
     });
 
     it('retry_times field has correct options', function () {

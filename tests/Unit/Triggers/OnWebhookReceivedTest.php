@@ -136,12 +136,12 @@ describe('field configuration', function () {
         $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
-        expect(array_keys($options))->toContain('POST');
-        expect(array_keys($options))->toContain('GET');
-        expect(array_keys($options))->toContain('PUT');
-        expect(array_keys($options))->toContain('PATCH');
-        expect(array_keys($options))->toContain('DELETE');
-        expect(array_keys($options))->toContain('ANY');
+        expect(array_column($options, 'value'))->toContain('POST');
+        expect(array_column($options, 'value'))->toContain('GET');
+        expect(array_column($options, 'value'))->toContain('PUT');
+        expect(array_column($options, 'value'))->toContain('PATCH');
+        expect(array_column($options, 'value'))->toContain('DELETE');
+        expect(array_column($options, 'value'))->toContain('ANY');
     });
 
     it('method field has default of POST', function () {
