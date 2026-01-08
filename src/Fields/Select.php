@@ -69,17 +69,13 @@ class Select extends Field
         $formatted = [];
 
         foreach ($options as $key => $value) {
-            // If already in {value, label} format (numeric key with array value)
-            if (is_int($key) && is_array($value) && isset($value['value'])) {
+            // If already in {value, label} format (array with 'value' key)
+            if (is_array($value) && isset($value['value'])) {
                 $formatted[] = $value;
             }
-            // Associative array: key is value, value is label
-            elseif (is_string($key)) {
-                $formatted[] = ['value' => $key, 'label' => $value];
-            }
-            // Simple array of strings
-            else {
-                $formatted[] = ['value' => $value, 'label' => $value];
+            // Associative array: key is value, value is label (handles both string and int keys)
+            elseif (! is_array($value)) {
+                $formatted[] = ['value' => (string) $key, 'label' => (string) $value];
             }
         }
 
