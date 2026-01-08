@@ -50,7 +50,10 @@ it('can create a select field', function () {
     $array = $field->toArray();
 
     expect($array['type'])->toBe('select');
-    expect($array['options'])->toBe(['active' => 'Active', 'inactive' => 'Inactive']);
+    expect($array['options'])->toBe([
+        ['value' => 'active', 'label' => 'Active'],
+        ['value' => 'inactive', 'label' => 'Inactive'],
+    ]);
     expect($array['searchable'])->toBeTrue();
     expect($array['multiple'])->toBeTrue();
 });
