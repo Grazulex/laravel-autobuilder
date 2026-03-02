@@ -131,7 +131,7 @@ class Wait extends Action
         return $context;
     }
 
-    private function calculateDurationResume(): \Carbon\Carbon
+    private function calculateDurationResume(): \Carbon\CarbonInterface
     {
         $duration = (int) $this->config('duration', 5);
         $unit = $this->config('duration_unit', 'seconds');
@@ -144,7 +144,7 @@ class Wait extends Action
         };
     }
 
-    private function calculateUntilTimeResume(FlowContext $context): \Carbon\Carbon
+    private function calculateUntilTimeResume(FlowContext $context): \Carbon\CarbonInterface
     {
         $timeString = $this->resolveValue($this->config('until_time'), $context);
         $timezone = $this->config('timezone', 'UTC');

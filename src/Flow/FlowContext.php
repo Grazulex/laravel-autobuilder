@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\AutoBuilder\Flow;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 
 class FlowContext
@@ -23,7 +24,7 @@ class FlowContext
 
     public ?string $pausedAt = null;
 
-    public Carbon $startedAt;
+    public CarbonInterface $startedAt;
 
     /**
      * Gate inputs: gateId => [sourceNodeId => bool result]
@@ -31,7 +32,7 @@ class FlowContext
      */
     public array $gateInputs = [];
 
-    public function __construct(string $flowId, array $payload = [], ?string $runId = null, ?Carbon $startedAt = null)
+    public function __construct(string $flowId, array $payload = [], ?string $runId = null, ?CarbonInterface $startedAt = null)
     {
         $this->flowId = $flowId;
         $this->runId = $runId ?? (string) Str::ulid();
