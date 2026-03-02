@@ -10,6 +10,47 @@ const emit = defineEmits(['update', 'delete'])
 
 const localConfig = ref({})
 
+// Initialize key-value pairs as reactive arrays for the UI
+function getKeyValuePairs(fieldName) {
+    const val = localConfig.value[fieldName]
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+        return Object.entries(val).map(([key, value]) => ({ key, value }))
+    }
+    return [{ key: '', value: '' }]
+}
+
+function updateKeyValueField(fieldName, pairs) {
+    const obj = {}
+    pairs.forEach(pair => {
+        if (pair.key.trim()) {
+            obj[pair.key.trim()] = pair.value
+        }
+    })
+    localConfig.value[fieldName] = obj
+    emit('update', props.node.id, { [fieldName]: obj })
+}
+
+function addKeyValuePair(fieldName) {
+    const pairs = getKeyValuePairs(fieldName)
+    pairs.push({ key: '', value: '' })
+    updateKeyValueField(fieldName, pairs)
+}
+
+function removeKeyValuePair(fieldName, index) {
+    const pairs = getKeyValuePairs(fieldName)
+    pairs.splice(index, 1)
+    if (pairs.length === 0) {
+        pairs.push({ key: '', value: '' })
+    }
+    updateKeyValueField(fieldName, pairs)
+}
+
+function onKeyValueChange(fieldName, index, prop, value) {
+    const pairs = getKeyValuePairs(fieldName)
+    pairs[index][prop] = value
+    updateKeyValueField(fieldName, pairs)
+}
+
 // Sync local config with node
 watch(
     () => props.node,
@@ -48,6 +89,7 @@ function getFieldType(field) {
         'timezone-select': 'timezone-select',
         'log-channel-select': 'log-channel-select',
         'key-value': 'key-value',
+        keyvalue: 'key-value',
     }
     return typeMap[field.type] || 'text'
 }
@@ -244,6 +286,51 @@ const nodeTypeColors = {
                             {{ option.label }}
                         </option>
                     </select>
+
+                    <!-- Key-Value -->
+                    <div
+                        v-else-if="getFieldType(field) === 'key-value'"
+                        class="space-y-2"
+                    >
+                        <div
+                            v-for="(pair, idx) in getKeyValuePairs(field.name)"
+                            :key="idx"
+                            class="flex items-center gap-1"
+                        >
+                            <input
+                                type="text"
+                                :value="pair.key"
+                                :placeholder="field.keyLabel || 'Key'"
+                                class="flex-1 text-xs"
+                                @input="onKeyValueChange(field.name, idx, 'key', $event.target.value)"
+                            >
+                            <input
+                                type="text"
+                                :value="pair.value"
+                                :placeholder="field.valueLabel || 'Value'"
+                                class="flex-1 text-xs"
+                                @input="onKeyValueChange(field.name, idx, 'value', $event.target.value)"
+                            >
+                            <button
+                                type="button"
+                                class="p-1 text-gray-400 hover:text-red-500 shrink-0"
+                                @click="removeKeyValuePair(field.name, idx)"
+                                title="Remove"
+                            >
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <button
+                            type="button"
+                            class="text-xs text-blue-600 hover:text-blue-800"
+                            @click="addKeyValuePair(field.name)"
+                            :disabled="field.maxPairs && getKeyValuePairs(field.name).length >= field.maxPairs"
+                        >
+                            + Add pair
+                        </button>
+                    </div>
 
                     <!-- Description -->
                     <p
