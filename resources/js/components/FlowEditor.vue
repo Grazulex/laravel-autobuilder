@@ -136,6 +136,14 @@ function updateNodeConfig(nodeId, config) {
     }
 }
 
+// Rename a node
+function renameNode(nodeId, newLabel) {
+    const node = nodes.value.find(n => n.id === nodeId)
+    if (node) {
+        node.data = { ...node.data, label: newLabel }
+    }
+}
+
 // Delete selected node - show confirmation first
 function requestDeleteNode() {
     if (!selectedNode.value) return
@@ -540,6 +548,7 @@ onMounted(() => {
             <PropertiesPanel
                 :node="selectedNode"
                 @update="updateNodeConfig"
+                @rename="renameNode"
                 @delete="requestDeleteNode"
             />
         </div>

@@ -6,9 +6,24 @@ const props = defineProps({
     node: { type: Object, default: null },
 })
 
-const emit = defineEmits(['update', 'delete'])
+const emit = defineEmits(['update', 'delete', 'rename'])
 
 const localConfig = ref({})
+const isEditingLabel = ref(false)
+const editLabel = ref('')
+
+function startEditLabel() {
+    editLabel.value = props.node.data.label
+    isEditingLabel.value = true
+}
+
+function saveLabel() {
+    const newLabel = editLabel.value.trim()
+    if (newLabel && newLabel !== props.node.data.label) {
+        emit('rename', props.node.id, newLabel)
+    }
+    isEditingLabel.value = false
+}
 
 // Initialize key-value pairs as reactive arrays for the UI
 function getKeyValuePairs(fieldName) {
@@ -123,12 +138,26 @@ const nodeTypeColors = {
         <template v-if="node">
             <!-- Header -->
             <div class="px-4 py-3 border-b flex items-center justify-between">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-1 min-w-0">
                     <div
-                        class="w-2 h-2 rounded-full"
+                        class="w-2 h-2 rounded-full shrink-0"
                         :class="nodeTypeColors[node.type]"
                     ></div>
-                    <span class="font-medium text-gray-900">{{ node.data.label }}</span>
+                    <input
+                        v-if="isEditingLabel"
+                        v-model="editLabel"
+                        class="font-medium text-gray-900 text-sm border border-blue-300 rounded px-1.5 py-0.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        @blur="saveLabel"
+                        @keyup.enter="saveLabel"
+                        @keyup.escape="isEditingLabel = false"
+                        @vue:mounted="({ el }) => el.focus()"
+                    >
+                    <span
+                        v-else
+                        class="font-medium text-gray-900 truncate cursor-pointer hover:text-blue-600"
+                        title="Click to rename"
+                        @click="startEditLabel"
+                    >{{ node.data.label }}</span>
                 </div>
                 <button
                     @click="$emit('delete')"
