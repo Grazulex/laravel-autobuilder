@@ -91,6 +91,16 @@ class SwitchCase extends Condition
         $comparison = $this->config('comparison', 'loose');
         $storeAs = $this->config('store_as', 'switch_matched_case');
 
+        // Defensive parsing: if cases is a string (e.g. from a missing KeyValue UI), try to decode it
+        if (is_string($cases)) {
+            $decoded = json_decode($cases, true);
+            $cases = is_array($decoded) ? $decoded : [];
+        }
+
+        if (! is_array($cases)) {
+            $cases = [];
+        }
+
         $matchedCase = null;
 
         // Check each case

@@ -218,8 +218,9 @@ class FlowRunner
             // Determine if this edge should be followed
             $shouldFollow = false;
 
-            // If no condition specified, follow the edge based on result
+            // If no condition specified, default to true branch behavior
             if ($edgeCondition === null) {
+                $this->context->warning("Edge from condition '{$condition->name()}' to '{$edge['target']}' has no sourceHandle. Defaulting to true branch.");
                 $shouldFollow = $result;
             } elseif (
                 ($edgeCondition === 'true' && $result) ||
