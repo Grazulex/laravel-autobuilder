@@ -163,7 +163,8 @@ class FlowRunner
             } elseif ($brick instanceof Action) {
                 $this->context = $brick->handle($this->context);
 
-                if (! $this->context->isPaused()) {
+                // Stop propagation if flow was paused or stop was requested
+                if (! $this->context->isPaused() && ! $this->context->get('_stop_requested')) {
                     $this->executeNextNodes($node['id']);
                 }
             } else {

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Observers;
 
+use Grazulex\AutoBuilder\BuiltIn\Actions\WebhookAnswer;
 use Grazulex\AutoBuilder\BuiltIn\Triggers\OnWebhookReceived;
 use Grazulex\AutoBuilder\Models\Flow;
+use Grazulex\AutoBuilder\Support\WebhookPathNormalizer;
 use Grazulex\AutoBuilder\Trigger\TriggerManager;
 
 class FlowObserver
@@ -93,7 +95,12 @@ class FlowObserver
 
         // Set webhook_path for OnWebhookReceived triggers
         if ($brickClass === OnWebhookReceived::class) {
-            $flow->webhook_path = $brickConfig['path'] ?? null;
+            $flow->webhook_path = WebhookPathNormalizer::normalize($brickConfig['path'] ?? null);
+
+            // Auto-detect WebhookAnswer in nodes to force sync execution
+            if ($this->hasWebhookAnswerNode($flow)) {
+                $flow->sync = true;
+            }
         } else {
             $flow->webhook_path = null;
         }
@@ -111,5 +118,20 @@ class FlowObserver
         }
 
         return null;
+    }
+
+    /**
+     * Check if any node in the flow uses WebhookAnswer.
+     */
+    protected function hasWebhookAnswerNode(Flow $flow): bool
+    {
+        foreach ($flow->nodes ?? [] as $node) {
+            $brickClass = $node['data']['brick'] ?? $node['brick'] ?? null;
+            if ($brickClass === WebhookAnswer::class) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

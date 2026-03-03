@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\AutoBuilder\BuiltIn\Actions\WebhookAnswer;
 use Grazulex\AutoBuilder\BuiltIn\Triggers\OnWebhookReceived;
 use Grazulex\AutoBuilder\Models\Flow;
 
@@ -26,6 +27,24 @@ function webhookTriggerNode(string $path, ?string $secret = null, string $method
         'data' => [
             'brick' => OnWebhookReceived::class,
             'config' => $config,
+        ],
+    ];
+}
+
+function webhookAnswerNode(int $statusCode = 200, string $contentType = 'application/json', string $body = '{"ok":true}'): array
+{
+    return [
+        'id' => 'action-1',
+        'type' => 'action',
+        'position' => ['x' => 300, 'y' => 100],
+        'data' => [
+            'brick' => WebhookAnswer::class,
+            'config' => [
+                'status_code' => $statusCode,
+                'content_type' => $contentType,
+                'response_body' => $body,
+                'response_headers' => [],
+            ],
         ],
     ];
 }
@@ -148,6 +167,107 @@ describe('handle', function () {
         $response = $this->postJson('/autobuilder/webhook/nested/path/webhook');
 
         $response->assertStatus(202);
+    });
+});
+
+// =============================================================================
+// Path Normalization Tests
+// =============================================================================
+
+describe('path normalization', function () {
+    it('matches webhook path case-insensitively', function () {
+        Flow::create([
+            'name' => 'Case Test Flow',
+            'nodes' => [webhookTriggerNode('My-Webhook')],
+            'edges' => [],
+            'active' => true,
+        ]);
+
+        $response = $this->postJson('/autobuilder/webhook/my-webhook');
+        $response->assertStatus(202);
+    });
+
+    it('matches webhook path with extra slashes', function () {
+        Flow::create([
+            'name' => 'Slash Test Flow',
+            'nodes' => [webhookTriggerNode('/my-hook/')],
+            'edges' => [],
+            'active' => true,
+        ]);
+
+        $response = $this->postJson('/autobuilder/webhook/my-hook');
+        $response->assertStatus(202);
+    });
+});
+
+// =============================================================================
+// HTTP Method Validation Tests
+// =============================================================================
+
+describe('method validation', function () {
+    it('returns 405 when method does not match', function () {
+        Flow::create([
+            'name' => 'POST Only Flow',
+            'nodes' => [webhookTriggerNode('post-only', null, 'POST')],
+            'edges' => [],
+            'active' => true,
+        ]);
+
+        $response = $this->getJson('/autobuilder/webhook/post-only');
+        $response->assertStatus(405);
+        $response->assertJson(['error' => 'Method not allowed', 'allowed' => 'POST']);
+    });
+
+    it('allows any method when configured as ANY', function () {
+        Flow::create([
+            'name' => 'Any Method Flow',
+            'nodes' => [webhookTriggerNode('any-method', null, 'ANY')],
+            'edges' => [],
+            'active' => true,
+        ]);
+
+        $this->getJson('/autobuilder/webhook/any-method')->assertStatus(202);
+        $this->postJson('/autobuilder/webhook/any-method')->assertStatus(202);
+        $this->putJson('/autobuilder/webhook/any-method')->assertStatus(202);
+    });
+});
+
+// =============================================================================
+// WebhookAnswer Custom Response Tests
+// =============================================================================
+
+describe('webhook answer', function () {
+    it('returns custom response when WebhookAnswer action is used', function () {
+        Flow::create([
+            'name' => 'Custom Response Flow',
+            'nodes' => [
+                webhookTriggerNode('custom-response'),
+                webhookAnswerNode(201, 'application/json', '{"created":true}'),
+            ],
+            'edges' => [
+                ['id' => 'e1', 'source' => 'trigger-1', 'target' => 'action-1'],
+            ],
+            'active' => true,
+        ]);
+
+        $response = $this->postJson('/autobuilder/webhook/custom-response', ['data' => 'test']);
+
+        $response->assertStatus(201);
+        expect($response->getContent())->toBe('{"created":true}');
+    });
+
+    it('returns default 202 response when no WebhookAnswer is used', function () {
+        Flow::create([
+            'name' => 'Default Response Flow',
+            'nodes' => [webhookTriggerNode('default-response')],
+            'edges' => [],
+            'active' => true,
+        ]);
+
+        $response = $this->postJson('/autobuilder/webhook/default-response');
+
+        $response->assertStatus(202);
+        $response->assertJson(['status' => 'accepted']);
     });
 });
 

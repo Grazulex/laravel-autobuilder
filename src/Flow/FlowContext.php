@@ -168,6 +168,37 @@ class FlowContext
     }
 
     /**
+     * Check if a custom webhook response has been set (by WebhookAnswer action)
+     */
+    public function hasWebhookResponse(): bool
+    {
+        return isset($this->variables['_webhook_response']);
+    }
+
+    /**
+     * Get the custom webhook response data
+     */
+    public function getWebhookResponse(): array
+    {
+        return $this->variables['_webhook_response'] ?? [];
+    }
+
+    /**
+     * Set a custom webhook response (used by WebhookAnswer action)
+     */
+    public function setWebhookResponse(int $statusCode, string $contentType, string $body, array $headers = []): static
+    {
+        $this->variables['_webhook_response'] = [
+            'status_code' => $statusCode,
+            'content_type' => $contentType,
+            'body' => $body,
+            'headers' => $headers,
+        ];
+
+        return $this;
+    }
+
+    /**
      * Merge additional payload data
      */
     public function merge(array $data): static
