@@ -11,6 +11,16 @@ const props = defineProps({
 
 const searchQuery = ref('')
 const expandedCategories = ref(['triggers', 'conditions', 'actions', 'gates'])
+const selectedSubCategory = ref('all')
+
+// Extract unique sub-categories from conditions
+const conditionSubCategories = computed(() => {
+    const cats = new Set()
+    ;(props.bricks.conditions || []).forEach(b => {
+        if (b.category) cats.add(b.category)
+    })
+    return ['all', ...Array.from(cats).sort()]
+})
 
 function toggleCategory(category) {
     const index = expandedCategories.value.indexOf(category)
@@ -31,7 +41,13 @@ function filterBricks(bricks) {
 }
 
 const filteredTriggers = computed(() => filterBricks(props.bricks.triggers || []))
-const filteredConditions = computed(() => filterBricks(props.bricks.conditions || []))
+const filteredConditions = computed(() => {
+    let bricks = props.bricks.conditions || []
+    if (selectedSubCategory.value !== 'all') {
+        bricks = bricks.filter(b => b.category === selectedSubCategory.value)
+    }
+    return filterBricks(bricks)
+})
 const filteredActions = computed(() => filterBricks(props.bricks.actions || []))
 const filteredGates = computed(() => filterBricks(props.bricks.gates || []))
 
@@ -133,6 +149,21 @@ const categoryIcons = {
                 </button>
 
                 <div v-show="expandedCategories.includes('conditions')" class="px-3 pb-3 space-y-1">
+                    <!-- Sub-category filter pills -->
+                    <div v-if="conditionSubCategories.length > 2" class="flex flex-wrap gap-1 pb-2">
+                        <button
+                            v-for="cat in conditionSubCategories"
+                            :key="cat"
+                            @click="selectedSubCategory = cat"
+                            class="px-2 py-0.5 text-xs rounded-full border transition-colors"
+                            :class="selectedSubCategory === cat
+                                ? 'bg-condition-500 text-white border-condition-500'
+                                : 'bg-white text-gray-600 border-gray-300 hover:border-condition-400'"
+                        >
+                            {{ cat === 'all' ? 'All' : cat }}
+                        </button>
+                    </div>
+
                     <div
                         v-for="brick in filteredConditions"
                         :key="brick.class"
