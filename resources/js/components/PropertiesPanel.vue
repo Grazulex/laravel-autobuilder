@@ -11,6 +11,7 @@ const emit = defineEmits(['update', 'delete', 'rename'])
 const localConfig = ref({})
 const isEditingLabel = ref(false)
 const editLabel = ref('')
+const copiedField = ref(null)
 
 function startEditLabel() {
     editLabel.value = props.node.data.label
@@ -123,6 +124,21 @@ function getSelectOptions(field) {
     return field.options || []
 }
 
+function getFullUrl(field) {
+    const prefix = field.prefix || ''
+    const suffix = field.suffix || ''
+    const value = localConfig.value[field.name] ?? field.default ?? ''
+    return `${window.location.origin}${prefix}${value}${suffix}`
+}
+
+function copyToClipboard(field) {
+    const url = getFullUrl(field)
+    navigator.clipboard.writeText(url).then(() => {
+        copiedField.value = field.name
+        setTimeout(() => { copiedField.value = null }, 2000)
+    })
+}
+
 const nodeTypeColors = {
     trigger: 'bg-trigger-500',
     condition: 'bg-condition-500',
@@ -197,16 +213,52 @@ const nodeTypeColors = {
                         <span v-if="field.required" class="text-red-500 text-xs">*</span>
                     </label>
 
-                    <!-- Text Input -->
-                    <input
+                    <!-- Text Input (with optional prefix/suffix) -->
+                    <div
                         v-if="['text', 'email', 'url', 'number', 'date', 'datetime-local', 'time'].includes(getFieldType(field))"
-                        :id="`field-${field.name}`"
-                        :type="getFieldType(field)"
-                        :value="localConfig[field.name] ?? field.default"
-                        :placeholder="field.placeholder || field.description"
-                        :required="field.required"
-                        @input="updateField(field.name, $event.target.value)"
                     >
+                        <div class="flex items-stretch">
+                            <span
+                                v-if="field.prefix"
+                                class="inline-flex items-center px-2 text-xs text-gray-500 bg-gray-100 border border-r-0 border-gray-300 rounded-l"
+                            >{{ field.prefix }}</span>
+                            <input
+                                :id="`field-${field.name}`"
+                                :type="getFieldType(field)"
+                                :value="localConfig[field.name] ?? field.default"
+                                :placeholder="field.placeholder || field.description"
+                                :required="field.required"
+                                :class="{ 'rounded-l-none': field.prefix, 'rounded-r-none': field.suffix }"
+                                @input="updateField(field.name, $event.target.value)"
+                            >
+                            <span
+                                v-if="field.suffix"
+                                class="inline-flex items-center px-2 text-xs text-gray-500 bg-gray-100 border border-l-0 border-gray-300 rounded-r"
+                            >{{ field.suffix }}</span>
+                        </div>
+                        <!-- Full URL display with copy button for fields with prefix -->
+                        <div
+                            v-if="field.prefix && (localConfig[field.name] || field.default)"
+                            class="mt-1.5 flex items-center gap-1"
+                        >
+                            <code class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded flex-1 truncate border" :title="getFullUrl(field)">
+                                {{ getFullUrl(field) }}
+                            </code>
+                            <button
+                                type="button"
+                                class="shrink-0 p-1 text-gray-400 hover:text-blue-500 rounded"
+                                title="Copy URL"
+                                @click="copyToClipboard(field)"
+                            >
+                                <svg v-if="copiedField !== field.name" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                <svg v-else class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Textarea -->
                     <textarea

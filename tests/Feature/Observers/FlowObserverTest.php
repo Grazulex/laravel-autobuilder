@@ -196,3 +196,49 @@ it('can find flow by webhook_path after creation', function () {
     expect($foundFlow)->not->toBeNull();
     expect($foundFlow->name)->toBe('Webhook Flow');
 });
+
+it('normalizes webhook_path on creation', function () {
+    $flow = Flow::create([
+        'name' => 'Normalized Webhook Flow',
+        'nodes' => [
+            [
+                'id' => 'trigger-1',
+                'type' => 'trigger',
+                'data' => [
+                    'brick' => OnWebhookReceived::class,
+                    'config' => [
+                        'path' => '/My-Webhook-Path/',
+                        'method' => 'POST',
+                    ],
+                ],
+            ],
+        ],
+        'edges' => [],
+        'active' => false,
+    ]);
+
+    expect($flow->webhook_path)->toBe('my-webhook-path');
+});
+
+it('normalizes webhook_path with mixed case and spaces', function () {
+    $flow = Flow::create([
+        'name' => 'Case Webhook Flow',
+        'nodes' => [
+            [
+                'id' => 'trigger-1',
+                'type' => 'trigger',
+                'data' => [
+                    'brick' => OnWebhookReceived::class,
+                    'config' => [
+                        'path' => 'API/V1/My Hook',
+                        'method' => 'POST',
+                    ],
+                ],
+            ],
+        ],
+        'edges' => [],
+        'active' => false,
+    ]);
+
+    expect($flow->webhook_path)->toBe('api/v1/my-hook');
+});

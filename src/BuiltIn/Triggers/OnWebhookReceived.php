@@ -7,6 +7,7 @@ namespace Grazulex\AutoBuilder\BuiltIn\Triggers;
 use Grazulex\AutoBuilder\Bricks\Trigger;
 use Grazulex\AutoBuilder\Fields\Select;
 use Grazulex\AutoBuilder\Fields\Text;
+use Grazulex\AutoBuilder\Support\WebhookPathNormalizer;
 
 class OnWebhookReceived extends Trigger
 {
@@ -35,7 +36,7 @@ class OnWebhookReceived extends Trigger
         return [
             Text::make('path')
                 ->label('Webhook Path')
-                ->prefix('/autobuilder/webhook/')
+                ->prefix('/'.config('autobuilder.routes.prefix', 'autobuilder').'/webhook/')
                 ->placeholder('my-webhook')
                 ->description('Unique path for this webhook')
                 ->required(),
@@ -65,14 +66,32 @@ class OnWebhookReceived extends Trigger
 
     public function getWebhookUrl(): string
     {
-        return url('/autobuilder/webhook/'.$this->config('path'));
+        $prefix = config('autobuilder.routes.prefix', 'autobuilder');
+        $path = WebhookPathNormalizer::normalize($this->config('path')) ?? $this->config('path');
+
+        return url("/{$prefix}/webhook/{$path}");
     }
 
     public function samplePayload(): array
     {
+        $path = $this->config('path', 'webhook');
+
         return [
+            'webhook' => [
+                'method' => 'POST',
+                'path' => $path,
+                'query' => [],
+                'payload' => ['example' => 'data'],
+                'headers' => [
+                    'content-type' => ['application/json'],
+                    'user-agent' => ['WebhookClient/1.0'],
+                ],
+                'ip' => '127.0.0.1',
+                'content_type' => 'application/json',
+                'user_agent' => 'WebhookClient/1.0',
+            ],
             'method' => 'POST',
-            'path' => $this->config('path', 'webhook'),
+            'path' => $path,
             'query' => [],
             'body' => ['example' => 'data'],
             'headers' => [

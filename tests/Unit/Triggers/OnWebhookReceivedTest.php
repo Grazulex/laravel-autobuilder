@@ -87,6 +87,14 @@ describe('sample payload', function () {
         ]);
         $payload = $brick->samplePayload();
 
+        // Namespaced keys
+        expect($payload)->toHaveKey('webhook');
+        expect($payload['webhook'])->toHaveKey('method');
+        expect($payload['webhook'])->toHaveKey('path');
+        expect($payload['webhook'])->toHaveKey('payload');
+        expect($payload['webhook'])->toHaveKey('ip');
+
+        // Backward compatible flat keys
         expect($payload)->toHaveKey('method');
         expect($payload)->toHaveKey('path');
         expect($payload)->toHaveKey('query');
