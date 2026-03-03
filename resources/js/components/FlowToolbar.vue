@@ -13,7 +13,7 @@ const props = defineProps({
     lastSaved: { type: Number, default: null },
 })
 
-const emit = defineEmits(['save', 'test', 'toggle-active', 'toggle-sync', 'rename', 'update-description', 'history', 'validate', 'export'])
+const emit = defineEmits(['save', 'test', 'toggle-active', 'toggle-sync', 'rename', 'update-description', 'history', 'validate', 'export', 'auto-layout'])
 
 const showTestModal = ref(false)
 const testPayload = ref('{}')
@@ -270,6 +270,20 @@ const statusColor = computed(() => {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     History
+                </span>
+            </button>
+
+            <!-- Auto Layout Button -->
+            <button
+                @click="$emit('auto-layout')"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                title="Auto-arrange nodes"
+            >
+                <span class="flex items-center gap-2">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                    </svg>
+                    Auto Layout
                 </span>
             </button>
 

@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed, onMounted, watch, provide } from 'vue'
+import { ref, computed, onMounted, watch, provide, nextTick } from 'vue'
 import { VueFlow, useVueFlow } from '@vue-flow/core'
 import { Background } from '@vue-flow/background'
 import { Controls } from '@vue-flow/controls'
 import { MiniMap } from '@vue-flow/minimap'
+import dagre from '@dagrejs/dagre'
 
 import FlowToolbar from './FlowToolbar.vue'
 import NodePalette from './NodePalette.vue'
@@ -162,6 +163,39 @@ function confirmDeleteNode() {
 
 function cancelDelete() {
     showDeleteConfirm.value = false
+}
+
+// Auto-layout using dagre
+function autoLayout() {
+    const nodeWidth = 200
+    const nodeHeight = 80
+
+    const g = new dagre.graphlib.Graph()
+    g.setDefaultEdgeLabel(() => ({}))
+    g.setGraph({ rankdir: 'TB', nodesep: 60, ranksep: 80 })
+
+    nodes.value.forEach((node) => {
+        g.setNode(node.id, { width: nodeWidth, height: nodeHeight })
+    })
+
+    edges.value.forEach((edge) => {
+        g.setEdge(edge.source, edge.target)
+    })
+
+    dagre.layout(g)
+
+    nodes.value = nodes.value.map((node) => {
+        const dagreNode = g.node(node.id)
+        return {
+            ...node,
+            position: {
+                x: dagreNode.x - nodeWidth / 2,
+                y: dagreNode.y - nodeHeight / 2,
+            },
+        }
+    })
+
+    nextTick(() => fitView({ padding: 0.2 }))
 }
 
 // Save flow
@@ -514,6 +548,7 @@ onMounted(() => {
             @rename="renameFlow"
             @update-description="updateDescription"
             @history="openHistory"
+            @auto-layout="autoLayout"
         />
 
         <!-- Main Editor -->

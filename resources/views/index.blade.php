@@ -16,6 +16,19 @@
                 <p class="text-gray-500 mt-1">Build and manage your automation workflows</p>
             </div>
             <div class="flex gap-2">
+                <!-- Search -->
+                <div class="relative">
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Search flows..."
+                        class="w-48 pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        oninput="handleSearch(this.value)"
+                    >
+                    <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
                 <button
                     onclick="openImportModal()"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2"
@@ -164,7 +177,8 @@
             try {
                 const response = await fetch(`${apiBase}/flows`);
                 const result = await response.json();
-                renderFlows(result.data);
+                allFlows = result.data || [];
+                renderFlows(allFlows);
             } catch (error) {
                 console.error('Failed to load flows:', error);
                 document.getElementById('flows-container').innerHTML = `
@@ -462,6 +476,26 @@
                 document.getElementById('import-error').textContent = error.message;
                 document.getElementById('import-error').classList.remove('hidden');
             }
+        }
+
+        // Search flows
+        let allFlows = [];
+        let searchTimeout = null;
+
+        function handleSearch(query) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                if (!query.trim()) {
+                    renderFlows(allFlows);
+                    return;
+                }
+                const q = query.toLowerCase();
+                const filtered = allFlows.filter(flow =>
+                    flow.name.toLowerCase().includes(q) ||
+                    (flow.description || '').toLowerCase().includes(q)
+                );
+                renderFlows(filtered);
+            }, 200);
         }
 
         // Close modals on escape
