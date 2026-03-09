@@ -102,6 +102,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'logging' => [
+        'activated' => env('AUTOBUILDER_LOG', true),
         'channel' => env('AUTOBUILDER_LOG_CHANNEL', 'stack'),
         'retention_days' => 30,
     ],

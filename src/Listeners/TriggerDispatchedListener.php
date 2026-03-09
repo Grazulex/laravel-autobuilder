@@ -8,7 +8,7 @@ use Grazulex\AutoBuilder\Events\TriggerDispatched;
 use Grazulex\AutoBuilder\Flow\FlowRunner;
 use Grazulex\AutoBuilder\Models\Flow;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
+use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
 
 class TriggerDispatchedListener implements ShouldQueue
 {
@@ -21,7 +21,7 @@ class TriggerDispatchedListener implements ShouldQueue
      */
     public function handle(TriggerDispatched $event): void
     {
-        Log::info("[AutoBuilder] Trigger dispatched for flow {$event->flowId}", [
+        AutoBuilderLogger::info("[AutoBuilder] Trigger dispatched for flow {$event->flowId}", [
             'trigger' => $event->trigger,
             'payload' => $event->payload,
         ]);
@@ -30,13 +30,13 @@ class TriggerDispatchedListener implements ShouldQueue
         $flow = Flow::find($event->flowId);
 
         if (! $flow) {
-            Log::warning("[AutoBuilder] Flow {$event->flowId} not found");
+            AutoBuilderLogger::warning("[AutoBuilder] Flow {$event->flowId} not found");
 
             return;
         }
 
         if (! $flow->active) {
-            Log::info("[AutoBuilder] Flow {$event->flowId} is not active, skipping");
+            AutoBuilderLogger::info("[AutoBuilder] Flow {$event->flowId} is not active, skipping");
 
             return;
         }
@@ -45,11 +45,11 @@ class TriggerDispatchedListener implements ShouldQueue
         try {
             $result = $this->runner->run($flow, $event->payload);
 
-            Log::info("[AutoBuilder] Flow {$event->flowId} completed with status: {$result->status}", [
+            AutoBuilderLogger::info("[AutoBuilder] Flow {$event->flowId} completed with status: {$result->status}", [
                 'run_id' => $result->context->runId,
             ]);
         } catch (\Throwable $e) {
-            Log::error("[AutoBuilder] Flow {$event->flowId} execution failed: {$e->getMessage()}", [
+            AutoBuilderLogger::error("[AutoBuilder] Flow {$event->flowId} execution failed: {$e->getMessage()}", [
                 'exception' => $e,
             ]);
         }

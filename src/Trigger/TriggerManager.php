@@ -7,7 +7,7 @@ namespace Grazulex\AutoBuilder\Trigger;
 use Grazulex\AutoBuilder\Bricks\Trigger;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
-use Illuminate\Support\Facades\Log;
+use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
 
 class TriggerManager
 {
@@ -33,7 +33,7 @@ class TriggerManager
             $this->registerFlow($flow);
         }
 
-        Log::debug("[AutoBuilder] Booted {$activeFlows->count()} active flows");
+        AutoBuilderLogger::debug("[AutoBuilder] Booted {$activeFlows->count()} active flows");
     }
 
     /**
@@ -45,7 +45,7 @@ class TriggerManager
         $triggerNode = $this->findTriggerNode($flow);
 
         if (! $triggerNode) {
-            Log::warning("[AutoBuilder] Flow {$flow->id} has no trigger node");
+            AutoBuilderLogger::warning("[AutoBuilder] Flow {$flow->id} has no trigger node");
 
             return;
         }
@@ -55,7 +55,7 @@ class TriggerManager
         $brickConfig = $triggerNode['data']['config'] ?? $triggerNode['config'] ?? [];
 
         if (! $brickClass) {
-            Log::warning("[AutoBuilder] Flow {$flow->id} trigger node has no brick class");
+            AutoBuilderLogger::warning("[AutoBuilder] Flow {$flow->id} trigger node has no brick class");
 
             return;
         }
@@ -65,7 +65,7 @@ class TriggerManager
             $trigger = $this->registry->resolve($brickClass, $brickConfig);
 
             if (! $trigger instanceof Trigger) {
-                Log::warning("[AutoBuilder] Flow {$flow->id} brick {$brickClass} is not a Trigger");
+                AutoBuilderLogger::warning("[AutoBuilder] Flow {$flow->id} brick {$brickClass} is not a Trigger");
 
                 return;
             }
@@ -77,9 +77,9 @@ class TriggerManager
             // Track registered trigger
             $this->registeredTriggers[$flow->id] = $trigger;
 
-            Log::info("[AutoBuilder] Registered trigger for flow {$flow->id}: {$trigger->name()}");
+            AutoBuilderLogger::info("[AutoBuilder] Registered trigger for flow {$flow->id}: {$trigger->name()}");
         } catch (\Throwable $e) {
-            Log::error("[AutoBuilder] Failed to register trigger for flow {$flow->id}: {$e->getMessage()}");
+            AutoBuilderLogger::error("[AutoBuilder] Failed to register trigger for flow {$flow->id}: {$e->getMessage()}");
         }
     }
 
@@ -97,7 +97,7 @@ class TriggerManager
 
         unset($this->registeredTriggers[$flow->id]);
 
-        Log::info("[AutoBuilder] Unregistered trigger for flow {$flow->id}");
+        AutoBuilderLogger::info("[AutoBuilder] Unregistered trigger for flow {$flow->id}");
     }
 
     /**

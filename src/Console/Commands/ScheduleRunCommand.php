@@ -11,7 +11,7 @@ use Grazulex\AutoBuilder\Flow\FlowRunner;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
 use Throwable;
 
 class ScheduleRunCommand extends Command
@@ -60,7 +60,7 @@ class ScheduleRunCommand extends Command
                         $executedCount++;
                     } elseif ($result->isFailed()) {
                         $this->error('    Failed: '.$result->error?->getMessage());
-                        Log::error("[AutoBuilder] Scheduled flow {$flow->id} failed", [
+                        AutoBuilderLogger::error("[AutoBuilder] Scheduled flow {$flow->id} failed", [
                             'error' => $result->error?->getMessage(),
                         ]);
                     } elseif ($result->isPaused()) {
@@ -70,7 +70,7 @@ class ScheduleRunCommand extends Command
                 }
             } catch (Throwable $e) {
                 $this->error("  Error processing flow {$flow->name}: {$e->getMessage()}");
-                Log::error("[AutoBuilder] Error processing scheduled flow {$flow->id}", [
+                AutoBuilderLogger::error("[AutoBuilder] Error processing scheduled flow {$flow->id}", [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);
@@ -117,7 +117,7 @@ class ScheduleRunCommand extends Command
 
             return $cron->isDue('now', $timezone);
         } catch (Throwable $e) {
-            Log::warning("[AutoBuilder] Invalid cron expression for flow {$flow->id}: {$cronExpression}");
+            AutoBuilderLogger::warning("[AutoBuilder] Invalid cron expression for flow {$flow->id}: {$cronExpression}");
 
             return false;
         }
