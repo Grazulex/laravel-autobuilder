@@ -6,12 +6,12 @@ namespace Grazulex\AutoBuilder\Http\Controllers;
 
 use Grazulex\AutoBuilder\Flow\FlowRunner;
 use Grazulex\AutoBuilder\Models\Flow;
+use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
 use Grazulex\AutoBuilder\Support\WebhookPathNormalizer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 
 class WebhookController extends Controller
 {
@@ -28,7 +28,7 @@ class WebhookController extends Controller
             ->first();
 
         if (! $flow) {
-            Log::debug('AutoBuilder webhook not found', [
+            AutoBuilderLogger::debug('AutoBuilder webhook not found', [
                 'original_path' => $path,
                 'normalized_path' => $normalizedPath,
             ]);
