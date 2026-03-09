@@ -7,8 +7,8 @@ namespace Grazulex\AutoBuilder\Listeners;
 use Grazulex\AutoBuilder\Events\TriggerDispatched;
 use Grazulex\AutoBuilder\Flow\FlowRunner;
 use Grazulex\AutoBuilder\Models\Flow;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class TriggerDispatchedListener implements ShouldQueue
 {

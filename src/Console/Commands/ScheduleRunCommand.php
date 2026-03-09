@@ -10,8 +10,8 @@ use Grazulex\AutoBuilder\BuiltIn\Triggers\OnSchedule;
 use Grazulex\AutoBuilder\Flow\FlowRunner;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
-use Illuminate\Console\Command;
 use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
+use Illuminate\Console\Command;
 use Throwable;
 
 class ScheduleRunCommand extends Command
