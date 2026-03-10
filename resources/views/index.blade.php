@@ -189,7 +189,10 @@
 
         async function loadFlows() {
             try {
-                const response = await fetch(`${apiBase}/flows`);
+                const response = await fetch(`${apiBase}/flows`, {
+                    headers: { 'Accept': 'application/json' },
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const result = await response.json();
                 allFlows = result.data || [];
                 renderFlows(allFlows);

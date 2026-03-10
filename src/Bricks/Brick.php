@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Bricks;
 
+use Grazulex\AutoBuilder\Fields\Field;
 use Grazulex\AutoBuilder\Traits\RendersVariables;
 
 abstract class Brick
@@ -43,7 +44,7 @@ abstract class Brick
     /**
      * Get the fields configuration for this brick
      *
-     * @return array<\Grazulex\AutoBuilder\Fields\Field>
+     * @return array<Field>
      */
     abstract public function fields(): array;
 

@@ -7,6 +7,7 @@ namespace Grazulex\AutoBuilder\Policies;
 use Grazulex\AutoBuilder\Models\Flow;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Gate;
 
 class FlowPolicy
 {
@@ -127,7 +128,7 @@ class FlowPolicy
 
         // Check the gate if user is authenticated
         if ($user) {
-            return \Illuminate\Support\Facades\Gate::forUser($user)->allows($gate);
+            return Gate::forUser($user)->allows($gate);
         }
 
         return false;
