@@ -27,6 +27,8 @@ class FlowController extends Controller
         $flows = Flow::query()
             ->when($request->has('active'), fn ($q) => $q->where('active', $request->boolean('active')))
             ->when($request->has('search'), fn ($q) => $q->where('name', 'like', '%'.$request->input('search').'%'))
+            ->when($request->has('tag'), fn ($q) => $q->withTag($request->input('tag')))
+            ->with('tags')
             ->withCount('runs')
             ->latest()
             ->paginate($request->input('per_page', 15));
@@ -52,7 +54,7 @@ class FlowController extends Controller
 
     public function show(Flow $flow): FlowResource
     {
-        $flow->loadCount('runs');
+        $flow->loadCount('runs')->load('tags');
 
         return new FlowResource($flow);
     }
