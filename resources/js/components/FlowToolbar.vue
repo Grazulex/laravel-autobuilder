@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue'
+import TagManager from './TagManager.vue'
 
 const props = defineProps({
     flow: { type: Object, required: true },
     indexUrl: { type: String, default: '../' },
+    apiBase: { type: String, default: '/autobuilder/api' },
     isSaving: { type: Boolean, default: false },
     isTesting: { type: Boolean, default: false },
     isToggling: { type: Boolean, default: false },
@@ -160,6 +162,15 @@ const statusColor = computed(() => {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                     </button>
+                </div>
+
+                <!-- Tags -->
+                <div class="mt-1">
+                    <TagManager
+                        :flow-id="flow.id"
+                        :initial-tags="flow.tags || []"
+                        :api-base="apiBase"
+                    />
                 </div>
 
                 <!-- Description -->

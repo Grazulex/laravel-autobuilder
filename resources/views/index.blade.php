@@ -29,6 +29,20 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
+
+                <!-- Tag Filter -->
+                <div class="relative">
+                    <select
+                        id="tag-filter"
+                        class="pl-3 pr-8 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
+                        onchange="handleTagFilter(this.value)"
+                    >
+                        <option value="">All tags</option>
+                    </select>
+                    <svg class="absolute right-2 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7l5 5 5-5" />
+                    </svg>
+                </div>
                 <button
                     onclick="openImportModal()"
                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2"
@@ -223,7 +237,13 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 flex items-center gap-4 text-sm text-gray-500">
+                        <!-- Tags -->
+                        ${flow.tags && flow.tags.length > 0 ? `
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            ${flow.tags.map(tag => `<span class="px-1.5 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">${escapeHtml(tag.name)}</span>`).join('')}
+                        </div>` : ''}
+
+                        <div class="mt-3 flex items-center gap-4 text-sm text-gray-500">
                             <span>${flow.nodes_count || 0} nodes</span>
                             <span>${flow.runs_count || 0} runs</span>
                         </div>
@@ -478,24 +498,55 @@
             }
         }
 
-        // Search flows
+        // Search & filter
         let allFlows = [];
         let searchTimeout = null;
+        let activeTagFilter = '';
+
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            let filtered = allFlows;
+
+            if (query) {
+                filtered = filtered.filter(flow =>
+                    flow.name.toLowerCase().includes(query) ||
+                    (flow.description || '').toLowerCase().includes(query)
+                );
+            }
+
+            if (activeTagFilter) {
+                filtered = filtered.filter(flow =>
+                    flow.tags && flow.tags.some(t => t.slug === activeTagFilter || t.name === activeTagFilter)
+                );
+            }
+
+            renderFlows(filtered);
+        }
 
         function handleSearch(query) {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                if (!query.trim()) {
-                    renderFlows(allFlows);
-                    return;
-                }
-                const q = query.toLowerCase();
-                const filtered = allFlows.filter(flow =>
-                    flow.name.toLowerCase().includes(q) ||
-                    (flow.description || '').toLowerCase().includes(q)
-                );
-                renderFlows(filtered);
-            }, 200);
+            searchTimeout = setTimeout(() => applyFilters(), 200);
+        }
+
+        function handleTagFilter(value) {
+            activeTagFilter = value;
+            applyFilters();
+        }
+
+        async function loadTagFilterOptions() {
+            try {
+                const res = await fetch(`${apiBase}/tags`);
+                const data = await res.json();
+                const select = document.getElementById('tag-filter');
+                (data.data || []).forEach(tag => {
+                    const option = document.createElement('option');
+                    option.value = tag.slug;
+                    option.textContent = tag.name;
+                    select.appendChild(option);
+                });
+            } catch (e) {
+                console.error('Failed to load tags for filter:', e);
+            }
         }
 
         // Close modals on escape
@@ -514,8 +565,9 @@
             if (e.target === e.currentTarget) closeImportModal();
         });
 
-        // Load flows on page load
+        // Load flows and tag filter options on page load
         loadFlows();
+        loadTagFilterOptions();
     </script>
 </body>
 </html>
