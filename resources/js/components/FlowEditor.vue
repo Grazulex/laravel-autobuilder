@@ -517,8 +517,21 @@ function handleKeydown(event) {
     }
 }
 
+async function loadFlowTags() {
+    try {
+        const response = await fetch(`${props.apiBase}/flows/${props.flow.id}`, {
+            headers: { 'Accept': 'application/json' },
+        })
+        const result = await response.json()
+        flowData.value.tags = result.data?.tags || []
+    } catch (e) {
+        console.error('Failed to load flow tags:', e)
+    }
+}
+
 onMounted(() => {
     loadBricks()
+    loadFlowTags()
     document.addEventListener('keydown', handleKeydown)
 
     // Fit view after a short delay
@@ -532,6 +545,7 @@ onMounted(() => {
         <FlowToolbar
             :flow="flowData"
             :index-url="indexUrl"
+            :api-base="apiBase"
             :is-saving="isSaving"
             :is-testing="isTesting"
             :is-toggling="isToggling"
