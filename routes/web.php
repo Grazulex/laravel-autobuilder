@@ -4,6 +4,7 @@ use Grazulex\AutoBuilder\Http\Controllers\BrickController;
 use Grazulex\AutoBuilder\Http\Controllers\ExecutionController;
 use Grazulex\AutoBuilder\Http\Controllers\FlowController;
 use Grazulex\AutoBuilder\Http\Controllers\HealthController;
+use Grazulex\AutoBuilder\Http\Controllers\TagController;
 use Grazulex\AutoBuilder\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,12 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
             Route::get('flows/{flow}/runs', [ExecutionController::class, 'runs'])->name('autobuilder.flows.runs');
             Route::get('runs/{run}', [ExecutionController::class, 'show'])->name('autobuilder.runs.show');
             Route::get('runs/{run}/logs', [ExecutionController::class, 'logs'])->name('autobuilder.runs.logs');
+
+            // Tags
+            Route::get('tags', [TagController::class, 'index'])->name('autobuilder.tags.index');
+            Route::post('tags', [TagController::class, 'store'])->name('autobuilder.tags.store');
+            Route::post('flows/{flow}/tags/{tag}', [TagController::class, 'attach'])->name('autobuilder.flows.tags.attach');
+            Route::delete('flows/{flow}/tags/{tag}', [TagController::class, 'detach'])->name('autobuilder.flows.tags.detach');
 
             // Bricks
             Route::get('bricks', [BrickController::class, 'index'])->name('autobuilder.bricks.index');

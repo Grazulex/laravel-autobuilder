@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -54,6 +55,11 @@ class Flow extends Model
     public function runs(): HasMany
     {
         return $this->hasMany(FlowRun::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'autobuilder_flow_tag');
     }
 
     public function createdBy(): BelongsTo
@@ -113,5 +119,10 @@ class Flow extends Model
     public function scopeActive($query)
     {
         return $query->where('active', true);
+    }
+
+    public function scopeWithTag($query, string $tag)
+    {
+        return $query->whereHas('tags', fn ($q) => $q->where('slug', $tag)->orWhere('name', $tag));
     }
 }
