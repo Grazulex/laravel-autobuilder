@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import * as icons from 'lucide-vue-next'
 
 const props = defineProps({
-    name: { type: String, required: true },
+    name: { type: String, default: '' },
     size: { type: [Number, String], default: 20 },
     strokeWidth: { type: [Number, String], default: 2 },
     class: { type: String, default: '' },
@@ -18,6 +18,7 @@ function toPascalCase(str) {
 }
 
 const iconComponent = computed(() => {
+    if (!props.name) return icons['HelpCircle']
     const pascalName = toPascalCase(props.name)
     return icons[pascalName] || icons['HelpCircle']
 })
