@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Models\Tag;
+use Illuminate\Database\QueryException;
 
 it('can create a tag with auto slug', function () {
     $tag = Tag::create(['name' => 'My Tag']);
@@ -79,5 +80,5 @@ it('deleting a tag removes pivot entries', function () {
 it('tag slugs are unique', function () {
     Tag::create(['name' => 'Notifications']);
 
-    expect(fn () => Tag::create(['name' => 'Notifications']))->toThrow(\Illuminate\Database\QueryException::class);
+    expect(fn () => Tag::create(['name' => 'Notifications']))->toThrow(QueryException::class);
 });

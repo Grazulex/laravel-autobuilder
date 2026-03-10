@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Facades;
 
+use Grazulex\AutoBuilder\Registry\BrickRegistry;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getActions()
  * @method static array all()
  *
- * @see \Grazulex\AutoBuilder\Registry\BrickRegistry
+ * @see BrickRegistry
  */
 class AutoBuilder extends Facade
 {

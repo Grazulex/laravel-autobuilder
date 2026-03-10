@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\BuiltIn\Actions;
 
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Grazulex\AutoBuilder\Bricks\Action;
 use Grazulex\AutoBuilder\Fields\Number;
 use Grazulex\AutoBuilder\Fields\Select;
@@ -131,7 +133,7 @@ class Wait extends Action
         return $context;
     }
 
-    private function calculateDurationResume(): \Carbon\CarbonInterface
+    private function calculateDurationResume(): CarbonInterface
     {
         $duration = (int) $this->config('duration', 5);
         $unit = $this->config('duration_unit', 'seconds');
@@ -144,11 +146,11 @@ class Wait extends Action
         };
     }
 
-    private function calculateUntilTimeResume(FlowContext $context): \Carbon\CarbonInterface
+    private function calculateUntilTimeResume(FlowContext $context): CarbonInterface
     {
         $timeString = $this->resolveValue($this->config('until_time'), $context);
         $timezone = $this->config('timezone', 'UTC');
 
-        return \Carbon\Carbon::parse($timeString, $timezone);
+        return Carbon::parse($timeString, $timezone);
     }
 }

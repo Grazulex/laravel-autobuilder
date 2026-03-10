@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Support;
 
+use Illuminate\Log\LogManager;
 use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 class AutoBuilderLogger
 {
@@ -13,7 +15,7 @@ class AutoBuilderLogger
         return (bool) config('autobuilder.logging.activated', true);
     }
 
-    protected static function logger(): \Illuminate\Log\LogManager|\Psr\Log\LoggerInterface
+    protected static function logger(): LogManager|LoggerInterface
     {
         $channel = config('autobuilder.logging.channel', 'stack');
 

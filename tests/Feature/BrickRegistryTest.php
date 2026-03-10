@@ -7,6 +7,7 @@ use Grazulex\AutoBuilder\BuiltIn\Actions\LogMessage;
 use Grazulex\AutoBuilder\BuiltIn\Actions\SetVariable;
 use Grazulex\AutoBuilder\BuiltIn\Conditions\FieldEquals;
 use Grazulex\AutoBuilder\BuiltIn\Triggers\OnManualTrigger;
+use Grazulex\AutoBuilder\Exceptions\BrickException;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
 
 beforeEach(function () {
@@ -58,7 +59,7 @@ it('can resolve a brick with configuration', function () {
 
 it('throws exception for unknown brick class', function () {
     $this->registry->resolve('NonExistent\\Brick');
-})->throws(\Grazulex\AutoBuilder\Exceptions\BrickException::class);
+})->throws(BrickException::class);
 
 it('returns correct brick types', function () {
     $this->registry->discover();

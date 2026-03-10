@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Bricks;
 
+use Grazulex\AutoBuilder\Events\TriggerDispatched;
+
 abstract class Trigger extends Brick
 {
     protected ?string $flowId = null;
@@ -35,7 +37,7 @@ abstract class Trigger extends Brick
             return;
         }
 
-        event(new \Grazulex\AutoBuilder\Events\TriggerDispatched(
+        event(new TriggerDispatched(
             flowId: $this->flowId,
             trigger: static::class,
             payload: $payload
