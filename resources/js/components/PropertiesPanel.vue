@@ -12,6 +12,8 @@ const localConfig = ref({})
 const isEditingLabel = ref(false)
 const editLabel = ref('')
 const copiedField = ref(null)
+// Separate UI state for key-value pairs to preserve empty rows while editing
+const keyValuePairsState = ref({})
 
 function startEditLabel() {
     editLabel.value = props.node.data.label
@@ -28,9 +30,13 @@ function saveLabel() {
 
 // Initialize key-value pairs as reactive arrays for the UI
 function getKeyValuePairs(fieldName) {
+    if (fieldName in keyValuePairsState.value) {
+        return keyValuePairsState.value[fieldName]
+    }
     const val = localConfig.value[fieldName]
     if (val && typeof val === 'object' && !Array.isArray(val)) {
-        return Object.entries(val).map(([key, value]) => ({ key, value }))
+        const entries = Object.entries(val).map(([key, value]) => ({ key, value }))
+        return entries.length > 0 ? entries : [{ key: '', value: '' }]
     }
     return [{ key: '', value: '' }]
 }
@@ -47,9 +53,8 @@ function updateKeyValueField(fieldName, pairs) {
 }
 
 function addKeyValuePair(fieldName) {
-    const pairs = getKeyValuePairs(fieldName)
-    pairs.push({ key: '', value: '' })
-    updateKeyValueField(fieldName, pairs)
+    const pairs = [...getKeyValuePairs(fieldName), { key: '', value: '' }]
+    keyValuePairsState.value[fieldName] = pairs
 }
 
 function removeKeyValuePair(fieldName, index) {
@@ -58,26 +63,29 @@ function removeKeyValuePair(fieldName, index) {
     if (pairs.length === 0) {
         pairs.push({ key: '', value: '' })
     }
+    keyValuePairsState.value[fieldName] = pairs
     updateKeyValueField(fieldName, pairs)
 }
 
 function onKeyValueChange(fieldName, index, prop, value) {
     const pairs = getKeyValuePairs(fieldName)
     pairs[index][prop] = value
+    keyValuePairsState.value[fieldName] = pairs
     updateKeyValueField(fieldName, pairs)
 }
 
 // Sync local config with node
 watch(
-    () => props.node,
-    (node) => {
-        if (node) {
-            localConfig.value = { ...node.data.config }
+    () => props.node?.id,
+    (nodeId) => {
+        keyValuePairsState.value = {}
+        if (nodeId) {
+            localConfig.value = { ...props.node.data.config }
         } else {
             localConfig.value = {}
         }
     },
-    { immediate: true, deep: true }
+    { immediate: true }
 )
 
 // Emit updates on change
