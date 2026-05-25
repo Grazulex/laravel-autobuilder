@@ -46,7 +46,7 @@ jobs:
             php${{ matrix.php }}-sqlite3 php${{ matrix.php }}-xml \
             php${{ matrix.php }}-bcmath php${{ matrix.php }}-intl \
             php${{ matrix.php }}-soap php${{ matrix.php }}-gd \
-            php${{ matrix.php }}-exif php${{ matrix.php }}-pcntl
+            php${{ matrix.php }}-exif
           sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
 
       - name: Install Composer
