@@ -16,6 +16,8 @@ permissions:
 jobs:
   tests:
     runs-on: codeberg-small
+    container:
+      image: php:${{ matrix.php }}-cli
     strategy:
       fail-fast: false
       matrix:
@@ -33,17 +35,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: https://github.com/shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
-          coverage: none
-
-      - name: Setup problem matchers
+      - name: Install system dependencies
         run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+          apt-get update -qq
+          apt-get install -y -qq unzip git libzip-dev libsqlite3-dev libcurl4-openssl-dev \
+            libicu-dev libxml2-dev libonig-dev libgd-dev libjpeg62-turbo-dev libpng-dev
+          docker-php-ext-install zip pdo pdo_sqlite bcmath pcntl intl soap exif curl mbstring
+
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
       - name: Install dependencies
         run: |

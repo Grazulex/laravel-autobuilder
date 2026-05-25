@@ -16,18 +16,22 @@ permissions:
 jobs:
   pint:
     runs-on: codeberg-small
+    container:
+      image: php:8.4-cli
     name: Laravel Pint
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: https://github.com/shivammathur/setup-php@v2
-        with:
-          php-version: 8.4
-          extensions: dom, curl, libxml, mbstring, zip
-          coverage: none
+      - name: Install system dependencies
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq unzip git libzip-dev
+          docker-php-ext-install zip
+
+      - name: Install Composer
+        run: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
