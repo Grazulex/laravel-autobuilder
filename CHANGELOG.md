@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.3.1] - 2026-09-17
+
+### Fixed
+
+- Restore the correct `composer.json` manifest. The `v1.3.0` tag was created with a manifest belonging to another package (wrong package name, autoload and dependencies) and must not be used; `v1.3.1` is the first usable release with Laravel 13 support.
+
+## [v1.3.0] - 2026-09-17
+
+### Added
+
+- Laravel 13 support (`illuminate/contracts` and `illuminate/support` now accept `^12.0|^13.0`).
+- Forgejo Actions workflows (`.forgejo/workflows/`) for Codeberg mirroring (tests, code style, static analysis).
+
+### Changed
+
+- Minimum PHP version raised to 8.3.
+- Development dependencies updated: Orchestra Testbench `^10.0|^11.0`, Pest `^3.8|^4.0`, Pest Laravel plugin `^3.2|^4.0`, PHPStan `^2.0`.
+- CI test matrix now covers PHP 8.3 / 8.4 and Laravel 12 / 13 with both `prefer-lowest` and `prefer-stable` dependency resolution.
+- PHPStan configuration: the optional stubs exclusion is now marked with `(?)` as required by PHPStan 2.
+
+### Removed
+
+- Laravel 11 support (end of life).
+- PHP 8.2 support.
+
 ## [1.0.7](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.7) (2026-01-08)
 
 ### Bug Fixes
