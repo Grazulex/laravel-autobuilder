@@ -16,4 +16,4 @@ parameters:
         - '#Match expression does not handle remaining value#'
 
     excludePaths:
-        - src/Console/Commands/stubs
+        - src/Console/Commands/stubs (?)
