@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v1.3.1] - 2026-09-17
+
+### Fixed
+
+- Restore the correct `composer.json` manifest. The `v1.3.0` tag was created with a manifest belonging to another package (wrong package name, autoload and dependencies) and must not be used; `v1.3.1` is the first usable release with Laravel 13 support.
+
 ## [v1.3.0] - 2026-09-17
 
 ### Added

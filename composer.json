@@ -1,96 +1,71 @@
 {
-    "name": "grazulex/laravel-modelschema",
-    "description": "Generate and manage Laravel model schemas with automatic validation, documentation, and migration helpers for better data structure management.",
+    "name": "grazulex/laravel-autobuilder",
+    "description": "A visual automation builder for Laravel applications - Build workflows like Node-RED, directly in your Laravel app",
     "keywords": [
         "laravel",
-        "model",
-        "schema",
-        "migration",
-        "validation",
-        "documentation",
-        "database",
-        "eloquent",
-        "php8.3",
-        "laravel12",
-        "laravel13",
-        "cli",
-        "clean-code"
+        "automation",
+        "workflow",
+        "visual-builder",
+        "node-red",
+        "n8n",
+        "zapier"
     ],
-    "type": "library",
-    "homepage": "https://github.com/grazulex/laravel-modelschema",
+    "homepage": "https://github.com/grazulex/laravel-autobuilder",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jean-Marc Strauven",
+            "email": "jm@grazulex.com",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": "^8.3",
-        "illuminate/support": "^12.0|^13.0",
+        "dragonmantank/cron-expression": "^3.3",
         "illuminate/contracts": "^12.0|^13.0",
-        "nesbot/carbon": "^3.10",
-        "symfony/yaml": "^7.3"
+        "illuminate/support": "^12.0|^13.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.22",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^3.8|^4.0",
         "pestphp/pest-plugin-laravel": "^3.2|^4.0",
-        "larastan/larastan": "^3.4",
-        "rector/rector": "^2.0",
-        "doctrine/dbal": "^4.2",
-        "orchestra/testbench": "^10.0|^11.0"
+        "phpstan/phpstan": "^2.0"
     },
-    "minimum-stability": "stable",
-    "prefer-stable": true,
-    "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Grazulex\\LaravelModelschema\\": "src/"
+            "Grazulex\\AutoBuilder\\": "src/",
+            "Grazulex\\AutoBuilder\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Grazulex\\AutoBuilder\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage",
+        "format": "vendor/bin/pint",
+        "analyse": "vendor/bin/phpstan analyse"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Grazulex\\LaravelModelschema\\LaravelModelschemaServiceProvider"
-            ]
+                "Grazulex\\AutoBuilder\\AutoBuilderServiceProvider"
+            ],
+            "aliases": {
+                "AutoBuilder": "Grazulex\\AutoBuilder\\Facades\\AutoBuilder"
+            }
         }
     },
-    "authors": [
-        {
-            "name": "Jean-Marc Strauven",
-            "email": "jms@grazulex.be",
-            "role": "Developer"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/Grazulex/laravel-modelschema/issues",
-        "source": "https://github.com/Grazulex/laravel-modelschema",
-        "forum": "https://github.com/Grazulex/laravel-modelschema/discussions",
-        "docs": "https://github.com/Grazulex/laravel-modelschema/wiki",
-        "wiki": "https://github.com/Grazulex/laravel-modelschema/wiki"
-    },
-    "scripts": {
-        "test": [
-            "./vendor/bin/pest --colors=always --coverage"
-        ],
-        "pint": [
-            "./vendor/bin/pint"
-        ],
-        "phpstan": [
-            "./vendor/bin/phpstan analyse --memory-limit=2G --configuration=phpstan.neon"
-        ],
-        "rector": [
-            "./vendor/bin/rector"
-        ],
-        "full": [
-            "composer run-script pint",
-            "composer run-script phpstan",
-            "composer run-script rector",
-            "composer run-script test"
-        ]
-    },
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
-    }
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
