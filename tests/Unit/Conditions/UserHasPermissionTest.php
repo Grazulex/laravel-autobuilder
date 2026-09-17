@@ -178,7 +178,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(UserHasPermission::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'user_field');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'user_field');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('user');
@@ -194,7 +194,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(UserHasPermission::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'permission');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'permission');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -204,7 +204,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(UserHasPermission::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'permission');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'permission');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();

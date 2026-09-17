@@ -19,7 +19,7 @@ class FlowPolicy
     public function before(?Authenticatable $user, string $ability): ?bool
     {
         // Super admins bypass all checks
-        if ($user && $this->isSuperAdmin($user)) {
+        if ($user instanceof Authenticatable && $this->isSuperAdmin($user)) {
             return true;
         }
 
@@ -123,11 +123,11 @@ class FlowPolicy
 
         // If no gate configured, allow all authenticated users
         if (! $gate) {
-            return $user !== null;
+            return $user instanceof Authenticatable;
         }
 
         // Check the gate if user is authenticated
-        if ($user) {
+        if ($user instanceof Authenticatable) {
             return Gate::forUser($user)->allows($gate);
         }
 

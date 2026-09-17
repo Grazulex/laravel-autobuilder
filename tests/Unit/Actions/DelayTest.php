@@ -88,7 +88,7 @@ describe('sync mode', function () {
         expect($result->get('delay_actual'))->toBe(1);
 
         // Verify warning logged
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
         expect(array_values($warningLogs)[0]['message'])->toContain('capped');
     });
@@ -104,7 +104,7 @@ describe('sync mode', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -180,7 +180,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstLog = array_values($infoLogs)[0]['message'];
@@ -201,7 +201,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $firstLog = array_values($infoLogs)[0]['message'];
         expect($firstLog)->toContain('sync');
     });
@@ -216,7 +216,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $durationField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'duration');
+        $durationField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'duration');
         $defaultValue = array_values($durationField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(5);
@@ -226,7 +226,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $unitField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'unit');
+        $unitField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'unit');
         $defaultValue = array_values($unitField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('seconds');
@@ -236,7 +236,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $modeField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'mode');
+        $modeField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'mode');
         $defaultValue = array_values($modeField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('sync');
@@ -246,7 +246,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $maxSyncField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'max_sync_seconds');
+        $maxSyncField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'max_sync_seconds');
         $defaultValue = array_values($maxSyncField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(30);
@@ -262,7 +262,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $unitField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'unit');
+        $unitField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'unit');
         $options = array_values($unitField)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('seconds');
@@ -274,7 +274,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Delay::class);
         $fields = $brick->fields();
 
-        $modeField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'mode');
+        $modeField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'mode');
         $options = array_values($modeField)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('sync');

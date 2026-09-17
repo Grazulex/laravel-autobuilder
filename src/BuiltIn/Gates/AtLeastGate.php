@@ -69,14 +69,14 @@ class AtLeastGate extends Gate
 
     public function evaluate(array $inputs, FlowContext $context): bool
     {
-        if (empty($inputs)) {
+        if ($inputs === []) {
             $context->log('warning', 'AtLeastGate: No inputs received');
 
             return false;
         }
 
         $total = count($inputs);
-        $trueCount = count(array_filter($inputs, fn ($v) => $v === true));
+        $trueCount = count(array_filter($inputs, fn ($v): bool => $v === true));
         $mode = $this->config('mode', 'count');
 
         $required = match ($mode) {

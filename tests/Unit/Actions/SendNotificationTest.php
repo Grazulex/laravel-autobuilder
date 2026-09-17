@@ -64,7 +64,7 @@ describe('error handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
 
         $firstWarning = array_values($warningLogs)[0]['message'];
@@ -82,7 +82,7 @@ describe('error handling', function () {
 
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $firstError = array_values($errorLogs)[0]['message'];
@@ -112,7 +112,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SendNotification::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'notifiable_field');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'notifiable_field');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('user');
@@ -122,7 +122,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SendNotification::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'channels');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'channels');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(['mail']);
@@ -138,7 +138,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SendNotification::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'channels');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'channels');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('mail');
@@ -151,7 +151,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SendNotification::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'notification_class');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'notification_class');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();

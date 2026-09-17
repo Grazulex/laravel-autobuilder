@@ -11,18 +11,20 @@ use Grazulex\AutoBuilder\Http\Requests\UpdateFlowRequest;
 use Grazulex\AutoBuilder\Http\Resources\FlowCollection;
 use Grazulex\AutoBuilder\Http\Resources\FlowResource;
 use Grazulex\AutoBuilder\Models\Flow;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
 class FlowController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): Factory|View
     {
         return view('autobuilder::index');
     }
 
-    public function index(Request $request)
+    public function index(Request $request): FlowCollection
     {
         $flows = Flow::query()
             ->when($request->has('active'), fn ($q) => $q->where('active', $request->boolean('active')))
@@ -59,9 +61,9 @@ class FlowController extends Controller
         return new FlowResource($flow);
     }
 
-    public function edit(Flow $flow)
+    public function edit(Flow $flow): Factory|View
     {
-        return view('autobuilder::editor', compact('flow'));
+        return view('autobuilder::editor', ['flow' => $flow]);
     }
 
     public function update(UpdateFlowRequest $request, Flow $flow): FlowResource

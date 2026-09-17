@@ -283,7 +283,7 @@ class FlowRunner
     {
         return count(array_filter(
             $this->flow->edges ?? [],
-            fn ($edge) => $edge['target'] === $nodeId
+            fn ($edge): bool => $edge['target'] === $nodeId
         ));
     }
 
@@ -307,7 +307,7 @@ class FlowRunner
     {
         return array_filter(
             $this->flow->edges ?? [],
-            fn ($edge) => $edge['source'] === $nodeId
+            fn ($edge): bool => $edge['source'] === $nodeId
         );
     }
 
@@ -332,7 +332,7 @@ class FlowRunner
     {
         return array_filter(
             $this->flow->nodes ?? [],
-            fn ($node) => ($node['type'] ?? '') === 'trigger'
+            fn ($node): bool => ($node['type'] ?? '') === 'trigger'
         );
     }
 

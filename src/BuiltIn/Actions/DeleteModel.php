@@ -81,16 +81,16 @@ class DeleteModel extends Action
 
         // Store for potential rollback
         $context->set('_deleted_model_data', [
-            'class' => get_class($model),
+            'class' => $model::class,
             'attributes' => $model->getAttributes(),
         ]);
 
         if ($forceDelete && method_exists($model, 'forceDelete')) {
             $model->forceDelete();
-            $context->log('info', 'Force deleted model: '.get_class($model));
+            $context->log('info', 'Force deleted model: '.$model::class);
         } else {
             $model->delete();
-            $context->log('info', 'Deleted model: '.get_class($model));
+            $context->log('info', 'Deleted model: '.$model::class);
         }
 
         return $context;

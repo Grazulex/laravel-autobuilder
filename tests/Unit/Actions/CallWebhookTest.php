@@ -74,7 +74,7 @@ describe('http methods', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => $request->method() === 'GET');
+        Http::assertSent(fn ($request): bool => $request->method() === 'GET');
 
         $response = $result->get('response');
         expect($response['status'])->toBe(200);
@@ -96,7 +96,7 @@ describe('http methods', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => $request->method() === 'POST');
+        Http::assertSent(fn ($request): bool => $request->method() === 'POST');
 
         $response = $result->get('response');
         expect($response['status'])->toBe(201);
@@ -118,7 +118,7 @@ describe('http methods', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => $request->method() === 'PUT');
+        Http::assertSent(fn ($request): bool => $request->method() === 'PUT');
     });
 
     it('makes PATCH request', function () {
@@ -136,7 +136,7 @@ describe('http methods', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => $request->method() === 'PATCH');
+        Http::assertSent(fn ($request): bool => $request->method() === 'PATCH');
     });
 
     it('makes DELETE request', function () {
@@ -153,7 +153,7 @@ describe('http methods', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => $request->method() === 'DELETE');
+        Http::assertSent(fn ($request): bool => $request->method() === 'DELETE');
 
         $response = $result->get('response');
         expect($response['status'])->toBe(204);
@@ -181,7 +181,7 @@ describe('variable resolution', function () {
 
         $result = $brick->handle($context);
 
-        Http::assertSent(fn ($request) => str_contains($request->url(), '/users/42'));
+        Http::assertSent(fn ($request): bool => str_contains($request->url(), '/users/42'));
     });
 
     it('resolves variables in body', function () {
@@ -202,7 +202,7 @@ describe('variable resolution', function () {
 
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
+        Http::assertSent(function ($request): bool {
             $body = $request->body();
 
             return str_contains($body, 'John Doe') && str_contains($body, 'john@example.com');
@@ -230,10 +230,8 @@ describe('variable resolution', function () {
 
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
-            return $request->hasHeader('Authorization', 'Bearer secret-token-123')
-                && $request->hasHeader('X-Custom-Header', 'custom-value');
-        });
+        Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'Bearer secret-token-123')
+            && $request->hasHeader('X-Custom-Header', 'custom-value'));
     });
 });
 
@@ -261,9 +259,7 @@ describe('headers', function () {
         $context = new FlowContext('flow-1');
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
-            return $request->hasHeader('X-API-Key', 'my-api-key');
-        });
+        Http::assertSent(fn ($request) => $request->hasHeader('X-API-Key', 'my-api-key'));
     });
 
     it('parses JSON string headers', function () {
@@ -283,9 +279,7 @@ describe('headers', function () {
         $context = new FlowContext('flow-1');
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
-            return $request->hasHeader('X-Custom', 'from-json');
-        });
+        Http::assertSent(fn ($request) => $request->hasHeader('X-Custom', 'from-json'));
     });
 });
 
@@ -310,9 +304,7 @@ describe('body format', function () {
         $context = new FlowContext('flow-1');
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
-            return $request->hasHeader('Content-Type', 'application/json');
-        });
+        Http::assertSent(fn ($request) => $request->hasHeader('Content-Type', 'application/json'));
     });
 
     it('sends form body format', function () {
@@ -331,7 +323,7 @@ describe('body format', function () {
         $context = new FlowContext('flow-1');
         $brick->handle($context);
 
-        Http::assertSent(function ($request) {
+        Http::assertSent(function ($request): bool {
             $contentType = $request->header('Content-Type')[0] ?? '';
 
             return str_contains($contentType, 'application/x-www-form-urlencoded');
@@ -451,7 +443,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstLog = array_values($infoLogs)[0]['message'];
@@ -474,7 +466,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
 
         $firstWarning = array_values($warningLogs)[0]['message'];
@@ -492,7 +484,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $methodField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
+        $methodField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'method');
         $defaultValue = array_values($methodField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('POST');
@@ -502,7 +494,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $bodyFormatField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'body_format');
+        $bodyFormatField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'body_format');
         $defaultValue = array_values($bodyFormatField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('json');
@@ -512,7 +504,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $timeoutField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'timeout');
+        $timeoutField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'timeout');
         $defaultValue = array_values($timeoutField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(30);
@@ -522,7 +514,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $storeResponseField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'store_response');
+        $storeResponseField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'store_response');
         $defaultValue = array_values($storeResponseField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('webhook_response');
@@ -532,7 +524,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $retryField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'retry_times');
+        $retryField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'retry_times');
         $defaultValue = array_values($retryField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('0');
@@ -548,7 +540,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $methodField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
+        $methodField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'method');
         $options = array_values($methodField)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('GET');
@@ -562,7 +554,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $bodyFormatField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'body_format');
+        $bodyFormatField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'body_format');
         $options = array_values($bodyFormatField)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('json');
@@ -574,7 +566,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(CallWebhook::class);
         $fields = $brick->fields();
 
-        $retryField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'retry_times');
+        $retryField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'retry_times');
         $options = array_values($retryField)[0]->toArray()['options'] ?? [];
 
         // Options are now in {value, label} format

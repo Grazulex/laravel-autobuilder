@@ -82,7 +82,7 @@ describe('trigger validation', function () {
         expect($result->isValid())->toBeFalse();
         expect($result->hasErrors())->toBeTrue();
 
-        $triggerErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'no_trigger');
+        $triggerErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'no_trigger');
         expect($triggerErrors)->not->toBeEmpty();
     });
 
@@ -118,7 +118,7 @@ describe('trigger validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $triggerErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'no_trigger');
+        $triggerErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'no_trigger');
         expect($triggerErrors)->toBeEmpty();
     });
 });
@@ -159,7 +159,7 @@ describe('required fields validation', function () {
 
         expect($result->isValid())->toBeFalse();
 
-        $brickErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'missing_brick');
+        $brickErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'missing_brick');
         expect($brickErrors)->not->toBeEmpty();
         expect(array_values($brickErrors)[0]['node_id'])->toBe('action-1');
     });
@@ -206,7 +206,7 @@ describe('required fields validation', function () {
 
         expect($result->isValid())->toBeFalse();
 
-        $fieldErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'required_field');
+        $fieldErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'required_field');
         expect($fieldErrors)->not->toBeEmpty();
     });
 
@@ -249,7 +249,7 @@ describe('required fields validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $fieldErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'required_field');
+        $fieldErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'required_field');
         expect($fieldErrors)->toBeEmpty();
     });
 
@@ -292,7 +292,7 @@ describe('required fields validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $fieldErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'required_field');
+        $fieldErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'required_field');
         expect($fieldErrors)->toBeEmpty();
     });
 
@@ -332,7 +332,7 @@ describe('required fields validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $fieldErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'required_field' && $e['field'] === 'secret_field');
+        $fieldErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'required_field' && $e['field'] === 'secret_field');
         expect($fieldErrors)->toBeEmpty();
     });
 });
@@ -363,7 +363,7 @@ describe('orphan node validation', function () {
 
         expect($result->hasWarnings())->toBeTrue();
 
-        $orphanWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'orphan_trigger');
+        $orphanWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'orphan_trigger');
         expect($orphanWarnings)->not->toBeEmpty();
     });
 
@@ -394,7 +394,7 @@ describe('orphan node validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $orphanWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'orphan_action');
+        $orphanWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'orphan_action');
         expect($orphanWarnings)->not->toBeEmpty();
     });
 
@@ -425,7 +425,7 @@ describe('orphan node validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $conditionWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'orphan_condition');
+        $conditionWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'orphan_condition');
         expect($conditionWarnings)->not->toBeEmpty();
     });
 
@@ -460,7 +460,7 @@ describe('orphan node validation', function () {
 
         $conditionWarnings = array_filter(
             $result->warnings,
-            fn ($w) => $w['type'] === 'orphan_condition' && str_contains($w['message'], 'no outgoing')
+            fn ($w): bool => $w['type'] === 'orphan_condition' && str_contains($w['message'], 'no outgoing')
         );
         expect($conditionWarnings)->not->toBeEmpty();
     });
@@ -494,7 +494,7 @@ describe('orphan node validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $gateWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'gate_inputs');
+        $gateWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'gate_inputs');
         expect($gateWarnings)->not->toBeEmpty();
     });
 
@@ -546,7 +546,7 @@ describe('orphan node validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $gateWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'orphan_gate');
+        $gateWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'orphan_gate');
         expect($gateWarnings)->not->toBeEmpty();
     });
 });
@@ -578,7 +578,7 @@ describe('connection validation', function () {
 
         expect($result->isValid())->toBeFalse();
 
-        $edgeErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'invalid_edge' && str_contains($e['message'], 'source'));
+        $edgeErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'invalid_edge' && str_contains($e['message'], 'source'));
         expect($edgeErrors)->not->toBeEmpty();
     });
 
@@ -604,7 +604,7 @@ describe('connection validation', function () {
 
         expect($result->isValid())->toBeFalse();
 
-        $edgeErrors = array_filter($result->errors, fn ($e) => $e['type'] === 'invalid_edge' && str_contains($e['message'], 'target'));
+        $edgeErrors = array_filter($result->errors, fn ($e): bool => $e['type'] === 'invalid_edge' && str_contains($e['message'], 'target'));
         expect($edgeErrors)->not->toBeEmpty();
     });
 
@@ -638,7 +638,7 @@ describe('connection validation', function () {
 
         $result = $this->validator->validate($flow);
 
-        $loopWarnings = array_filter($result->warnings, fn ($w) => $w['type'] === 'self_loop');
+        $loopWarnings = array_filter($result->warnings, fn ($w): bool => $w['type'] === 'self_loop');
         expect($loopWarnings)->not->toBeEmpty();
     });
 });

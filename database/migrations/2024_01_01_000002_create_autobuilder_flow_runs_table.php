@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('autobuilder_flow_runs', function (Blueprint $table) {
+        Schema::create('autobuilder_flow_runs', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->foreignUlid('flow_id')->constrained('autobuilder_flows')->cascadeOnDelete();
             $table->string('status')->default('pending'); // pending, running, completed, failed, paused

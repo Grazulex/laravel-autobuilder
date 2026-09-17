@@ -39,7 +39,7 @@ class OnQueueJobFailed extends Trigger
             Select::make('job')
                 ->label('Job Class (optional)')
                 ->description('Leave empty to catch all failed jobs')
-                ->options(fn () => $this->discoverJobs())
+                ->options(fn (): array => $this->discoverJobs())
                 ->searchable(),
 
             Text::make('queue')
@@ -54,7 +54,7 @@ class OnQueueJobFailed extends Trigger
         $jobClass = $this->config('job');
         $queueName = $this->config('queue');
 
-        Event::listen(JobFailed::class, function (JobFailed $event) use ($jobClass, $queueName) {
+        Event::listen(JobFailed::class, function (JobFailed $event) use ($jobClass, $queueName): void {
             $jobName = $event->job->resolveName();
 
             // Filter by job class

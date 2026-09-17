@@ -143,7 +143,7 @@ class BrickRegistry
      */
     public function getTriggers(): array
     {
-        return array_values(array_map(fn ($class) => $this->resolve($class)->toArray(), $this->triggers));
+        return array_values(array_map(fn ($class): array => $this->resolve($class)->toArray(), $this->triggers));
     }
 
     /**
@@ -151,7 +151,7 @@ class BrickRegistry
      */
     public function getConditions(): array
     {
-        return array_values(array_map(fn ($class) => $this->resolve($class)->toArray(), $this->conditions));
+        return array_values(array_map(fn ($class): array => $this->resolve($class)->toArray(), $this->conditions));
     }
 
     /**
@@ -159,7 +159,7 @@ class BrickRegistry
      */
     public function getActions(): array
     {
-        return array_values(array_map(fn ($class) => $this->resolve($class)->toArray(), $this->actions));
+        return array_values(array_map(fn ($class): array => $this->resolve($class)->toArray(), $this->actions));
     }
 
     /**
@@ -167,7 +167,7 @@ class BrickRegistry
      */
     public function getGates(): array
     {
-        return array_values(array_map(fn ($class) => $this->resolve($class)->toArray(), $this->gates));
+        return array_values(array_map(fn ($class): array => $this->resolve($class)->toArray(), $this->gates));
     }
 
     /**

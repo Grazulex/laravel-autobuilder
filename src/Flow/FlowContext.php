@@ -132,9 +132,7 @@ class FlowContext
      */
     public function recordGateInput(string $gateId, string $sourceNodeId, bool $result): static
     {
-        if (! isset($this->gateInputs[$gateId])) {
-            $this->gateInputs[$gateId] = [];
-        }
+        $this->gateInputs[$gateId] ??= [];
 
         $this->gateInputs[$gateId][$sourceNodeId] = $result;
 

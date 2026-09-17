@@ -58,7 +58,7 @@ describe('normalize', function () {
             'MY-WEBHOOK',
         ];
 
-        $results = array_map(fn ($p) => WebhookPathNormalizer::normalize($p), $inputs);
+        $results = array_map(WebhookPathNormalizer::normalize(...), $inputs);
 
         expect(array_unique($results))->toHaveCount(1);
         expect($results[0])->toBe('my-webhook');

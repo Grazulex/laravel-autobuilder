@@ -110,7 +110,7 @@ class Wait extends Action
             return $context;
         }
 
-        if ($async && $resumeAt) {
+        if ($async && $resumeAt instanceof CarbonInterface) {
             // Store resume time for async processing
             $context->set('_wait_resume_at', $resumeAt->toISOString());
             $context->pause("Waiting until {$resumeAt->toDateTimeString()}");
@@ -120,7 +120,7 @@ class Wait extends Action
         }
 
         // Synchronous wait (blocking - use with caution)
-        if ($resumeAt) {
+        if ($resumeAt instanceof CarbonInterface) {
             $seconds = max(0, $resumeAt->diffInSeconds(now()));
             if ($seconds > 0 && $seconds <= 60) {
                 sleep($seconds);

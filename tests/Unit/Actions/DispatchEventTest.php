@@ -63,7 +63,7 @@ describe('error handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $firstError = array_values($errorLogs)[0]['message'];
@@ -91,7 +91,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(DispatchEvent::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'event_class');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'event_class');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -101,7 +101,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(DispatchEvent::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'data');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'data');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();

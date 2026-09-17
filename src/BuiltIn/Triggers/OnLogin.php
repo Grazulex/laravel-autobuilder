@@ -57,7 +57,7 @@ class OnLogin extends Trigger
 
     public function register(): void
     {
-        Event::listen(Login::class, function (Login $event) {
+        Event::listen(Login::class, function (Login $event): void {
             $guardFilter = $this->config('guard', '');
             $userTypeFilter = $this->config('user_type', '');
 
@@ -67,14 +67,14 @@ class OnLogin extends Trigger
             }
 
             // Filter by user type if specified
-            if ($userTypeFilter && get_class($event->user) !== $userTypeFilter) {
+            if ($userTypeFilter && $userTypeFilter !== $event->user::class) {
                 return;
             }
 
             $this->dispatch([
                 'user' => $event->user->toArray(),
                 'user_id' => $event->user->getKey(),
-                'user_class' => get_class($event->user),
+                'user_class' => $event->user::class,
                 'guard' => $event->guard,
                 'remember' => $event->remember,
                 'ip_address' => request()->ip(),

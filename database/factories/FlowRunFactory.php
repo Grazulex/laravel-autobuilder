@@ -21,7 +21,7 @@ class FlowRunFactory extends Factory
     public function definition(): array
     {
         $startedAt = $this->faker->dateTimeBetween('-1 hour', 'now');
-        $completedAt = (clone $startedAt)->modify('+'.rand(1, 60).' seconds');
+        $completedAt = (clone $startedAt)->modify('+'.random_int(1, 60).' seconds');
 
         return [
             'flow_id' => Flow::factory(),
@@ -39,7 +39,7 @@ class FlowRunFactory extends Factory
      */
     public function running(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'running',
             'completed_at' => null,
         ]);
@@ -50,7 +50,7 @@ class FlowRunFactory extends Factory
      */
     public function completed(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'completed',
         ]);
     }
@@ -60,7 +60,7 @@ class FlowRunFactory extends Factory
      */
     public function failed(?string $error = null): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'failed',
             'error' => $error ?? $this->faker->sentence(),
         ]);
@@ -71,7 +71,7 @@ class FlowRunFactory extends Factory
      */
     public function paused(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'status' => 'paused',
             'completed_at' => null,
         ]);
@@ -82,7 +82,7 @@ class FlowRunFactory extends Factory
      */
     public function withPayload(array $payload): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'payload' => $payload,
         ]);
     }
@@ -92,7 +92,7 @@ class FlowRunFactory extends Factory
      */
     public function withVariables(array $variables): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'variables' => $variables,
         ]);
     }
@@ -102,7 +102,7 @@ class FlowRunFactory extends Factory
      */
     public function withLogs(array $logs = []): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'logs' => $logs ?: [
                 ['level' => 'info', 'message' => 'Flow started', 'timestamp' => now()->toIso8601String()],
                 ['level' => 'info', 'message' => 'Flow completed', 'timestamp' => now()->toIso8601String()],
@@ -115,7 +115,7 @@ class FlowRunFactory extends Factory
      */
     public function forFlow(Flow $flow): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'flow_id' => $flow->id,
         ]);
     }

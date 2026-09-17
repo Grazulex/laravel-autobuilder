@@ -27,7 +27,7 @@ class FlowResource extends JsonResource
             'nodes_count' => count($this->nodes ?? []),
             'edges_count' => count($this->edges ?? []),
             'runs_count' => $this->whenCounted('runs'),
-            'tags' => $this->whenLoaded('tags', fn () => $this->tags->map(fn ($tag) => [
+            'tags' => $this->whenLoaded('tags', fn () => $this->tags->map(fn ($tag): array => [
                 'id' => $tag->id,
                 'name' => $tag->name,
                 'slug' => $tag->slug,

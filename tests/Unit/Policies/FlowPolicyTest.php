@@ -16,6 +16,9 @@ beforeEach(function () {
 // Create a simple test user
 class TestUser extends Authenticatable
 {
+    /**
+     * @var int
+     */
     public $id;
 
     public function __construct(int $id = 1)
@@ -53,7 +56,7 @@ describe('basic access', function () {
         config(['autobuilder.authorization.gate' => 'access-autobuilder']);
 
         // Define the gate to allow access
-        Gate::define('access-autobuilder', fn ($user) => true);
+        Gate::define('access-autobuilder', fn ($user): true => true);
 
         $policy = new FlowPolicy;
         $user = new TestUser;
@@ -65,7 +68,7 @@ describe('basic access', function () {
         config(['autobuilder.authorization.gate' => 'access-autobuilder']);
 
         // Define the gate to deny access
-        Gate::define('access-autobuilder', fn ($user) => false);
+        Gate::define('access-autobuilder', fn ($user): false => false);
 
         $policy = new FlowPolicy;
         $user = new TestUser;
@@ -84,7 +87,7 @@ describe('super admin', function () {
         config(['autobuilder.authorization.super_admins' => [1]]);
 
         // Define gate to deny
-        Gate::define('access-autobuilder', fn ($user) => false);
+        Gate::define('access-autobuilder', fn ($user): false => false);
 
         $policy = new FlowPolicy;
         $user = new TestUser(1);

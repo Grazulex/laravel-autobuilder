@@ -55,7 +55,7 @@ class OnModelUpdated extends Trigger
             return;
         }
 
-        $modelClass::updated(function ($model) use ($watchFields) {
+        $modelClass::updated(function ($model) use ($watchFields): void {
             if (! empty($watchFields)) {
                 $changedFields = array_keys($model->getChanges());
                 if (empty(array_intersect($watchFields, $changedFields))) {
@@ -67,7 +67,7 @@ class OnModelUpdated extends Trigger
                 'model' => $model->toArray(),
                 'original' => $model->getOriginal(),
                 'changes' => $model->getChanges(),
-                'model_class' => get_class($model),
+                'model_class' => $model::class,
                 'model_id' => $model->getKey(),
             ]);
         });

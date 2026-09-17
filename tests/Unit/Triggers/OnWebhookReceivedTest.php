@@ -121,7 +121,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnWebhookReceived::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'path');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'path');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -131,7 +131,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnWebhookReceived::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'path');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'path');
         $prefix = array_values($field)[0]->toArray()['prefix'] ?? null;
 
         expect($prefix)->toBe('/autobuilder/webhook/');
@@ -141,7 +141,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnWebhookReceived::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'method');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('POST');
@@ -156,7 +156,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnWebhookReceived::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'method');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'method');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('POST');

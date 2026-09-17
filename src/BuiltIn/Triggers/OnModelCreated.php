@@ -47,10 +47,10 @@ class OnModelCreated extends Trigger
             return;
         }
 
-        $modelClass::created(function ($model) {
+        $modelClass::created(function ($model): void {
             $this->dispatch([
                 'model' => $model->toArray(),
-                'model_class' => get_class($model),
+                'model_class' => $model::class,
                 'model_id' => $model->getKey(),
             ]);
         });

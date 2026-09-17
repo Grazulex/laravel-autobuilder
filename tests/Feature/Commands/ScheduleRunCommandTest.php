@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\AutoBuilder\BuiltIn\Triggers\OnManualTrigger;
 use Grazulex\AutoBuilder\BuiltIn\Triggers\OnSchedule;
 use Grazulex\AutoBuilder\Models\Flow;
 
@@ -85,7 +86,7 @@ describe('scheduled flow detection', function () {
         // Create a flow with different trigger type
         Flow::create([
             'name' => 'Manual Trigger Flow',
-            'trigger_type' => 'Grazulex\\AutoBuilder\\BuiltIn\\Triggers\\OnManualTrigger',
+            'trigger_type' => OnManualTrigger::class,
             'nodes' => [],
             'edges' => [],
             'active' => true,

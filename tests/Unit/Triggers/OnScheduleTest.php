@@ -189,7 +189,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnSchedule::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'frequency');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'frequency');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -199,7 +199,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnSchedule::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'frequency');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'frequency');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('everyMinute');
@@ -214,7 +214,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnSchedule::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'time');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'time');
         $visibleWhen = array_values($field)[0]->toArray()['visibleWhen'] ?? null;
 
         expect($visibleWhen)->not->toBeNull();
@@ -224,7 +224,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnSchedule::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'cron');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'cron');
         $visibleWhen = array_values($field)[0]->toArray()['visibleWhen'] ?? null;
 
         expect($visibleWhen)->not->toBeNull();

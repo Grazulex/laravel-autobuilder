@@ -56,7 +56,7 @@ describe('null source handling', function () {
 
         expect($result->get('result'))->toBeNull();
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
     });
 
@@ -730,7 +730,7 @@ describe('logging', function () {
         ]);
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $message = array_values($infoLogs)[0]['message'];
@@ -750,7 +750,7 @@ describe('logging', function () {
         ]);
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $message = array_values($infoLogs)[0]['message'];
         expect($message)->toContain('3');
     });

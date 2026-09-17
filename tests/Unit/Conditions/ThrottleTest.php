@@ -147,7 +147,7 @@ describe('evaluation', function () {
         $context2 = new FlowContext('flow-2');
         $brick->evaluate($context2);
 
-        $warningLogs = array_filter($context2->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($context2->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
 
         $firstWarning = array_values($warningLogs)[0]['message'];
@@ -164,7 +164,7 @@ describe('evaluation', function () {
         $context = new FlowContext('flow-1');
         $brick->evaluate($context);
 
-        $infoLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstInfo = array_values($infoLogs)[0]['message'];
@@ -213,7 +213,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'max_attempts');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'max_attempts');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(5);
@@ -223,7 +223,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'decay_seconds');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'decay_seconds');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(60);
@@ -233,7 +233,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'on_throttle');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'on_throttle');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('false');
@@ -249,7 +249,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'key');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'key');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -259,7 +259,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'key');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'key');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();
@@ -269,7 +269,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'max_attempts');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'max_attempts');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -279,7 +279,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'decay_seconds');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'decay_seconds');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -289,7 +289,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Throttle::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'on_throttle');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'on_throttle');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('false');

@@ -70,7 +70,7 @@ describe('null collection handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
 
         $firstWarning = array_values($warningLogs)[0]['message'];
@@ -101,7 +101,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'item_variable');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'item_variable');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('item');
@@ -111,7 +111,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'index_variable');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'index_variable');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('index');
@@ -121,7 +121,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'pass_context');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'pass_context');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -131,7 +131,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'collect_results');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'collect_results');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -141,7 +141,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'results_variable');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'results_variable');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('foreach_results');
@@ -151,7 +151,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'stop_on_error');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'stop_on_error');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeFalse();
@@ -161,7 +161,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'max_iterations');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'max_iterations');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(100);
@@ -171,7 +171,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'delay_between');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'delay_between');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(0);
@@ -187,7 +187,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'collection');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'collection');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -197,7 +197,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'flow_id');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'flow_id');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -207,7 +207,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'item_variable');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'item_variable');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -217,7 +217,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(LoopEach::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'collection');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'collection');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();

@@ -159,7 +159,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(DayOfWeek::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'days');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'days');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -169,12 +169,12 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(DayOfWeek::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'days');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'days');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect($options)->toHaveCount(7);
         // Keys can be strings or integers depending on PHP version
-        $keys = array_map('strval', array_column($options, 'value'));
+        $keys = array_map(strval(...), array_column($options, 'value'));
         expect($keys)->toContain('0'); // Sunday
         expect($keys)->toContain('1'); // Monday
         expect($keys)->toContain('6'); // Saturday
@@ -184,7 +184,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(DayOfWeek::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'days');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'days');
         $multiple = array_values($field)[0]->toArray()['multiple'] ?? false;
 
         expect($multiple)->toBeTrue();

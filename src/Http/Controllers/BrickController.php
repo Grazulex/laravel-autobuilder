@@ -32,7 +32,7 @@ class BrickController extends Controller
         // Filter by category if specified
         if ($category = $request->input('category')) {
             foreach ($all as $type => $bricks) {
-                $all[$type] = array_filter($bricks, fn ($b) => $b['category'] === $category);
+                $all[$type] = array_filter($bricks, fn ($b): bool => $b['category'] === $category);
             }
         }
 
@@ -67,9 +67,7 @@ class BrickController extends Controller
         foreach ($all as $type => $bricks) {
             foreach ($bricks as $brick) {
                 $cat = $brick['category'];
-                if (! isset($categories[$cat])) {
-                    $categories[$cat] = ['triggers' => 0, 'conditions' => 0, 'actions' => 0];
-                }
+                $categories[$cat] ??= ['triggers' => 0, 'conditions' => 0, 'actions' => 0];
                 $categories[$cat][$type]++;
             }
         }
