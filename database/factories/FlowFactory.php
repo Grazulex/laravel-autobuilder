@@ -36,7 +36,7 @@ class FlowFactory extends Factory
      */
     public function active(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'active' => true,
         ]);
     }
@@ -46,7 +46,7 @@ class FlowFactory extends Factory
      */
     public function inactive(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'active' => false,
         ]);
     }
@@ -56,7 +56,7 @@ class FlowFactory extends Factory
      */
     public function sync(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'sync' => true,
         ]);
     }
@@ -68,7 +68,7 @@ class FlowFactory extends Factory
     {
         $webhookPath = $path ?? $this->faker->slug();
 
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'nodes' => [
                 [
                     'id' => 'trigger-1',
@@ -93,7 +93,7 @@ class FlowFactory extends Factory
     {
         $webhookPath = $path ?? $this->faker->slug();
 
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'nodes' => [
                 [
                     'id' => 'trigger-1',
@@ -117,7 +117,7 @@ class FlowFactory extends Factory
      */
     public function withNodes(array $nodes = []): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'nodes' => $nodes ?: [
                 [
                     'id' => 'trigger-1',
@@ -146,7 +146,7 @@ class FlowFactory extends Factory
      */
     public function withEdges(array $edges = []): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'edges' => $edges ?: [
                 [
                     'id' => 'edge-1',

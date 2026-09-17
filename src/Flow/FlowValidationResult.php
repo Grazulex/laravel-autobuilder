@@ -29,7 +29,7 @@ class FlowValidationResult
      */
     public function hasWarnings(): bool
     {
-        return ! empty($this->warnings);
+        return $this->warnings !== [];
     }
 
     /**
@@ -37,7 +37,7 @@ class FlowValidationResult
      */
     public function hasErrors(): bool
     {
-        return ! empty($this->errors);
+        return $this->errors !== [];
     }
 
     /**
@@ -61,7 +61,7 @@ class FlowValidationResult
      */
     public function errorsForNode(string $nodeId): array
     {
-        return array_filter($this->errors, fn ($e) => ($e['node_id'] ?? null) === $nodeId);
+        return array_filter($this->errors, fn ($e): bool => ($e['node_id'] ?? null) === $nodeId);
     }
 
     /**
@@ -69,7 +69,7 @@ class FlowValidationResult
      */
     public function warningsForNode(string $nodeId): array
     {
-        return array_filter($this->warnings, fn ($w) => ($w['node_id'] ?? null) === $nodeId);
+        return array_filter($this->warnings, fn ($w): bool => ($w['node_id'] ?? null) === $nodeId);
     }
 
     /**

@@ -28,7 +28,7 @@ describe('OnModelCreated', function () {
         $brick = $this->registry->resolve(OnModelCreated::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'model');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'model');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -98,7 +98,7 @@ describe('OnModelUpdated', function () {
         $brick = $this->registry->resolve(OnModelUpdated::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'watch_fields');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'watch_fields');
         $multiple = array_values($field)[0]->toArray()['multiple'] ?? false;
 
         expect($multiple)->toBeTrue();
@@ -158,7 +158,7 @@ describe('OnModelDeleted', function () {
         $brick = $this->registry->resolve(OnModelDeleted::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'include_soft_deletes');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'include_soft_deletes');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();

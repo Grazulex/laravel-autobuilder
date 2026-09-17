@@ -20,21 +20,21 @@ class ListBricksCommand extends Command
         $this->info('Triggers:');
         $this->table(
             ['Name', 'Class', 'Category'],
-            collect($bricks['triggers'])->map(fn ($b) => [$b['name'], $b['class'], $b['category']])->toArray()
+            collect($bricks['triggers'])->map(fn ($b): array => [$b['name'], $b['class'], $b['category']])->toArray()
         );
 
         $this->newLine();
         $this->info('Conditions:');
         $this->table(
             ['Name', 'Class', 'Category'],
-            collect($bricks['conditions'])->map(fn ($b) => [$b['name'], $b['class'], $b['category']])->toArray()
+            collect($bricks['conditions'])->map(fn ($b): array => [$b['name'], $b['class'], $b['category']])->toArray()
         );
 
         $this->newLine();
         $this->info('Actions:');
         $this->table(
             ['Name', 'Class', 'Category'],
-            collect($bricks['actions'])->map(fn ($b) => [$b['name'], $b['class'], $b['category']])->toArray()
+            collect($bricks['actions'])->map(fn ($b): array => [$b['name'], $b['class'], $b['category']])->toArray()
         );
 
         return self::SUCCESS;

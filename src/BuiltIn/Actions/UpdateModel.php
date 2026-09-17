@@ -151,11 +151,7 @@ class UpdateModel extends Action
         }
 
         // If guarded has specific fields, it's somewhat protected
-        if (! empty($guarded)) {
-            return true;
-        }
-
-        return false;
+        return $guarded !== [];
     }
 
     /**
@@ -178,7 +174,7 @@ class UpdateModel extends Action
         }
 
         // If guarded has specific fields, filter those out
-        if (! empty($guarded)) {
+        if ($guarded !== []) {
             return array_diff_key($attributes, array_flip($guarded));
         }
 

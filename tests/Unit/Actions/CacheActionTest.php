@@ -464,7 +464,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $message = array_values($infoLogs)[0]['message'];
@@ -483,7 +483,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $message = array_values($infoLogs)[0]['message'];
         expect($message)->toContain('get');
     });

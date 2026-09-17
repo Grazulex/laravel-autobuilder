@@ -32,13 +32,9 @@ class AutoBuilderServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/autobuilder.php', 'autobuilder');
 
-        $this->app->singleton(BrickRegistry::class, function ($app) {
-            return new BrickRegistry($app);
-        });
+        $this->app->singleton(BrickRegistry::class, fn ($app) => new BrickRegistry($app));
 
-        $this->app->singleton(TriggerManager::class, function ($app) {
-            return new TriggerManager($app->make(BrickRegistry::class));
-        });
+        $this->app->singleton(TriggerManager::class, fn ($app) => new TriggerManager($app->make(BrickRegistry::class)));
 
         $this->app->alias(BrickRegistry::class, 'autobuilder');
     }
@@ -157,7 +153,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
         // Only boot triggers if not running in console (migrations, etc.)
         // and triggers are enabled
         if (! $this->app->runningInConsole() && config('autobuilder.triggers.enabled', true)) {
-            $this->app->booted(function () {
+            $this->app->booted(function (): void {
                 $this->app->make(TriggerManager::class)->bootActiveFlows();
             });
         }
@@ -169,7 +165,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->callAfterResolving(Schedule::class, function (Schedule $schedule) {
+        $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
             $schedule->command('autobuilder:schedule-run')
                 ->everyMinute()
                 ->withoutOverlapping()

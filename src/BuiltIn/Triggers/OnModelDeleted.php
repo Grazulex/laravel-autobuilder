@@ -54,7 +54,7 @@ class OnModelDeleted extends Trigger
             return;
         }
 
-        $modelClass::deleted(function ($model) use ($includeSoftDeletes) {
+        $modelClass::deleted(function ($model) use ($includeSoftDeletes): void {
             $isSoftDelete = method_exists($model, 'trashed') && $model->trashed();
 
             if ($isSoftDelete && ! $includeSoftDeletes) {
@@ -63,7 +63,7 @@ class OnModelDeleted extends Trigger
 
             $this->dispatch([
                 'model' => $model->toArray(),
-                'model_class' => get_class($model),
+                'model_class' => $model::class,
                 'model_id' => $model->getKey(),
                 'soft_deleted' => $isSoftDelete,
             ]);

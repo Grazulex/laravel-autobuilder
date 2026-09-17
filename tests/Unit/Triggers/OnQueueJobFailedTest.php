@@ -84,7 +84,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnQueueJobFailed::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'job');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'job');
         $searchable = array_values($field)[0]->toArray()['searchable'] ?? false;
 
         expect($searchable)->toBeTrue();
@@ -94,7 +94,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnQueueJobFailed::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'job');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'job');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeFalse();
@@ -104,7 +104,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnQueueJobFailed::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'queue');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'queue');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeFalse();

@@ -2,13 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- Code modernisation pass (Rector, PHP 8.3 / code quality / dead code / type declaration sets): `::class` on objects, first-class callables, explicit return types on arrow functions and closures, `??=` assignments, `=== []` instead of `empty()` on arrays, unused parameters and catch variables removed. No behaviour change intended.
+- CI workflows: `actions/checkout` bumped to v5.
+- CHANGELOG: entries for v1.0.8 to v1.2.7 reconstructed from the release history.
+
+### Removed
+
+- Untrack local files that do not belong to the package; `coverage.xml` added to `.gitignore`.
+
 ## [v1.3.1] - 2026-09-17
-
-### Fixed
-
-- Restore the correct `composer.json` manifest. The `v1.3.0` tag was created with a manifest belonging to another package (wrong package name, autoload and dependencies) and must not be used; `v1.3.1` is the first usable release with Laravel 13 support.
-
-## [v1.3.0] - 2026-09-17
 
 ### Added
 
@@ -26,6 +32,91 @@ All notable changes to this project will be documented in this file.
 
 - Laravel 11 support (end of life).
 - PHP 8.2 support.
+
+### Fixed
+
+- Restore the correct `composer.json` manifest (package name, autoload and dependencies had been replaced by another package's manifest in an intermediate, withdrawn tag).
+
+## [v1.2.7] - 2026-04-27
+
+### Fixed
+
+- Key-value field: the "Add pair" button had no visible effect because empty rows were dropped on re-render; row state is now kept separately until a key is filled in.
+
+### Changed
+
+- README: updated Laravel version requirements.
+
+## [v1.2.6] - 2026-03-10
+
+### Fixed
+
+- Flows index: send an `Accept: application/json` header and check the HTTP status when fetching flows.
+- `LucideIcon` component: guard against an undefined icon name.
+- Code style fixes for Pint 1.28.
+
+## [v1.2.5] - 2026-03-10
+
+### Added
+
+- Frontend UI for flow tags: `TagManager` component (autocomplete, create on the fly, attach/detach), tag pills on flow cards and a tag filter on the flows index page.
+
+## [v1.2.2] - 2026-03-10
+
+### Added
+
+- Flow tagging system: `Tag` model with ULIDs and auto-generated slugs, `autobuilder_tags` / `autobuilder_flow_tag` tables, `tags()` relation and `withTag()` scope on `Flow`, `TagController` with `api/tags` and `api/flows/{flow}/tags/{tag}` routes, `?tag=` filter on the flows index (#29).
+
+## [v1.2.1] - 2026-03-10
+
+### Added
+
+- `AUTOBUILDER_LOG` environment variable (`autobuilder.logging.activated` config key) to enable or disable package logging, via a new `AutoBuilderLogger` helper (#36).
+
+## [v1.2.0] - 2026-03-03
+
+### Added
+
+- `WebhookPathNormalizer` for consistent webhook path matching (case, slashes, slugify), applied on storage and lookup.
+- HTTP method validation on webhooks (returns 405 when the method does not match).
+- `webhook.*` context namespace (ip, content type, user agent) while keeping the flat keys for backward compatibility.
+- `WebhookAnswer` action for custom HTTP responses, with matching `FlowContext` methods; flows using it are automatically executed synchronously.
+- Webhook prefix/suffix display with copy-to-clipboard in the properties panel; the prefix is now configurable.
+- Debug logging for webhook 404s.
+
+### Fixed
+
+- Webhook 404 on valid paths (#34).
+- `StopFlow` now actually stops propagation in `FlowRunner`.
+
+## [v1.1.0] - 2026-03-03
+
+### Added
+
+- Condition sub-category filter pills in the node palette (#31).
+- Auto-layout button (dagre) to arrange nodes automatically (#22).
+- Search/filter input on the flows index page (#30).
+
+## [v1.0.10] - 2026-03-03
+
+### Fixed
+
+- Rebuilt compiled assets so that the v1.0.8 and v1.0.9 frontend changes are actually shipped.
+
+## [v1.0.9] - 2026-03-02
+
+### Added
+
+- Nodes can be renamed from the properties panel (Enter to save, Escape to cancel) (#21).
+
+## [v1.0.8] - 2026-03-02
+
+### Fixed
+
+- `KeyValue` field renderer in the properties panel and `keyvalue` type mapping (#20).
+- Defensive string-to-array parsing in the `SwitchCase` condition.
+- `sourceHandle` / `targetHandle` accepted by `UpdateFlowRequest` validation; warning logged for edges missing a source handle (#23).
+- Use `CarbonInterface` instead of `Carbon` in type declarations for PHPStan compatibility with newer Carbon versions.
 
 ## [1.0.7](https://github.com/Grazulex/laravel-autobuilder/releases/tag/v1.0.7) (2026-01-08)
 

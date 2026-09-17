@@ -110,11 +110,11 @@ class CacheAction extends Action
 
         $result = match ($operation) {
             'put' => $this->handlePut($cache, $key, $context),
-            'get' => $this->handleGet($cache, $key, $context),
-            'forget' => $this->handleForget($cache, $key, $context),
-            'has' => $this->handleHas($cache, $key, $context),
-            'increment' => $this->handleIncrement($cache, $key, $context),
-            'decrement' => $this->handleDecrement($cache, $key, $context),
+            'get' => $this->handleGet($cache, $key),
+            'forget' => $this->handleForget($cache, $key),
+            'has' => $this->handleHas($cache, $key),
+            'increment' => $this->handleIncrement($cache, $key),
+            'decrement' => $this->handleDecrement($cache, $key),
             default => null,
         };
 
@@ -144,29 +144,29 @@ class CacheAction extends Action
         return $cache->forever($key, $value);
     }
 
-    private function handleGet($cache, string $key, FlowContext $context): mixed
+    private function handleGet($cache, string $key): mixed
     {
         return $cache->get($key);
     }
 
-    private function handleForget($cache, string $key, FlowContext $context): bool
+    private function handleForget($cache, string $key): bool
     {
         return $cache->forget($key);
     }
 
-    private function handleHas($cache, string $key, FlowContext $context): bool
+    private function handleHas($cache, string $key): bool
     {
         return $cache->has($key);
     }
 
-    private function handleIncrement($cache, string $key, FlowContext $context): int|bool
+    private function handleIncrement($cache, string $key): int|bool
     {
         $amount = (int) $this->config('amount', 1);
 
         return $cache->increment($key, $amount);
     }
 
-    private function handleDecrement($cache, string $key, FlowContext $context): int|bool
+    private function handleDecrement($cache, string $key): int|bool
     {
         $amount = (int) $this->config('amount', 1);
 

@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('autobuilder_flows', function (Blueprint $table) {
+        Schema::create('autobuilder_flows', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name');
             $table->text('description')->nullable();

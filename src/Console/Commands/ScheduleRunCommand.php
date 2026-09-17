@@ -101,7 +101,7 @@ class ScheduleRunCommand extends Command
     {
         $triggerConfig = $this->getTriggerConfig($flow);
 
-        if (empty($triggerConfig)) {
+        if ($triggerConfig === []) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class ScheduleRunCommand extends Command
             $cron = new CronExpression($cronExpression);
 
             return $cron->isDue('now', $timezone);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             AutoBuilderLogger::warning("[AutoBuilder] Invalid cron expression for flow {$flow->id}: {$cronExpression}");
 
             return false;

@@ -48,9 +48,7 @@ class TimezoneSelect extends Field
             $region = $parts[0];
             $city = $parts[1] ?? $timezone;
 
-            if (! isset($grouped[$region])) {
-                $grouped[$region] = [];
-            }
+            $grouped[$region] ??= [];
 
             $grouped[$region][$timezone] = str_replace('_', ' ', $city);
         }

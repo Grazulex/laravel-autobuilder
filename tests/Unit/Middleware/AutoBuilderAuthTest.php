@@ -31,7 +31,7 @@ it('allows authenticated users through', function () {
     {
         public int $id = 1;
     };
-    $request->setUserResolver(fn () => $user);
+    $request->setUserResolver(fn (): object => $user);
 
     $response = $middleware->handle($request, fn () => response()->json(['success' => true]));
 
@@ -48,10 +48,10 @@ it('allows super admins through', function () {
     {
         public int $id = 1;
     };
-    $request->setUserResolver(fn () => $user);
+    $request->setUserResolver(fn (): object => $user);
 
     // Define gate that would normally deny access
-    Gate::define('access-autobuilder', fn () => false);
+    Gate::define('access-autobuilder', fn (): false => false);
 
     $response = $middleware->handle($request, fn () => response()->json(['success' => true]));
 
@@ -67,10 +67,10 @@ it('denies access when gate fails', function () {
     {
         public int $id = 999;
     };
-    $request->setUserResolver(fn () => $user);
+    $request->setUserResolver(fn (): object => $user);
 
     // Define gate that denies access
-    Gate::define('access-autobuilder', fn () => false);
+    Gate::define('access-autobuilder', fn (): false => false);
 
     $response = $middleware->handle($request, fn () => response()->json(['success' => true]));
 
@@ -85,10 +85,10 @@ it('allows access when gate passes', function () {
     {
         public int $id = 999;
     };
-    $request->setUserResolver(fn () => $user);
+    $request->setUserResolver(fn (): object => $user);
 
     // Define gate that allows access
-    Gate::define('access-autobuilder', fn () => true);
+    Gate::define('access-autobuilder', fn (): true => true);
 
     $response = $middleware->handle($request, fn () => response()->json(['success' => true]));
 
@@ -105,7 +105,7 @@ it('skips gate check when gate is null', function () {
     {
         public int $id = 999;
     };
-    $request->setUserResolver(fn () => $user);
+    $request->setUserResolver(fn (): object => $user);
 
     $response = $middleware->handle($request, fn () => response()->json(['success' => true]));
 

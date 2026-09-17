@@ -69,9 +69,9 @@ class FlowValidator
      */
     protected function validateTriggers(array $nodes, array $nodeMap): void
     {
-        $triggers = array_filter($nodes, fn ($node) => ($node['type'] ?? '') === 'trigger');
+        $triggers = array_filter($nodes, fn ($node): bool => ($node['type'] ?? '') === 'trigger');
 
-        if (empty($triggers)) {
+        if ($triggers === []) {
             $this->errors[] = [
                 'type' => 'no_trigger',
                 'message' => 'Flow must have at least one trigger node.',
@@ -144,7 +144,7 @@ class FlowValidator
                 if ($isRequired && ! $isHidden) {
                     $value = $config[$fieldName] ?? null;
 
-                    if ($value === null || $value === '' || $value === []) {
+                    if (in_array($value, [null, '', []], true)) {
                         $this->errors[] = [
                             'type' => 'required_field',
                             'message' => "Node '{$label}': Required field '{$fieldLabel}' is empty.",
@@ -316,7 +316,7 @@ class FlowValidator
     protected function buildResult(Flow $flow): FlowValidationResult
     {
         return new FlowValidationResult(
-            valid: empty($this->errors),
+            valid: $this->errors === [],
             errors: $this->errors,
             warnings: $this->warnings,
             flowId: (string) $flow->id

@@ -21,7 +21,7 @@ trait RendersVariables
 
                 // Support filters: {{ user.name | upper }}
                 if (str_contains($expression, '|')) {
-                    [$key, $filter] = array_map('trim', explode('|', $expression, 2));
+                    [$key, $filter] = array_map(trim(...), explode('|', $expression, 2));
                     $value = $context->get($key, '');
 
                     return $this->applyFilter($value, $filter);

@@ -8,14 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('autobuilder_tags', function (Blueprint $table) {
+        Schema::create('autobuilder_tags', function (Blueprint $table): void {
             $table->ulid('id')->primary();
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->timestamps();
         });
 
-        Schema::create('autobuilder_flow_tag', function (Blueprint $table) {
+        Schema::create('autobuilder_flow_tag', function (Blueprint $table): void {
             $table->ulid('flow_id');
             $table->ulid('tag_id');
             $table->primary(['flow_id', 'tag_id']);

@@ -54,7 +54,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'wait_type');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'wait_type');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('duration');
@@ -64,7 +64,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'async');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'async');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -74,7 +74,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'timezone');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'timezone');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('UTC');
@@ -84,7 +84,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'duration');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'duration');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(5);
@@ -94,7 +94,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'duration_unit');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'duration_unit');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('seconds');
@@ -110,7 +110,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'wait_type');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'wait_type');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('duration');
@@ -122,7 +122,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(Wait::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'duration_unit');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'duration_unit');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('seconds');

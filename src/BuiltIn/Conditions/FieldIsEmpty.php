@@ -52,9 +52,7 @@ class FieldIsEmpty extends Condition
         $value = $context->get($this->config('field'));
         $invert = $this->config('invert', false);
 
-        $isEmpty = $value === null
-            || $value === ''
-            || $value === []
+        $isEmpty = in_array($value, [null, '', []], true)
             || (is_string($value) && trim($value) === '');
 
         return $invert ? ! $isEmpty : $isEmpty;

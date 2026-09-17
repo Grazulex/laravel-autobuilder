@@ -57,7 +57,7 @@ class OnLogout extends Trigger
 
     public function register(): void
     {
-        Event::listen(Logout::class, function (Logout $event) {
+        Event::listen(Logout::class, function (Logout $event): void {
             // User might be null in some cases
             if (! $event->user) {
                 return;
@@ -72,14 +72,14 @@ class OnLogout extends Trigger
             }
 
             // Filter by user type if specified
-            if ($userTypeFilter && get_class($event->user) !== $userTypeFilter) {
+            if ($userTypeFilter && $userTypeFilter !== $event->user::class) {
                 return;
             }
 
             $this->dispatch([
                 'user' => $event->user->toArray(),
                 'user_id' => $event->user->getKey(),
-                'user_class' => get_class($event->user),
+                'user_class' => $event->user::class,
                 'guard' => $event->guard,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),

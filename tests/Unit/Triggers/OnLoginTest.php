@@ -86,7 +86,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnLogin::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'guard');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'guard');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('');
@@ -98,7 +98,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnLogin::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'guard');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'guard');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('');

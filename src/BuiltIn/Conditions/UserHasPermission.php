@@ -51,7 +51,7 @@ class UserHasPermission extends Condition
     {
         $user = $this->resolveUser($context);
 
-        if (! $user) {
+        if (! $user instanceof Model) {
             return false;
         }
 

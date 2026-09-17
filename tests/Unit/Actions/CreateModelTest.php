@@ -246,7 +246,7 @@ describe('logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
@@ -332,7 +332,7 @@ describe('error handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $firstError = array_values($errorLogs)[0]['message'];
@@ -364,7 +364,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CreateModel::class);
         $fields = $brick->fields();
 
-        $storeAsField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'store_as');
+        $storeAsField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'store_as');
         $defaultValue = array_values($storeAsField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('created_model');
@@ -374,7 +374,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(CreateModel::class);
         $fields = $brick->fields();
 
-        $attributesField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'attributes');
+        $attributesField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'attributes');
         $defaultValue = array_values($attributesField)[0]->toArray()['default'] ?? null;
 
         // Field doesn't set a default, but handle() defaults to [] internally

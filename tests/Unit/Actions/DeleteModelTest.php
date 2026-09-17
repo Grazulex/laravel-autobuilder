@@ -150,7 +150,7 @@ describe('force delete', function () {
 
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -280,7 +280,7 @@ describe('rollback', function () {
         $result = $brick->handle($context);
         $brick->rollback($result);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -313,7 +313,7 @@ describe('error handling', function () {
 
         $result = $brick->handle($context);
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
 
         $firstWarning = array_values($warningLogs)[0]['message'];
@@ -343,7 +343,7 @@ describe('error handling', function () {
 
         $result = $brick->handle($context);
 
-        $warningLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'warning');
+        $warningLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'warning');
         expect($warningLogs)->not->toBeEmpty();
     });
 });
@@ -367,7 +367,7 @@ describe('logging', function () {
 
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -385,7 +385,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(DeleteModel::class);
         $fields = $brick->fields();
 
-        $forceDeleteField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'force_delete');
+        $forceDeleteField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'force_delete');
         $defaultValue = array_values($forceDeleteField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeFalse();

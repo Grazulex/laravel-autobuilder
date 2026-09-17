@@ -115,7 +115,7 @@ class SendMail extends Action
             return $context;
         }
 
-        Mail::send([], [], function ($message) use ($to, $subject, $body, $contentType, $fromAddress, $fromName, $cc, $bcc) {
+        Mail::send([], [], function ($message) use ($to, $subject, $body, $contentType, $fromAddress, $fromName, $cc, $bcc): void {
             $message->to($to)->subject($subject);
 
             if ($fromAddress) {
@@ -123,11 +123,11 @@ class SendMail extends Action
             }
 
             if ($cc) {
-                $message->cc(array_map('trim', explode(',', $cc)));
+                $message->cc(array_map(trim(...), explode(',', $cc)));
             }
 
             if ($bcc) {
-                $message->bcc(array_map('trim', explode(',', $bcc)));
+                $message->bcc(array_map(trim(...), explode(',', $bcc)));
             }
 
             match ($contentType) {

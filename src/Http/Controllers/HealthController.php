@@ -41,7 +41,7 @@ class HealthController extends Controller
             'bricks' => $this->checkBricks(),
         ];
 
-        $allHealthy = collect($checks)->every(fn ($check) => $check['status'] === 'ok');
+        $allHealthy = collect($checks)->every(fn ($check): bool => $check['status'] === 'ok');
 
         return response()->json([
             'status' => $allHealthy ? 'ok' : 'degraded',

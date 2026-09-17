@@ -275,7 +275,7 @@ it('protects against infinite loops by limiting node executions', function () {
     expect($result->status)->toBe('completed');
 
     // Should have a warning about the loop
-    $warnings = array_filter($result->context->logs, fn ($log) => $log['level'] === 'warning');
+    $warnings = array_filter($result->context->logs, fn ($log): bool => $log['level'] === 'warning');
     expect($warnings)->not->toBeEmpty();
 
     // The warning should mention the node and loop detection

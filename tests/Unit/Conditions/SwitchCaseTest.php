@@ -269,7 +269,7 @@ describe('evaluation', function () {
 
         $brick->evaluate($context);
 
-        $infoLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstLog = array_values($infoLogs)[0]['message'];
@@ -289,7 +289,7 @@ describe('evaluation', function () {
 
         $brick->evaluate($context);
 
-        $infoLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstLog = array_values($infoLogs)[0]['message'];
@@ -306,7 +306,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'comparison');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'comparison');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('loose');
@@ -316,7 +316,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'store_as');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'store_as');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('switch_matched_case');
@@ -332,7 +332,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'value');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'value');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -342,7 +342,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'value');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'value');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();
@@ -352,7 +352,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'cases');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'cases');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -362,7 +362,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'cases');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'cases');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();
@@ -372,7 +372,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SwitchCase::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'comparison');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'comparison');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('loose');

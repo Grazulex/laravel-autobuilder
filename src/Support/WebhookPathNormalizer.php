@@ -30,7 +30,7 @@ class WebhookPathNormalizer
         $path = trim($path, '/');
 
         // Split into segments and slugify each
-        $segments = array_filter(explode('/', $path), fn (string $s) => $s !== '');
+        $segments = array_filter(explode('/', $path), fn (string $s): bool => $s !== '');
         $segments = array_map(fn (string $s) => Str::slug($s), $segments);
 
         return implode('/', $segments);

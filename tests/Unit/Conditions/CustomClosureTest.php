@@ -69,7 +69,7 @@ describe('security config check', function () {
         $context = new FlowContext('flow-1');
         $brick->evaluate($context);
 
-        $errorLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $errorMessage = array_values($errorLogs)[0]['message'];
@@ -131,7 +131,7 @@ describe('empty and invalid closure', function () {
 
         expect($result)->toBeFalse();
 
-        $errorLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
     });
 });
@@ -329,7 +329,7 @@ describe('exception handling', function () {
 
         expect($result)->toBeFalse();
 
-        $errorLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $errorMessage = array_values($errorLogs)[0]['message'];

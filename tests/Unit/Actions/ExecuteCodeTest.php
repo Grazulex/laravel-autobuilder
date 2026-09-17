@@ -51,7 +51,7 @@ describe('security config check', function () {
         $result = $brick->handle($context);
 
         // Should log error
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         // Should mention disabled in error message
@@ -116,7 +116,7 @@ describe('empty and invalid code', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
     });
 });
@@ -239,7 +239,7 @@ describe('exception handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $errorMessage = array_values($errorLogs)[0]['message'];
@@ -266,7 +266,7 @@ describe('exception handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
     });
 });
@@ -288,7 +288,7 @@ describe('success logging', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);

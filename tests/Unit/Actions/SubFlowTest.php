@@ -69,7 +69,7 @@ describe('error handling', function () {
         $context = new FlowContext('flow-1');
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $firstError = array_values($errorLogs)[0]['message'];
@@ -109,7 +109,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'payload_mode');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'payload_mode');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('current');
@@ -119,7 +119,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'inherit_variables');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'inherit_variables');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -129,7 +129,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'import_variables');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'import_variables');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -139,7 +139,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'variable_prefix');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'variable_prefix');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('');
@@ -149,7 +149,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'store_result_as');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'store_result_as');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('subflow_result');
@@ -159,7 +159,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'stop_on_failure');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'stop_on_failure');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBeTrue();
@@ -175,7 +175,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'flow_id');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'flow_id');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -185,7 +185,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'payload_mode');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'payload_mode');
         $options = array_values($field)[0]->toArray()['options'] ?? [];
 
         expect(array_column($options, 'value'))->toContain('current');
@@ -197,7 +197,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'custom_payload');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'custom_payload');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();
@@ -207,7 +207,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(SubFlow::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'merge_data');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'merge_data');
         $supportsVariables = array_values($field)[0]->toArray()['supportsVariables'] ?? false;
 
         expect($supportsVariables)->toBeTrue();

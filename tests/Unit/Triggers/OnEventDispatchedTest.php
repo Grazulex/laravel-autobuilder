@@ -103,7 +103,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnEventDispatched::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'event');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'event');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -113,7 +113,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(OnEventDispatched::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'event');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'event');
         $searchable = array_values($field)[0]->toArray()['searchable'] ?? false;
 
         expect($searchable)->toBeTrue();

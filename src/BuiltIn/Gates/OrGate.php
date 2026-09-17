@@ -42,7 +42,7 @@ class OrGate extends Gate
 
     public function evaluate(array $inputs, FlowContext $context): bool
     {
-        if (empty($inputs)) {
+        if ($inputs === []) {
             $context->log('warning', 'OrGate: No inputs received');
 
             return false;
@@ -51,7 +51,7 @@ class OrGate extends Gate
         $anyTrue = false;
         $trueCount = 0;
 
-        foreach ($inputs as $sourceId => $result) {
+        foreach ($inputs as $result) {
             if ($result === true) {
                 $trueCount++;
                 $anyTrue = true;

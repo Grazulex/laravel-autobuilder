@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('autobuilder_flows', function (Blueprint $table) {
+        Schema::table('autobuilder_flows', function (Blueprint $table): void {
             // Index for filtering active flows (frequently queried)
             $table->index('active');
 
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->index(['created_by', 'created_at']);
         });
 
-        Schema::table('autobuilder_flow_runs', function (Blueprint $table) {
+        Schema::table('autobuilder_flow_runs', function (Blueprint $table): void {
             // Index for status-only queries
             $table->index('status');
 
@@ -36,13 +36,13 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('autobuilder_flows', function (Blueprint $table) {
+        Schema::table('autobuilder_flows', function (Blueprint $table): void {
             $table->dropIndex(['active']);
             $table->dropIndex(['deleted_at']);
             $table->dropIndex(['created_by', 'created_at']);
         });
 
-        Schema::table('autobuilder_flow_runs', function (Blueprint $table) {
+        Schema::table('autobuilder_flow_runs', function (Blueprint $table): void {
             $table->dropIndex(['status']);
             $table->dropIndex(['started_at']);
             $table->dropIndex(['completed_at']);

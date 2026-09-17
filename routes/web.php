@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
     ->middleware(config('autobuilder.routes.middleware', ['web', 'autobuilder.auth']))
-    ->group(function () {
+    ->group(function (): void {
 
         // UI Routes
         Route::get('/', [FlowController::class, 'dashboard'])->name('autobuilder.index');
         Route::get('/flows/{flow}', [FlowController::class, 'edit'])->name('autobuilder.edit');
 
         // API Routes
-        Route::prefix('api')->group(function () {
+        Route::prefix('api')->group(function (): void {
 
             // Flows CRUD
             Route::apiResource('flows', FlowController::class);
@@ -51,7 +51,7 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
 // Webhook Routes (public, no auth, rate limited)
 Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
     ->middleware(config('autobuilder.rate_limiting.enabled', true) ? ['throttle:autobuilder-webhooks'] : [])
-    ->group(function () {
+    ->group(function (): void {
         Route::any('webhook/{path}', [WebhookController::class, 'handle'])
             ->where('path', '.*')
             ->name('autobuilder.webhook');
@@ -59,7 +59,7 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
 
 // Health Check Routes (public, no auth)
 Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
-    ->group(function () {
+    ->group(function (): void {
         Route::get('health', [HealthController::class, 'check'])->name('autobuilder.health');
         Route::get('health/detailed', [HealthController::class, 'detailed'])->name('autobuilder.health.detailed');
         Route::get('health/stats', [HealthController::class, 'stats'])->name('autobuilder.health.stats');

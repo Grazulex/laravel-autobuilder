@@ -36,7 +36,7 @@ class OnEventDispatched extends Trigger
         return [
             Select::make('event')
                 ->label('Event')
-                ->options(fn () => $this->discoverEvents())
+                ->options(fn (): array => $this->discoverEvents())
                 ->searchable()
                 ->required(),
         ];
@@ -50,9 +50,9 @@ class OnEventDispatched extends Trigger
             return;
         }
 
-        Event::listen($eventClass, function ($event) {
+        Event::listen($eventClass, function ($event): void {
             $this->dispatch([
-                'event' => get_class($event),
+                'event' => $event::class,
                 'payload' => method_exists($event, 'toArray')
                     ? $event->toArray()
                     : get_object_vars($event),

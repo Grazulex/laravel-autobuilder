@@ -112,7 +112,7 @@ describe('evaluation', function () {
         $context = new FlowContext('flow-1');
         $brick->evaluate($context);
 
-        $infoLogs = array_filter($context->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($context->logs, fn ($log): bool => $log['level'] === 'info');
         expect($infoLogs)->not->toBeEmpty();
 
         $firstLog = array_values($infoLogs)[0]['message'];
@@ -161,7 +161,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(RandomChance::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'percentage');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'percentage');
         $defaultValue = array_values($field)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe(50);
@@ -177,7 +177,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(RandomChance::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'percentage');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'percentage');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -187,7 +187,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(RandomChance::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'percentage');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'percentage');
         $min = array_values($field)[0]->toArray()['min'] ?? null;
 
         expect((int) $min)->toBe(0);
@@ -197,7 +197,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(RandomChance::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'percentage');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'percentage');
         $max = array_values($field)[0]->toArray()['max'] ?? null;
 
         expect((int) $max)->toBe(100);

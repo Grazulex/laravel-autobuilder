@@ -42,7 +42,7 @@ class AndGate extends Gate
 
     public function evaluate(array $inputs, FlowContext $context): bool
     {
-        if (empty($inputs)) {
+        if ($inputs === []) {
             $context->log('warning', 'AndGate: No inputs received');
 
             return false;
@@ -52,7 +52,7 @@ class AndGate extends Gate
         $trueCount = 0;
         $falseCount = 0;
 
-        foreach ($inputs as $sourceId => $result) {
+        foreach ($inputs as $result) {
             if ($result === true) {
                 $trueCount++;
             } else {

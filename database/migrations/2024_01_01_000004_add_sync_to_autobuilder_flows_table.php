@@ -10,14 +10,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('autobuilder_flows', function (Blueprint $table) {
+        Schema::table('autobuilder_flows', function (Blueprint $table): void {
             $table->boolean('sync')->default(false)->after('active');
         });
     }
 
     public function down(): void
     {
-        Schema::table('autobuilder_flows', function (Blueprint $table) {
+        Schema::table('autobuilder_flows', function (Blueprint $table): void {
             $table->dropColumn('sync');
         });
     }

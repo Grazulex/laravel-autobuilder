@@ -380,7 +380,7 @@ describe('rollback', function () {
         $result = $brick->handle($context);
         $brick->rollback($result);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -406,7 +406,7 @@ describe('error handling', function () {
 
         $result = $brick->handle($context);
 
-        $errorLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'error');
+        $errorLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'error');
         expect($errorLogs)->not->toBeEmpty();
 
         $firstError = array_values($errorLogs)[0]['message'];
@@ -471,7 +471,7 @@ describe('logging', function () {
 
         $result = $brick->handle($context);
 
-        $infoLogs = array_filter($result->logs, fn ($log) => $log['level'] === 'info');
+        $infoLogs = array_filter($result->logs, fn ($log): bool => $log['level'] === 'info');
         $messages = array_map(fn ($log) => $log['message'], $infoLogs);
         $allMessages = implode(' ', $messages);
 
@@ -489,7 +489,7 @@ describe('default values', function () {
         $brick = $this->registry->resolve(UpdateModel::class);
         $fields = $brick->fields();
 
-        $storeAsField = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'store_as');
+        $storeAsField = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'store_as');
         $defaultValue = array_values($storeAsField)[0]->toArray()['default'] ?? null;
 
         expect($defaultValue)->toBe('updated_model');

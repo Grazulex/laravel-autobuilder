@@ -237,7 +237,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(TimeIsBetween::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'start_time');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'start_time');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
@@ -247,7 +247,7 @@ describe('field configuration', function () {
         $brick = $this->registry->resolve(TimeIsBetween::class);
         $fields = $brick->fields();
 
-        $field = array_filter($fields, fn ($f) => $f->toArray()['name'] === 'end_time');
+        $field = array_filter($fields, fn ($f): bool => $f->toArray()['name'] === 'end_time');
         $required = array_values($field)[0]->toArray()['required'] ?? false;
 
         expect($required)->toBeTrue();
