@@ -2,6 +2,12 @@
 
 > Visual automation builder for Laravel - Create workflows with a drag-and-drop interface
 
+> [!TIP]
+> **What Laravel AutoBuilder does for you** — Let your team build automations ("when an order is paid, notify Slack and create an invoice") in a drag-and-drop editor inside your Laravel app — without a developer in the loop for every new workflow.
+>
+> **This package is free and maintained on my own time.** If it saves you hours, a small contribution helps me keep it going:
+> [💖 GitHub Sponsors](https://github.com/sponsors/Grazulex) · [☕ Buy Me a Coffee](https://buymeacoffee.com/grazulex) · [PayPal](https://paypal.me/strauven)
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/grazulex/laravel-autobuilder.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-autobuilder)
 [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-autobuilder.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-autobuilder)
 [![License](https://img.shields.io/packagist/l/grazulex/laravel-autobuilder.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-autobuilder)
@@ -229,6 +235,14 @@ composer test
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ---
+
+## Support This Package
+
+Laravel AutoBuilder is free, open source and maintained on my own time. If it saves you hours, here is how you can give back:
+
+- ⭐ **Star the repository** — it helps other developers find it
+- 🐦 **Share it** with your team and network
+- 💖 **[Sponsor on GitHub](https://github.com/sponsors/Grazulex)**, **[buy me a coffee](https://buymeacoffee.com/grazulex)** or **[donate via PayPal](https://paypal.me/strauven)** — every contribution funds maintenance, new features and Laravel upgrades
 
 ## License
 
