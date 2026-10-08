@@ -51,7 +51,7 @@ Build workflows that react to events, make decisions, and execute actions - all 
 
 | Requirement | Version |
 |-------------|---------|
-| PHP | 8.3+ |
+| PHP | 8.4+ |
 | Laravel | 12.x, 13.x |
 | Node.js | 18+ (for development) |
 
