@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.4.0] - 2026-10-08
+
 ### Changed
 
+- **Minimum PHP version is now 8.4**: PHP 8.3 is no longer supported (#52)
+- CI test matrix now runs PHP 8.4 and 8.5 (#52)
+- Docker image now based on PHP 8.4 (#52)
 - Code modernisation pass (Rector, PHP 8.3 / code quality / dead code / type declaration sets): `::class` on objects, first-class callables, explicit return types on arrow functions and closures, `??=` assignments, `=== []` instead of `empty()` on arrays, unused parameters and catch variables removed. No behaviour change intended.
 - CI workflows: `actions/checkout` bumped to v5.
 - CHANGELOG: entries for v1.0.8 to v1.2.7 reconstructed from the release history.
