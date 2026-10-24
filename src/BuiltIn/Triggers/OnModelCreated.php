@@ -21,7 +21,7 @@ class OnModelCreated extends Trigger
 
     public function icon(): string
     {
-        return 'database-plus';
+        return 'file-plus';
     }
 
     public function category(): string
