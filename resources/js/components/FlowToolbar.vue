@@ -123,7 +123,7 @@ const statusColor = computed(() => {
 </script>
 
 <template>
-    <header class="bg-white shadow-sm border-b px-6 py-3 flex items-center justify-between">
+    <header class="bg-white shadow-xs border-b px-6 py-3 flex items-center justify-between">
         <div class="flex items-center gap-4">
             <a
                 :href="indexUrl"
@@ -142,7 +142,7 @@ const statusColor = computed(() => {
                         ref="nameInput"
                         v-model="editedName"
                         type="text"
-                        class="text-lg font-semibold text-gray-900 bg-white border border-blue-500 rounded px-2 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="text-lg font-semibold text-gray-900 bg-white border border-blue-500 rounded-sm px-2 py-0.5 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                         @blur="saveName"
                         @keydown="handleNameKeydown"
                     />
@@ -155,7 +155,7 @@ const statusColor = computed(() => {
                     <button
                         v-if="!isEditingName"
                         @click="startEditingName"
-                        class="ml-1 p-0.5 text-gray-400 hover:text-gray-600 rounded hover:bg-gray-100"
+                        class="ml-1 p-0.5 text-gray-400 hover:text-gray-600 rounded-sm hover:bg-gray-100"
                         title="Rename flow"
                     >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -180,7 +180,7 @@ const statusColor = computed(() => {
                         ref="descriptionInput"
                         v-model="editedDescription"
                         type="text"
-                        class="text-xs text-gray-500 bg-white border border-blue-500 rounded px-1.5 py-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[200px]"
+                        class="text-xs text-gray-500 bg-white border border-blue-500 rounded-sm px-1.5 py-0.5 focus:outline-hidden focus:ring-2 focus:ring-blue-500 min-w-[200px]"
                         placeholder="Add a description..."
                         @blur="saveDescription"
                         @keydown="handleDescriptionKeydown"
@@ -197,7 +197,7 @@ const statusColor = computed(() => {
                     <button
                         v-if="!isEditingDescription"
                         @click="startEditingDescription"
-                        class="ml-1 p-0.5 text-gray-300 hover:text-gray-500 rounded hover:bg-gray-100"
+                        class="ml-1 p-0.5 text-gray-300 hover:text-gray-500 rounded-sm hover:bg-gray-100"
                         title="Edit description"
                     >
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -381,7 +381,7 @@ const statusColor = computed(() => {
         <!-- Test Modal -->
         <div
             v-if="showTestModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showTestModal = false"
         >
             <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
@@ -427,7 +427,7 @@ const statusColor = computed(() => {
                 <!-- Test Result -->
                 <div v-if="testResult" class="px-6 py-4 border-t">
                     <h3 class="text-sm font-medium text-gray-700 mb-2">Result</h3>
-                    <pre class="bg-gray-100 p-3 rounded text-xs overflow-auto max-h-48">{{ JSON.stringify(testResult, null, 2) }}</pre>
+                    <pre class="bg-gray-100 p-3 rounded-sm text-xs overflow-auto max-h-48">{{ JSON.stringify(testResult, null, 2) }}</pre>
                 </div>
             </div>
         </div>

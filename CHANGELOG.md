@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- Frontend toolchain upgraded: Vite 8, `@vitejs/plugin-vue` 6, Tailwind CSS 4 (CSS-first config, `@tailwindcss/postcss`), `@dagrejs/dagre` 3, `lucide-vue-next` 1. Compiled assets rebuilt.
+- The flows index page now uses the package's compiled stylesheet instead of the Tailwind Play CDN (no external request, no CDN production warning).
+
+### Security
+
+- npm dependencies audited: 0 known vulnerabilities.
+
 ## [v1.4.0] - 2026-10-08
 
 ### Changed

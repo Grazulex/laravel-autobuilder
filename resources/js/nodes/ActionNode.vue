@@ -20,7 +20,7 @@ defineProps({
         <Handle
             type="target"
             :position="Position.Top"
-            class="!bg-action-500 !border-white !w-3 !h-3"
+            class="bg-action-500! border-white! w-3! h-3!"
         />
 
         <!-- Header -->
@@ -30,7 +30,7 @@ defineProps({
         </div>
 
         <!-- Config Preview -->
-        <div v-if="Object.keys(data.config || {}).length" class="text-xs text-action-600 bg-action-100 rounded px-2 py-1">
+        <div v-if="Object.keys(data.config || {}).length" class="text-xs text-action-600 bg-action-100 rounded-sm px-2 py-1">
             <template v-for="(value, key) in data.config" :key="key">
                 <div class="truncate" v-if="value">
                     <span class="font-medium">{{ key }}:</span>
@@ -48,7 +48,7 @@ defineProps({
         <Handle
             type="source"
             :position="Position.Bottom"
-            class="!bg-action-500 !border-white !w-3 !h-3"
+            class="bg-action-500! border-white! w-3! h-3!"
         />
     </div>
 </template>

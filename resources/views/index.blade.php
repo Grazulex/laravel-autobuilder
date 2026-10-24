@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>AutoBuilder - Flows</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('vendor/autobuilder/css/autobuilder.css') }}">
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -22,7 +22,7 @@
                         type="text"
                         id="search-input"
                         placeholder="Search flows..."
-                        class="w-48 pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-48 pl-9 pr-3 py-2 text-sm bg-white border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                         oninput="handleSearch(this.value)"
                     >
                     <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +34,7 @@
                 <div class="relative">
                     <select
                         id="tag-filter"
-                        class="pl-3 pr-8 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
+                        class="pl-3 pr-8 py-2 text-sm border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
                         onchange="handleTagFilter(this.value)"
                     >
                         <option value="">All tags</option>
@@ -77,7 +77,7 @@
     </div>
 
     <!-- Create Flow Modal -->
-    <div id="create-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="create-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
             <div class="px-6 py-4 border-b">
                 <h2 class="text-lg font-semibold">Create New Flow</h2>
@@ -90,7 +90,7 @@
                             type="text"
                             id="flow-name"
                             required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                             placeholder="My Automation Flow"
                         >
                     </div>
@@ -99,7 +99,7 @@
                         <textarea
                             id="flow-description"
                             rows="3"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                             placeholder="Optional description..."
                         ></textarea>
                     </div>
@@ -108,7 +108,7 @@
                             <input
                                 type="checkbox"
                                 id="flow-sync"
-                                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                class="w-4 h-4 text-blue-600 border-gray-300 rounded-sm focus:ring-blue-500"
                             >
                             <div>
                                 <span class="block text-sm font-medium text-gray-700">Synchronous Execution</span>
@@ -137,7 +137,7 @@
     </div>
 
     <!-- Import Flow Modal -->
-    <div id="import-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+    <div id="import-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
             <div class="px-6 py-4 border-b">
                 <h2 class="text-lg font-semibold">Import Flow</h2>
@@ -149,7 +149,7 @@
                         type="file"
                         id="import-file"
                         accept=".json"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                     >
                 </div>
                 <div id="import-preview" class="hidden">
@@ -223,7 +223,7 @@
             }
 
             container.innerHTML = flows.map(flow => `
-                <div class="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
+                <div class="bg-white rounded-lg shadow-xs border hover:shadow-md transition-shadow">
                     <div class="p-5">
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
@@ -259,14 +259,14 @@
                         <div class="flex gap-2">
                             <button
                                 onclick="toggleFlow('${flow.id}', ${flow.active})"
-                                class="px-2 py-1 text-xs font-medium rounded ${flow.active ? 'text-orange-600 hover:bg-orange-50' : 'text-green-600 hover:bg-green-50'}"
+                                class="px-2 py-1 text-xs font-medium rounded-sm ${flow.active ? 'text-orange-600 hover:bg-orange-50' : 'text-green-600 hover:bg-green-50'}"
                                 title="${flow.active ? 'Deactivate' : 'Activate'}"
                             >
                                 ${flow.active ? 'Deactivate' : 'Activate'}
                             </button>
                             <button
                                 onclick="duplicateFlow('${flow.id}')"
-                                class="p-1 text-gray-400 hover:text-blue-500 rounded"
+                                class="p-1 text-gray-400 hover:text-blue-500 rounded-sm"
                                 title="Duplicate"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -275,7 +275,7 @@
                             </button>
                             <button
                                 onclick="deleteFlow('${flow.id}')"
-                                class="p-1 text-gray-400 hover:text-red-500 rounded"
+                                class="p-1 text-gray-400 hover:text-red-500 rounded-sm"
                                 title="Delete"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -284,7 +284,7 @@
                             </button>
                             <a
                                 href="${baseUrl}/flows/${flow.id}"
-                                class="px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded"
+                                class="px-3 py-1 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-sm"
                             >
                                 Edit
                             </a>

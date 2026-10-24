@@ -605,7 +605,7 @@ onMounted(() => {
         <!-- Delete Confirmation Modal -->
         <div
             v-if="showDeleteConfirm"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="cancelDelete"
         >
             <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
@@ -639,7 +639,7 @@ onMounted(() => {
         <!-- History Modal -->
         <div
             v-if="showHistory"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showHistory = false"
         >
             <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-[80vh] flex flex-col">
@@ -714,22 +714,22 @@ onMounted(() => {
                                             <!-- Payload -->
                                             <div>
                                                 <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Payload</h4>
-                                                <pre class="bg-white border rounded p-2 text-xs overflow-auto max-h-32">{{ JSON.stringify(run.payload, null, 2) || '{}' }}</pre>
+                                                <pre class="bg-white border rounded-sm p-2 text-xs overflow-auto max-h-32">{{ JSON.stringify(run.payload, null, 2) || '{}' }}</pre>
                                             </div>
                                             <!-- Variables -->
                                             <div>
                                                 <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Variables</h4>
-                                                <pre class="bg-white border rounded p-2 text-xs overflow-auto max-h-32">{{ JSON.stringify(run.variables, null, 2) || '{}' }}</pre>
+                                                <pre class="bg-white border rounded-sm p-2 text-xs overflow-auto max-h-32">{{ JSON.stringify(run.variables, null, 2) || '{}' }}</pre>
                                             </div>
                                             <!-- Error (if failed) -->
                                             <div v-if="run.status === 'failed' && run.error" class="md:col-span-2">
                                                 <h4 class="text-xs font-medium text-red-500 uppercase mb-2">Error</h4>
-                                                <pre class="bg-red-50 border border-red-200 rounded p-2 text-xs text-red-700 overflow-auto max-h-32">{{ run.error }}</pre>
+                                                <pre class="bg-red-50 border border-red-200 rounded-sm p-2 text-xs text-red-700 overflow-auto max-h-32">{{ run.error }}</pre>
                                             </div>
                                             <!-- Logs -->
                                             <div class="md:col-span-2">
                                                 <h4 class="text-xs font-medium text-gray-500 uppercase mb-2">Execution Logs ({{ run.logs?.length || 0 }})</h4>
-                                                <div class="bg-white border rounded max-h-48 overflow-auto">
+                                                <div class="bg-white border rounded-sm max-h-48 overflow-auto">
                                                     <div v-if="!run.logs || run.logs.length === 0" class="p-2 text-xs text-gray-400 text-center">
                                                         No logs
                                                     </div>
@@ -784,7 +784,7 @@ onMounted(() => {
         <!-- Validation Panel Modal -->
         <div
             v-if="showValidationPanel && validationResult"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showValidationPanel = false"
         >
             <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[80vh] flex flex-col">

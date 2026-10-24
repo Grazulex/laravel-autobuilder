@@ -23,7 +23,7 @@ defineProps({
         </div>
 
         <!-- Config Preview -->
-        <div v-if="Object.keys(data.config || {}).length" class="text-xs text-trigger-600 bg-trigger-100 rounded px-2 py-1">
+        <div v-if="Object.keys(data.config || {}).length" class="text-xs text-trigger-600 bg-trigger-100 rounded-sm px-2 py-1">
             <template v-for="(value, key) in data.config" :key="key">
                 <div class="truncate" v-if="value">
                     <span class="font-medium">{{ key }}:</span> {{ value }}
@@ -35,7 +35,7 @@ defineProps({
         <Handle
             type="source"
             :position="Position.Bottom"
-            class="!bg-trigger-500 !border-white !w-3 !h-3"
+            class="bg-trigger-500! border-white! w-3! h-3!"
         />
     </div>
 </template>

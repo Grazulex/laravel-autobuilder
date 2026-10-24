@@ -154,7 +154,7 @@ onUnmounted(() => {
                 v-model="inputValue"
                 type="text"
                 placeholder="Add tag..."
-                class="text-xs px-2 py-0.5 border border-dashed border-gray-300 rounded-full focus:outline-none focus:border-indigo-400 focus:bg-white bg-transparent w-20 focus:w-32 transition-all"
+                class="text-xs px-2 py-0.5 border border-dashed border-gray-300 rounded-full focus:outline-hidden focus:border-indigo-400 focus:bg-white bg-transparent w-20 focus:w-32 transition-all"
                 @focus="isOpen = true"
                 @input="isOpen = true"
                 @keydown="handleInputKeydown"
