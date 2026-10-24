@@ -8,9 +8,9 @@ export default defineConfig({
         outDir: 'resources/dist',
         emptyOutDir: true,
         manifest: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: {
-                autobuilder: resolve(__dirname, 'resources/js/autobuilder.js'),
+                autobuilder: resolve(import.meta.dirname, 'resources/js/autobuilder.js'),
             },
             output: {
                 entryFileNames: 'js/[name].js',
@@ -26,7 +26,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '@': resolve(__dirname, 'resources/js'),
+            '@': resolve(import.meta.dirname, 'resources/js'),
         },
     },
     server: {

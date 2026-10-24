@@ -82,7 +82,7 @@ const strokeColor = computed(() => {
         >
             <span
                 :class="[
-                    'px-2 py-0.5 text-xs font-medium rounded shadow-sm',
+                    'px-2 py-0.5 text-xs font-medium rounded-sm shadow-xs',
                     labelColor
                 ]"
             >
@@ -102,7 +102,7 @@ const strokeColor = computed(() => {
         >
             <button
                 @click.stop="handleDelete"
-                class="p-1 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition-colors"
+                class="p-1 bg-red-500 text-white rounded-full shadow-sm hover:bg-red-600 transition-colors"
                 title="Delete connection"
             >
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

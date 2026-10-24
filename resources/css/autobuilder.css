@@ -1,6 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss' source(none);
+@source '../views';
+@source '../js';
+
+@theme {
+  --color-trigger-50: #f0fdf4;
+  --color-trigger-100: #dcfce7;
+  --color-trigger-500: #22c55e;
+  --color-trigger-600: #16a34a;
+  --color-trigger-700: #15803d;
+
+  --color-condition-50: #fefce8;
+  --color-condition-100: #fef9c3;
+  --color-condition-500: #eab308;
+  --color-condition-600: #ca8a04;
+  --color-condition-700: #a16207;
+
+  --color-action-50: #eff6ff;
+  --color-action-100: #dbeafe;
+  --color-action-500: #3b82f6;
+  --color-action-600: #2563eb;
+  --color-action-700: #1d4ed8;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 /* Vue Flow customizations */
 .vue-flow {
@@ -72,18 +110,18 @@
 .properties-field input,
 .properties-field select,
 .properties-field textarea {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs
+           focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
 }
 
 .properties-field input[type="checkbox"] {
-    @apply w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
+    @apply w-4 h-4 text-blue-600 border-gray-300 rounded-sm focus:ring-blue-500;
 }
 
 /* Animations */
 @keyframes pulse-border {
-    0%, 100% { border-color: theme('colors.blue.400'); }
-    50% { border-color: theme('colors.blue.600'); }
+    0%, 100% { border-color: var(--color-blue-400); }
+    50% { border-color: var(--color-blue-600); }
 }
 
 .node-selected {

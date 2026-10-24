@@ -170,7 +170,7 @@ const nodeTypeColors = {
                     <input
                         v-if="isEditingLabel"
                         v-model="editLabel"
-                        class="font-medium text-gray-900 text-sm border border-blue-300 rounded px-1.5 py-0.5 w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        class="font-medium text-gray-900 text-sm border border-blue-300 rounded-sm px-1.5 py-0.5 w-full focus:outline-hidden focus:ring-1 focus:ring-blue-500"
                         @blur="saveLabel"
                         @keyup.enter="saveLabel"
                         @keyup.escape="isEditingLabel = false"
@@ -185,7 +185,7 @@ const nodeTypeColors = {
                 </div>
                 <button
                     @click="$emit('delete')"
-                    class="p-1 text-gray-400 hover:text-red-500 rounded"
+                    class="p-1 text-gray-400 hover:text-red-500 rounded-sm"
                     title="Delete node"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -249,12 +249,12 @@ const nodeTypeColors = {
                             v-if="field.prefix && (localConfig[field.name] || field.default)"
                             class="mt-1.5 flex items-center gap-1"
                         >
-                            <code class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded flex-1 truncate border" :title="getFullUrl(field)">
+                            <code class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-sm flex-1 truncate border" :title="getFullUrl(field)">
                                 {{ getFullUrl(field) }}
                             </code>
                             <button
                                 type="button"
-                                class="shrink-0 p-1 text-gray-400 hover:text-blue-500 rounded"
+                                class="shrink-0 p-1 text-gray-400 hover:text-blue-500 rounded-sm"
                                 title="Copy URL"
                                 @click="copyToClipboard(field)"
                             >
@@ -413,7 +413,7 @@ const nodeTypeColors = {
                         </div>
                         <button
                             type="button"
-                            class="text-xs text-blue-600 hover:text-blue-800"
+                            class="block text-xs text-blue-600 hover:text-blue-800"
                             @click="addKeyValuePair(field.name)"
                             :disabled="field.maxPairs && getKeyValuePairs(field.name).length >= field.maxPairs"
                         >

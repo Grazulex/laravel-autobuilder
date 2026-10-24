@@ -20,7 +20,7 @@ defineProps({
         <Handle
             type="target"
             :position="Position.Top"
-            class="!bg-purple-500 !border-white !w-4 !h-4"
+            class="bg-purple-500! border-white! w-4! h-4!"
         />
 
         <!-- Header -->
@@ -30,7 +30,7 @@ defineProps({
         </div>
 
         <!-- Gate Type Indicator -->
-        <div class="text-xs text-purple-600 bg-purple-100 rounded px-2 py-1 mb-2 text-center font-mono">
+        <div class="text-xs text-purple-600 bg-purple-100 rounded-sm px-2 py-1 mb-2 text-center font-mono">
             {{ data.label === 'AND Gate' ? 'ALL must pass' : 'ANY must pass' }}
         </div>
 
@@ -46,14 +46,14 @@ defineProps({
             type="source"
             :position="Position.Bottom"
             :style="{ left: '25%' }"
-            class="!bg-green-500 !border-white !w-3 !h-3"
+            class="bg-green-500! border-white! w-3! h-3!"
         />
         <Handle
             id="false"
             type="source"
             :position="Position.Bottom"
             :style="{ left: '75%' }"
-            class="!bg-red-500 !border-white !w-3 !h-3"
+            class="bg-red-500! border-white! w-3! h-3!"
         />
     </div>
 </template>
