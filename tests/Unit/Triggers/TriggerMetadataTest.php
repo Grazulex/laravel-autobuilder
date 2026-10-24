@@ -18,7 +18,7 @@ describe('OnModelCreated', function () {
         expect($trigger->name())->toBe('Model Created');
         expect($trigger->type())->toBe('trigger');
         expect($trigger->category())->toBe('Database');
-        expect($trigger->icon())->toBe('database-plus');
+        expect($trigger->icon())->toBe('file-plus');
         expect($trigger->description())->toContain('created');
     });
 
@@ -39,7 +39,7 @@ describe('OnModelUpdated', function () {
         expect($trigger->name())->toBe('Model Updated');
         expect($trigger->type())->toBe('trigger');
         expect($trigger->category())->toBe('Database');
-        expect($trigger->icon())->toBe('database-edit');
+        expect($trigger->icon())->toBe('file-pen');
     });
 
     it('has watch_fields option', function () {
@@ -58,7 +58,7 @@ describe('OnModelDeleted', function () {
         expect($trigger->name())->toBe('Model Deleted');
         expect($trigger->type())->toBe('trigger');
         expect($trigger->category())->toBe('Database');
-        expect($trigger->icon())->toBe('database-x');
+        expect($trigger->icon())->toBe('file-x');
     });
 
     it('has include_soft_deletes option', function () {

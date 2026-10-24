@@ -22,7 +22,7 @@ class OnModelDeleted extends Trigger
 
     public function icon(): string
     {
-        return 'database-x';
+        return 'file-x';
     }
 
     public function category(): string

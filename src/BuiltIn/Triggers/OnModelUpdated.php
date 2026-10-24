@@ -22,7 +22,7 @@ class OnModelUpdated extends Trigger
 
     public function icon(): string
     {
-        return 'database-edit';
+        return 'file-pen';
     }
 
     public function category(): string
