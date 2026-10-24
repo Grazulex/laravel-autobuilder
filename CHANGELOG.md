@@ -4,9 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v1.5.1] - 2026-10-24
+
 ### Fixed
 
-- Model Created / Updated / Deleted triggers showed a fallback « ? » icon: their Lucide icon names did not exist. They now use `file-plus`, `file-pen` and `file-x`.
+- Model Created / Updated / Deleted triggers showed a fallback « ? » icon: their Lucide icon names did not exist. They now use `file-plus`, `file-pen` and `file-x`. (#57)
 
 ## [v1.5.0] - 2026-10-24
 
