@@ -30,6 +30,8 @@ abstract class Action extends Brick
 
     /**
      * Check if this action can be retried on failure
+     *
+     * Return false for actions that must never run twice (non-idempotent side effects).
      */
     public function canRetry(): bool
     {
@@ -37,18 +39,24 @@ abstract class Action extends Brick
     }
 
     /**
-     * Get the maximum number of retry attempts
+     * Get the maximum number of retry attempts after the first failure
+     *
+     * Defaults to the `autobuilder.execution.retry_attempts` configuration value.
+     * A `retry_attempts` key in the node configuration takes precedence at run time.
      */
     public function maxRetries(): int
     {
-        return 3;
+        return max(0, (int) config('autobuilder.execution.retry_attempts', 3));
     }
 
     /**
      * Get the delay between retries in seconds
+     *
+     * Defaults to the `autobuilder.execution.retry_delay` configuration value.
+     * A `retry_delay` key in the node configuration takes precedence at run time.
      */
     public function retryDelay(): int
     {
-        return 60;
+        return max(0, (int) config('autobuilder.execution.retry_delay', 60));
     }
 }
