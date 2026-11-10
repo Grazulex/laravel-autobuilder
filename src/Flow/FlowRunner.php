@@ -17,6 +17,7 @@ use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Models\FlowRun;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Sleep;
 use Throwable;
 
 class FlowRunner
@@ -161,7 +162,7 @@ class FlowRunner
             } elseif ($brick instanceof Condition) {
                 $this->executeCondition($node, $brick);
             } elseif ($brick instanceof Action) {
-                $this->context = $brick->handle($this->context);
+                $this->context = $this->handleActionWithRetries($brick, $brickConfig);
 
                 // Stop propagation if flow was paused or stop was requested
                 if (! $this->context->isPaused() && ! $this->context->get('_stop_requested')) {
@@ -175,6 +176,57 @@ class FlowRunner
             event(new BrickFailed($brick, $this->context, $e));
             throw $e;
         }
+    }
+
+    /**
+     * Run an action, retrying it when it throws
+     *
+     * Only the action itself is retried: failures in downstream nodes never re-run it.
+     * The node configuration keys `retry_attempts` and `retry_delay` override the
+     * values returned by the action (which default to the package configuration).
+     */
+    protected function handleActionWithRetries(Action $action, array $nodeConfig): FlowContext
+    {
+        $maxRetries = $action->canRetry()
+            ? $this->resolveRetrySetting($nodeConfig, 'retry_attempts', $action->maxRetries())
+            : 0;
+        $delay = $this->resolveRetrySetting($nodeConfig, 'retry_delay', $action->retryDelay());
+
+        $attempt = 0;
+
+        while (true) {
+            try {
+                return $action->handle($this->context);
+            } catch (Throwable $e) {
+                if ($attempt >= $maxRetries) {
+                    throw $e;
+                }
+
+                $attempt++;
+
+                $this->context->warning(
+                    "Action '{$action->name()}' failed: {$e->getMessage()}. Retrying in {$delay}s (attempt {$attempt} of {$maxRetries})."
+                );
+
+                if ($delay > 0) {
+                    Sleep::sleep($delay);
+                }
+            }
+        }
+    }
+
+    /**
+     * Read a non-negative integer retry setting from the node configuration, with a fallback
+     */
+    protected function resolveRetrySetting(array $nodeConfig, string $key, int $default): int
+    {
+        $value = $nodeConfig[$key] ?? null;
+
+        if ($value === null || $value === '' || ! is_numeric($value)) {
+            return max(0, $default);
+        }
+
+        return max(0, (int) $value);
     }
 
     /**

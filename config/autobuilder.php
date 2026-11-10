@@ -94,8 +94,8 @@ return [
         'timeout' => 300, // seconds
         'max_nodes' => 100, // Max total node executions per flow run
         'max_node_executions' => 10, // Max times a single node can execute (loop detection)
-        'retry_attempts' => 3,
-        'retry_delay' => 60, // seconds
+        'retry_attempts' => 3, // Retries for a failing action (0 disables), overridable per node
+        'retry_delay' => 60, // Seconds between action retries, overridable per node
     ],
 
     /*
