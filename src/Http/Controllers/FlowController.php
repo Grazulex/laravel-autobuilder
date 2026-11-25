@@ -30,7 +30,10 @@ class FlowController extends Controller
             ->when($request->has('active'), fn ($q) => $q->where('active', $request->boolean('active')))
             ->when($request->has('search'), fn ($q) => $q->where('name', 'like', '%'.$request->input('search').'%'))
             ->when($request->has('tag'), fn ($q) => $q->withTag($request->input('tag')))
-            ->with('tags')
+            ->when($request->filled('folder'), fn ($q) => $q->inFolder(
+                $request->input('folder') === 'uncategorized' ? null : (string) $request->input('folder')
+            ))
+            ->with(['tags', 'folder'])
             ->withCount('runs')
             ->latest()
             ->paginate($request->input('per_page', 15));
@@ -56,7 +59,7 @@ class FlowController extends Controller
 
     public function show(Flow $flow): FlowResource
     {
-        $flow->loadCount('runs')->load('tags');
+        $flow->loadCount('runs')->load(['tags', 'folder']);
 
         return new FlowResource($flow);
     }

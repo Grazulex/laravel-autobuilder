@@ -3,6 +3,7 @@
 use Grazulex\AutoBuilder\Http\Controllers\BrickController;
 use Grazulex\AutoBuilder\Http\Controllers\ExecutionController;
 use Grazulex\AutoBuilder\Http\Controllers\FlowController;
+use Grazulex\AutoBuilder\Http\Controllers\FolderController;
 use Grazulex\AutoBuilder\Http\Controllers\HealthController;
 use Grazulex\AutoBuilder\Http\Controllers\TagController;
 use Grazulex\AutoBuilder\Http\Controllers\WebhookController;
@@ -40,6 +41,13 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
             Route::post('tags', [TagController::class, 'store'])->name('autobuilder.tags.store');
             Route::post('flows/{flow}/tags/{tag}', [TagController::class, 'attach'])->name('autobuilder.flows.tags.attach');
             Route::delete('flows/{flow}/tags/{tag}', [TagController::class, 'detach'])->name('autobuilder.flows.tags.detach');
+
+            // Folders
+            Route::get('folders', [FolderController::class, 'index'])->name('autobuilder.folders.index');
+            Route::post('folders', [FolderController::class, 'store'])->name('autobuilder.folders.store');
+            Route::match(['put', 'patch'], 'folders/{folder}', [FolderController::class, 'update'])->name('autobuilder.folders.update');
+            Route::delete('folders/{folder}', [FolderController::class, 'destroy'])->name('autobuilder.folders.destroy');
+            Route::put('flows/{flow}/folder', [FolderController::class, 'assign'])->name('autobuilder.flows.folder.assign');
 
             // Bricks
             Route::get('bricks', [BrickController::class, 'index'])->name('autobuilder.bricks.index');

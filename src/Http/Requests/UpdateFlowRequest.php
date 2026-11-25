@@ -42,6 +42,7 @@ class UpdateFlowRequest extends FormRequest
             'viewport.zoom' => 'numeric|min:0.1|max:10',
             'active' => 'nullable|boolean',
             'sync' => 'nullable|boolean',
+            'folder_id' => 'nullable|string|exists:autobuilder_folders,id',
         ];
     }
 
