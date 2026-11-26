@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder\Http\Controllers;
 
+use Grazulex\AutoBuilder\Exceptions\FlowException;
 use Grazulex\AutoBuilder\Flow\FlowRunner;
+use Grazulex\AutoBuilder\Http\Requests\ReplayRunRequest;
 use Grazulex\AutoBuilder\Http\Requests\RunFlowRequest;
 use Grazulex\AutoBuilder\Http\Resources\ExecutionResultResource;
 use Grazulex\AutoBuilder\Http\Resources\FlowRunCollection;
@@ -56,6 +58,26 @@ class ExecutionController extends Controller
     public function show(FlowRun $run): FlowRunResource
     {
         return new FlowRunResource($run);
+    }
+
+    /**
+     * Replay a failed run from the node that failed, or from the given node
+     */
+    public function replay(ReplayRunRequest $request, FlowRun $run): ExecutionResultResource
+    {
+        if (! $run->isFailed()) {
+            abort(422, 'Only failed runs can be replayed');
+        }
+
+        $validated = $request->validated();
+
+        try {
+            $result = $this->runner->replay($run, $validated['node'] ?? null);
+        } catch (FlowException $e) {
+            abort(422, $e->getMessage());
+        }
+
+        return new ExecutionResultResource($result);
     }
 
     public function logs(FlowRun $run): JsonResponse

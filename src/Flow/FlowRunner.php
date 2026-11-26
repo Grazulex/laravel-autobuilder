@@ -35,6 +35,16 @@ class FlowRunner
      */
     protected array $nodeExecutionCounts = [];
 
+    /**
+     * ID of the node whose execution made the current run fail
+     */
+    protected ?string $failedNode = null;
+
+    /**
+     * Exception that made the current run fail
+     */
+    protected ?Throwable $failure = null;
+
     public function __construct(BrickRegistry $registry)
     {
         $this->registry = $registry;
@@ -45,10 +55,55 @@ class FlowRunner
      */
     public function run(Flow $flow, array $payload = [], ?string $startFromNode = null): FlowRunResult
     {
+        return $this->execute($flow, new FlowContext((string) $flow->id, $payload), $startFromNode);
+    }
+
+    /**
+     * Replay a previous run, starting from the given node
+     *
+     * When no node is given, the run restarts from the node that made it fail.
+     * The replay reuses the payload and the variables of the original run, so the
+     * outputs of the nodes executed before the failure stay available. It is stored
+     * as a new run.
+     *
+     * @throws FlowException When no start node can be determined or the node does not exist
+     */
+    public function replay(FlowRun $run, ?string $fromNode = null): FlowRunResult
+    {
+        $flow = Flow::find($run->flow_id) ?? throw new FlowException("Flow not found for run: {$run->id}");
+
+        $fromNode ??= $run->failedNodeId();
+
+        if ($fromNode === null) {
+            throw new FlowException("Run {$run->id} has no failed node to replay from");
+        }
+
         $this->flow = $flow;
-        $this->context = new FlowContext((string) $flow->id, $payload);
+        $this->getNode($fromNode);
+
+        $context = new FlowContext((string) $flow->id, $run->payload ?? []);
+        $context->variables = $run->variables ?? [];
+        unset($context->variables['_stop_requested']);
+
+        $context->info("Replaying run {$run->id} from node {$fromNode}", [
+            'replay_of' => $run->id,
+            'node_id' => $fromNode,
+        ]);
+
+        return $this->execute($flow, $context, $fromNode);
+    }
+
+    /**
+     * Execute a flow with a prepared context
+     */
+    protected function execute(Flow $flow, FlowContext $context, ?string $startFromNode = null): FlowRunResult
+    {
+        $this->flow = $flow;
+        $this->context = $context;
         $this->executedNodes = [];
         $this->nodeExecutionCounts = [];
+        $this->failedNode = null;
+        $this->failure = null;
 
         event(new FlowStarted($flow, $this->context));
 
@@ -83,7 +138,11 @@ class FlowRunner
                 context: $this->context
             );
         } catch (Throwable $e) {
-            $this->context->error($e->getMessage());
+            $this->failure = $e;
+            $this->context->error(
+                $e->getMessage(),
+                $this->failedNode !== null ? ['node_id' => $this->failedNode] : []
+            );
             event(new FlowFailed($flow, $this->context, $e));
 
             return new FlowRunResult(
@@ -147,11 +206,17 @@ class FlowRunner
         $brickClass = $node['data']['brick'] ?? $node['brick'] ?? null;
         $brickConfig = $node['data']['config'] ?? $node['config'] ?? [];
 
-        if (! $brickClass) {
-            throw new FlowException("Node {$node['id']} has no brick class defined");
-        }
+        try {
+            if (! $brickClass) {
+                throw new FlowException("Node {$node['id']} has no brick class defined");
+            }
 
-        $brick = $this->registry->resolve($brickClass, $brickConfig);
+            $brick = $this->registry->resolve($brickClass, $brickConfig);
+        } catch (Throwable $e) {
+            $this->failedNode ??= $nodeId;
+
+            throw $e;
+        }
 
         $this->context->info("Executing: {$brick->name()}");
         event(new BrickExecuted($brick, $this->context));
@@ -173,6 +238,9 @@ class FlowRunner
                 $this->executeNextNodes($node['id']);
             }
         } catch (Throwable $e) {
+            // The deepest node is caught first: keep it as the node that failed
+            $this->failedNode ??= $nodeId;
+
             event(new BrickFailed($brick, $this->context, $e));
             throw $e;
         }
@@ -396,10 +464,15 @@ class FlowRunner
         FlowRun::create([
             'id' => $this->context->runId,
             'flow_id' => $this->flow->id,
-            'status' => $this->context->isPaused() ? 'paused' : 'completed',
+            'status' => match (true) {
+                $this->failure instanceof Throwable => 'failed',
+                $this->context->isPaused() => 'paused',
+                default => 'completed',
+            },
             'payload' => $this->context->payload,
             'variables' => $this->context->variables,
             'logs' => $this->context->logs,
+            'error' => $this->failure?->getMessage(),
             'started_at' => $this->context->startedAt,
             'completed_at' => now(),
         ]);
