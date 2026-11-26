@@ -32,6 +32,12 @@ class FlowResource extends JsonResource
                 'name' => $tag->name,
                 'slug' => $tag->slug,
             ])),
+            'folder_id' => $this->folder_id,
+            'folder' => $this->whenLoaded('folder', fn (): ?array => $this->folder ? [
+                'id' => $this->folder->id,
+                'name' => $this->folder->name,
+                'parent_id' => $this->folder->parent_id,
+            ] : null),
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at?->toIso8601String(),

@@ -64,14 +64,36 @@
             </div>
         </div>
 
-        <!-- Flows Grid -->
-        <div id="flows-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Loading -->
-            <div class="col-span-full flex items-center justify-center py-12">
-                <svg class="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1.5rem;">
+            <!-- Folders Sidebar -->
+            <aside class="bg-white rounded-lg border p-3 shrink-0" style="width: 16rem; max-width: 100%;">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-xs font-semibold text-gray-500 uppercase">Folders</h2>
+                    <button
+                        type="button"
+                        onclick="createFolder(null)"
+                        class="p-1 text-gray-400 hover:text-blue-500 rounded-sm"
+                        title="New folder"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="folders-container"></div>
+            </aside>
+
+            <!-- Flows Grid -->
+            <div class="flex-1 min-w-0" style="flex-basis: 20rem;">
+                <div id="flows-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loading -->
+                    <div class="col-span-full flex items-center justify-center py-12">
+                        <svg class="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" />
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -102,6 +124,15 @@
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
                             placeholder="Optional description..."
                         ></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Folder</label>
+                        <select
+                            id="flow-folder"
+                            class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Uncategorized</option>
+                        </select>
                     </div>
                     <div>
                         <label class="flex items-center gap-3 cursor-pointer">
@@ -189,13 +220,14 @@
 
         async function loadFlows() {
             try {
-                const response = await fetch(`${apiBase}/flows`, {
+                const query = activeFolder ? `?folder=${encodeURIComponent(activeFolder)}` : '';
+                const response = await fetch(`${apiBase}/flows${query}`, {
                     headers: { 'Accept': 'application/json' },
                 });
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const result = await response.json();
                 allFlows = result.data || [];
-                renderFlows(allFlows);
+                applyFilters();
             } catch (error) {
                 console.error('Failed to load flows:', error);
                 document.getElementById('flows-container').innerHTML = `
@@ -246,6 +278,20 @@
                             ${flow.tags.map(tag => `<span class="px-1.5 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700 rounded-full">${escapeHtml(tag.name)}</span>`).join('')}
                         </div>` : ''}
 
+                        <!-- Folder -->
+                        <div class="mt-2 flex items-center gap-2 text-gray-400">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${folderIconPath}" />
+                            </svg>
+                            <select
+                                onchange="moveFlow('${flow.id}', this.value)"
+                                class="flex-1 min-w-0 px-2 py-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-sm"
+                                title="Move to folder"
+                            >
+                                ${folderOptions(flow.folder_id)}
+                            </select>
+                        </div>
+
                         <div class="mt-3 flex items-center gap-4 text-sm text-gray-500">
                             <span>${flow.nodes_count || 0} nodes</span>
                             <span>${flow.runs_count || 0} runs</span>
@@ -295,6 +341,8 @@
         }
 
         function createFlow() {
+            const folderSelect = document.getElementById('flow-folder');
+            folderSelect.innerHTML = folderOptions(activeFolder === 'uncategorized' ? '' : activeFolder);
             document.getElementById('create-modal').classList.remove('hidden');
             document.getElementById('create-modal').classList.add('flex');
         }
@@ -310,6 +358,7 @@
             const name = document.getElementById('flow-name').value;
             const description = document.getElementById('flow-description').value;
             const sync = document.getElementById('flow-sync').checked;
+            const folder_id = document.getElementById('flow-folder').value || null;
 
             try {
                 const response = await fetch(`${apiBase}/flows`, {
@@ -319,7 +368,7 @@
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': csrfToken,
                     },
-                    body: JSON.stringify({ name, description, sync }),
+                    body: JSON.stringify({ name, description, sync, folder_id }),
                 });
 
                 if (!response.ok) throw new Error('Failed to create flow');
@@ -349,7 +398,7 @@
 
                 if (!response.ok) throw new Error('Failed to delete flow');
 
-                loadFlows();
+                refreshAll();
             } catch (error) {
                 console.error('Failed to delete flow:', error);
                 alert('Failed to delete flow: ' + error.message);
@@ -552,6 +601,189 @@
             }
         }
 
+        // Folders
+        const folderIconPath = 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z';
+        let folders = [];
+        let uncategorizedCount = 0;
+        let activeFolder = ''; // '' = all flows, 'uncategorized' = no folder, otherwise a folder ID
+
+        async function folderRequest(url, method, body) {
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: body === undefined ? undefined : JSON.stringify(body),
+            });
+
+            if (!response.ok) {
+                let message = `HTTP ${response.status}`;
+                try {
+                    const error = await response.json();
+                    message = Object.values(error.errors || {}).flat()[0] || error.message || message;
+                } catch (e) {
+                    // Keep the generic message
+                }
+                throw new Error(message);
+            }
+
+            return response.json();
+        }
+
+        // Flat list of folders ordered as a tree, each one with its depth and full path
+        function folderTree() {
+            const ids = new Set(folders.map(folder => folder.id));
+            const parentOf = folder => (folder.parent_id && ids.has(folder.parent_id) ? folder.parent_id : null);
+            const seen = new Set();
+
+            const walk = (parentId, depth, prefix) => folders
+                .filter(folder => parentOf(folder) === parentId && !seen.has(folder.id))
+                .flatMap(folder => {
+                    seen.add(folder.id);
+                    const path = prefix ? `${prefix} / ${folder.name}` : folder.name;
+                    return [{ ...folder, depth, path }, ...walk(folder.id, depth + 1, path)];
+                });
+
+            return walk(null, 0, '');
+        }
+
+        function folderOptions(selectedId) {
+            return `<option value="">Uncategorized</option>` + folderTree().map(folder => `
+                <option value="${folder.id}" ${folder.id === selectedId ? 'selected' : ''}>${escapeHtml(folder.path)}</option>
+            `).join('');
+        }
+
+        function folderRow(key, label, count, depth, actions) {
+            const active = activeFolder === key;
+
+            return `
+                <div
+                    class="flex items-center gap-1 rounded-md ${active ? '' : 'hover:bg-gray-100'}"
+                    style="padding-left: ${depth * 0.75}rem; ${active ? 'background-color: #dbeafe;' : ''}"
+                >
+                    <button
+                        type="button"
+                        onclick="selectFolder('${key}')"
+                        class="flex-1 min-w-0 flex items-center gap-2 px-2 py-1 text-sm text-left ${active ? 'font-semibold text-gray-900' : 'text-gray-700'}"
+                    >
+                        <span class="truncate">${label}</span>
+                        ${count === null ? '' : `<span class="text-xs text-gray-400">${count}</span>`}
+                    </button>
+                    ${actions}
+                </div>
+            `;
+        }
+
+        function folderAction(handler, title, hoverClass, iconPath) {
+            return `
+                <button type="button" onclick="${handler}" class="p-1 text-gray-400 ${hoverClass} rounded-sm" title="${title}">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${iconPath}" />
+                    </svg>
+                </button>
+            `;
+        }
+
+        function renderFolders() {
+            const rows = [folderRow('', 'All flows', null, 0, '')];
+
+            folderTree().forEach(folder => {
+                const actions = [
+                    folderAction(`createFolder('${folder.id}')`, 'New sub-folder', 'hover:text-blue-500', 'M12 4v16m8-8H4'),
+                    folderAction(`renameFolder('${folder.id}')`, 'Rename', 'hover:text-blue-500', 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'),
+                    folderAction(`deleteFolder('${folder.id}')`, 'Delete', 'hover:text-red-500', 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'),
+                ].join('');
+
+                rows.push(folderRow(folder.id, escapeHtml(folder.name), folder.flows_count, folder.depth, actions));
+            });
+
+            rows.push(folderRow('uncategorized', 'Uncategorized', uncategorizedCount, 0, ''));
+
+            document.getElementById('folders-container').innerHTML = rows.join('');
+        }
+
+        async function loadFolders() {
+            try {
+                const result = await folderRequest(`${apiBase}/folders`, 'GET');
+                folders = result.data || [];
+                uncategorizedCount = (result.meta || {}).uncategorized_count || 0;
+
+                // The selected folder may have been deleted
+                if (activeFolder && activeFolder !== 'uncategorized' && !folders.some(folder => folder.id === activeFolder)) {
+                    activeFolder = '';
+                }
+            } catch (error) {
+                console.error('Failed to load folders:', error);
+            }
+
+            renderFolders();
+        }
+
+        async function refreshAll() {
+            await loadFolders();
+            await loadFlows();
+        }
+
+        function selectFolder(key) {
+            activeFolder = key;
+            renderFolders();
+            loadFlows();
+        }
+
+        async function createFolder(parentId) {
+            const name = (prompt(parentId ? 'Sub-folder name:' : 'Folder name:') || '').trim();
+            if (!name) return;
+
+            try {
+                await folderRequest(`${apiBase}/folders`, 'POST', { name, parent_id: parentId });
+                refreshAll();
+            } catch (error) {
+                console.error('Failed to create folder:', error);
+                alert('Failed to create folder: ' + error.message);
+            }
+        }
+
+        async function renameFolder(id) {
+            const folder = folders.find(item => item.id === id);
+            if (!folder) return;
+
+            const name = (prompt('Folder name:', folder.name) || '').trim();
+            if (!name || name === folder.name) return;
+
+            try {
+                await folderRequest(`${apiBase}/folders/${id}`, 'PUT', { name });
+                refreshAll();
+            } catch (error) {
+                console.error('Failed to rename folder:', error);
+                alert('Failed to rename folder: ' + error.message);
+            }
+        }
+
+        async function deleteFolder(id) {
+            if (!confirm('Delete this folder? Its flows and sub-folders are kept and moved one level up.')) return;
+
+            try {
+                await folderRequest(`${apiBase}/folders/${id}`, 'DELETE');
+                refreshAll();
+            } catch (error) {
+                console.error('Failed to delete folder:', error);
+                alert('Failed to delete folder: ' + error.message);
+            }
+        }
+
+        async function moveFlow(flowId, folderId) {
+            try {
+                await folderRequest(`${apiBase}/flows/${flowId}/folder`, 'PUT', { folder_id: folderId || null });
+            } catch (error) {
+                console.error('Failed to move flow:', error);
+                alert('Failed to move flow: ' + error.message);
+            }
+
+            refreshAll();
+        }
+
         // Close modals on escape
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
@@ -568,8 +800,8 @@
             if (e.target === e.currentTarget) closeImportModal();
         });
 
-        // Load flows and tag filter options on page load
-        loadFlows();
+        // Load folders, flows and tag filter options on page load
+        refreshAll();
         loadTagFilterOptions();
     </script>
 </body>

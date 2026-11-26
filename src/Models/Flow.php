@@ -39,6 +39,7 @@ class Flow extends Model
         'sync',
         'trigger_type',
         'trigger_config',
+        'folder_id',
         'created_by',
         'updated_by',
     ];
@@ -60,6 +61,11 @@ class Flow extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'autobuilder_flow_tag');
+    }
+
+    public function folder(): BelongsTo
+    {
+        return $this->belongsTo(Folder::class, 'folder_id');
     }
 
     public function createdBy(): BelongsTo
@@ -124,5 +130,17 @@ class Flow extends Model
     public function scopeWithTag($query, string $tag)
     {
         return $query->whereHas('tags', fn ($q) => $q->where('slug', $tag)->orWhere('name', $tag));
+    }
+
+    /**
+     * Filter flows by folder ID. Pass null to get the flows without a folder.
+     */
+    public function scopeInFolder($query, ?string $folderId)
+    {
+        if ($folderId === null) {
+            return $query->whereNull('folder_id');
+        }
+
+        return $query->where('folder_id', $folderId);
     }
 }
