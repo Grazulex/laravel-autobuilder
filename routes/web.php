@@ -35,6 +35,7 @@ Route::prefix(config('autobuilder.routes.prefix', 'autobuilder'))
             Route::get('flows/{flow}/runs', [ExecutionController::class, 'runs'])->name('autobuilder.flows.runs');
             Route::get('runs/{run}', [ExecutionController::class, 'show'])->name('autobuilder.runs.show');
             Route::get('runs/{run}/logs', [ExecutionController::class, 'logs'])->name('autobuilder.runs.logs');
+            Route::post('runs/{run}/replay', [ExecutionController::class, 'replay'])->name('autobuilder.runs.replay');
 
             // Tags
             Route::get('tags', [TagController::class, 'index'])->name('autobuilder.tags.index');

@@ -69,6 +69,26 @@ class FlowRun extends Model
         return $this->status === 'running';
     }
 
+    /**
+     * ID of the node that made the run fail, read from the last error log entry
+     */
+    public function failedNodeId(): ?string
+    {
+        foreach (array_reverse($this->logs ?? []) as $log) {
+            if (! is_array($log) || ($log['level'] ?? null) !== 'error') {
+                continue;
+            }
+
+            $nodeId = $log['data']['node_id'] ?? null;
+
+            if (is_string($nodeId) && $nodeId !== '') {
+                return $nodeId;
+            }
+        }
+
+        return null;
+    }
+
     public function getDurationAttribute(): ?int
     {
         if (! $this->completed_at) {
