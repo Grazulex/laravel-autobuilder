@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grazulex\AutoBuilder;
 
+use Grazulex\AutoBuilder\Console\Commands\ClearCacheCommand;
 use Grazulex\AutoBuilder\Console\Commands\InstallCommand;
 use Grazulex\AutoBuilder\Console\Commands\ListBricksCommand;
 use Grazulex\AutoBuilder\Console\Commands\MakeBrickCommand;
@@ -16,6 +17,7 @@ use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Observers\FlowObserver;
 use Grazulex\AutoBuilder\Policies\FlowPolicy;
 use Grazulex\AutoBuilder\Registry\BrickRegistry;
+use Grazulex\AutoBuilder\Trigger\ActiveFlowsCache;
 use Grazulex\AutoBuilder\Trigger\TriggerManager;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Scheduling\Schedule;
@@ -34,7 +36,12 @@ class AutoBuilderServiceProvider extends ServiceProvider
 
         $this->app->singleton(BrickRegistry::class, fn ($app) => new BrickRegistry($app));
 
-        $this->app->singleton(TriggerManager::class, fn ($app) => new TriggerManager($app->make(BrickRegistry::class)));
+        $this->app->singleton(ActiveFlowsCache::class, fn ($app) => new ActiveFlowsCache($app->make('cache')));
+
+        $this->app->singleton(TriggerManager::class, fn ($app) => new TriggerManager(
+            $app->make(BrickRegistry::class),
+            $app->make(ActiveFlowsCache::class),
+        ));
 
         $this->app->alias(BrickRegistry::class, 'autobuilder');
     }
@@ -105,6 +112,7 @@ class AutoBuilderServiceProvider extends ServiceProvider
                 RunFlowCommand::class,
                 ListBricksCommand::class,
                 ScheduleRunCommand::class,
+                ClearCacheCommand::class,
             ]);
         }
     }

@@ -67,6 +67,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Active Flows Cache
+    |--------------------------------------------------------------------------
+    |
+    | Triggers of active flows are registered on every HTTP request. To avoid
+    | a database query each time, the list of active flows is cached. The
+    | cache is cleared automatically whenever a flow is created, updated,
+    | activated, deactivated, deleted or restored through Eloquent. If you
+    | change flows another way (raw SQL, mass updates), run:
+    |
+    |     php artisan autobuilder:clear-cache
+    |
+    | store: cache store name from config/cache.php (null = default store).
+    |        With several servers, use a shared store (redis, database...).
+    | ttl:   seconds to keep the list; null or 0 = until invalidated.
+    |
+    */
+    'cache' => [
+        'enabled' => env('AUTOBUILDER_CACHE_ENABLED', true),
+        'store' => env('AUTOBUILDER_CACHE_STORE'),
+        'key' => env('AUTOBUILDER_CACHE_KEY', 'autobuilder:active_flows'),
+        'ttl' => env('AUTOBUILDER_CACHE_TTL', 86400),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Scheduling
     |--------------------------------------------------------------------------
     |

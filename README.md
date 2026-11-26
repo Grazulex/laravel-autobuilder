@@ -177,6 +177,29 @@ return [
 ];
 ```
 
+### Active flows cache
+
+Triggers of active flows are registered on every HTTP request. The list of active flows is cached, so a normal request does not query the database for it. If the database (or the cache store) is down, or the tables are not migrated yet, AutoBuilder logs a warning and skips trigger registration for that request instead of breaking the page.
+
+```php
+'cache' => [
+    'enabled' => env('AUTOBUILDER_CACHE_ENABLED', true),
+    'store' => env('AUTOBUILDER_CACHE_STORE'),           // null = default cache store
+    'key' => env('AUTOBUILDER_CACHE_KEY', 'autobuilder:active_flows'),
+    'ttl' => env('AUTOBUILDER_CACHE_TTL', 86400),         // seconds; null or 0 = until invalidated
+],
+```
+
+The cache is cleared automatically when a flow is created, updated, activated, deactivated, deleted or restored through Eloquent (the builder UI, `Flow::create()`, `$flow->activate()`...). If you change flows another way (raw SQL, `Flow::query()->update()`, a database import), clear it yourself:
+
+```bash
+php artisan autobuilder:clear-cache
+```
+
+or in code: `app(\Grazulex\AutoBuilder\Trigger\ActiveFlowsCache::class)->forget();`
+
+With several application servers, use a shared cache store (`redis`, `database`, `memcached`...) so every server sees the invalidation.
+
 ---
 
 ## Creating Custom Bricks

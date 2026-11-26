@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Active flows cache: the list of active flows loaded on every HTTP request to register triggers is now cached (Laravel cache, plain arrays only). Configurable under `autobuilder.cache` (`enabled`, `store`, `key`, `ttl`; env `AUTOBUILDER_CACHE_ENABLED`, `AUTOBUILDER_CACHE_STORE`, `AUTOBUILDER_CACHE_KEY`, `AUTOBUILDER_CACHE_TTL`). Enabled by default with a 24 h TTL. (#47)
+- The cache is cleared automatically when a flow is created, updated, activated, deactivated, deleted, force deleted or restored. (#47)
+- `php artisan autobuilder:clear-cache` command to clear it manually. (#47)
+
+### Fixed
+
+- Trigger registration no longer breaks every request when the database or the cache store is unavailable, or when the AutoBuilder tables are not migrated yet: a warning is logged and triggers are skipped for that request. (#47)
+
 ## [v1.5.1] - 2026-10-24
 
 ### Fixed

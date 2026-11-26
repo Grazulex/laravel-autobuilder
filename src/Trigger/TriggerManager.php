@@ -18,16 +18,31 @@ class TriggerManager
      */
     protected array $registeredTriggers = [];
 
+    protected ActiveFlowsCache $activeFlowsCache;
+
     public function __construct(
-        protected BrickRegistry $registry
-    ) {}
+        protected BrickRegistry $registry,
+        ?ActiveFlowsCache $activeFlowsCache = null
+    ) {
+        $this->activeFlowsCache = $activeFlowsCache ?? app(ActiveFlowsCache::class);
+    }
 
     /**
-     * Register triggers for all active flows
+     * Register triggers for all active flows.
+     *
+     * Never throws: if the flows cannot be loaded (database down, tables not
+     * migrated yet...), a warning is logged and no trigger is registered, so
+     * the current request keeps working.
      */
     public function bootActiveFlows(): void
     {
-        $activeFlows = Flow::active()->get();
+        try {
+            $activeFlows = $this->activeFlowsCache->get();
+        } catch (\Throwable $e) {
+            AutoBuilderLogger::warning("[AutoBuilder] Could not load active flows, triggers not registered for this request: {$e->getMessage()}");
+
+            return;
+        }
 
         foreach ($activeFlows as $flow) {
             $this->registerFlow($flow);
