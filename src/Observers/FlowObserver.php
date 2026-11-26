@@ -8,13 +8,23 @@ use Grazulex\AutoBuilder\BuiltIn\Actions\WebhookAnswer;
 use Grazulex\AutoBuilder\BuiltIn\Triggers\OnWebhookReceived;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Support\WebhookPathNormalizer;
+use Grazulex\AutoBuilder\Trigger\ActiveFlowsCache;
 use Grazulex\AutoBuilder\Trigger\TriggerManager;
 
 class FlowObserver
 {
     public function __construct(
-        protected TriggerManager $triggerManager
+        protected TriggerManager $triggerManager,
+        protected ActiveFlowsCache $activeFlowsCache
     ) {}
+
+    /**
+     * Handle the Flow "saved" event (created, updated, activated, deactivated).
+     */
+    public function saved(Flow $flow): void
+    {
+        $this->invalidateActiveFlowsCache($flow);
+    }
 
     /**
      * Handle the Flow "creating" event.
@@ -57,6 +67,15 @@ class FlowObserver
     public function deleted(Flow $flow): void
     {
         $this->triggerManager->unregisterFlow($flow);
+        $this->invalidateActiveFlowsCache($flow);
+    }
+
+    /**
+     * Handle the Flow "forceDeleted" event.
+     */
+    public function forceDeleted(Flow $flow): void
+    {
+        $this->invalidateActiveFlowsCache($flow);
     }
 
     /**
@@ -66,6 +85,28 @@ class FlowObserver
     {
         if ($flow->active) {
             $this->triggerManager->registerFlow($flow);
+        }
+
+        $this->invalidateActiveFlowsCache($flow);
+    }
+
+    /**
+     * Clear the cached active flows. When the change happens inside a database
+     * transaction, clear it again after commit so a concurrent request cannot
+     * keep a stale list cached from before the commit.
+     */
+    protected function invalidateActiveFlowsCache(Flow $flow): void
+    {
+        $this->activeFlowsCache->forget();
+
+        try {
+            $connection = $flow->getConnection();
+
+            if ($connection->transactionLevel() > 0) {
+                $connection->afterCommit(fn (): bool => $this->activeFlowsCache->forget());
+            }
+        } catch (\Throwable) {
+            // The cache was already cleared above; nothing else to do.
         }
     }
 
