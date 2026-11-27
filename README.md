@@ -179,7 +179,9 @@ return [
 
 ### Active flows cache
 
-Triggers of active flows are registered on every HTTP request. The list of active flows is cached, so a normal request does not query the database for it. If the database (or the cache store) is down, or the tables are not migrated yet, AutoBuilder logs a warning and skips trigger registration for that request instead of breaking the page.
+Triggers of active flows are registered on every HTTP request and in console processes (queue workers, artisan commands, scheduler; set `AUTOBUILDER_TRIGGERS_CONSOLE=false` to turn the console part off). The list of active flows is cached, so a normal request does not query the database for it. If the database (or the cache store) is down, or the tables are not migrated yet, AutoBuilder logs a warning and skips trigger registration for that request instead of breaking the page. In console, a flows table that is not migrated yet is skipped silently.
+
+Queue workers read the active flows once, when they start: run `php artisan queue:restart` after a flow is activated, deactivated or edited.
 
 ```php
 'cache' => [

@@ -36,9 +36,32 @@ class TriggerManager
      */
     public function bootActiveFlows(): void
     {
+        $this->bootFlows(quietWhenNotInstalled: false);
+    }
+
+    /**
+     * Register triggers for all active flows, staying silent when the flows
+     * table does not exist yet (fresh install, before `php artisan migrate`).
+     *
+     * Used in console processes, so a fresh install does not log a warning on
+     * every artisan command. Any other failure is reported like bootActiveFlows().
+     */
+    public function bootActiveFlowsIfInstalled(): void
+    {
+        $this->bootFlows(quietWhenNotInstalled: true);
+    }
+
+    protected function bootFlows(bool $quietWhenNotInstalled): void
+    {
         try {
             $activeFlows = $this->activeFlowsCache->get();
         } catch (\Throwable $e) {
+            if ($quietWhenNotInstalled && $this->flowsTableIsMissing()) {
+                AutoBuilderLogger::debug('[AutoBuilder] Flows table not migrated yet, triggers not registered');
+
+                return;
+            }
+
             AutoBuilderLogger::warning("[AutoBuilder] Could not load active flows, triggers not registered for this request: {$e->getMessage()}");
 
             return;
@@ -135,6 +158,22 @@ class TriggerManager
     public function getRegisteredTriggers(): array
     {
         return $this->registeredTriggers;
+    }
+
+    /**
+     * Whether the flows table is confirmed missing. Only called after a
+     * failure, so the normal boot path does not pay for the extra query.
+     * Returns false when the check itself fails (database unreachable...).
+     */
+    protected function flowsTableIsMissing(): bool
+    {
+        try {
+            $flow = new Flow;
+
+            return ! $flow->getConnection()->getSchemaBuilder()->hasTable($flow->getTable());
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     /**
