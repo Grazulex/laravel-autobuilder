@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- Flows in Sync mode, and every flow when `autobuilder.execution.async` is `false`, were silently skipped when fired by an event-based trigger (model, login, logout, event, failed job): nothing ran and nothing was queued. They now run immediately. Queued flows run in the new `RunFlowJob`. (#70)
 - Trigger registration no longer breaks every request when the database or the cache store is unavailable, or when the AutoBuilder tables are not migrated yet: a warning is logged and triggers are skipped for that request. (#47)
 
 ## [v1.5.1] - 2026-10-24

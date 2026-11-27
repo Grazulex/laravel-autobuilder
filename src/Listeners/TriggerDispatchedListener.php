@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Grazulex\AutoBuilder\Listeners;
 
 use Grazulex\AutoBuilder\Events\TriggerDispatched;
-use Grazulex\AutoBuilder\Flow\FlowRunner;
+use Grazulex\AutoBuilder\Jobs\RunFlowJob;
 use Grazulex\AutoBuilder\Models\Flow;
 use Grazulex\AutoBuilder\Support\AutoBuilderLogger;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Bus\Dispatcher;
 
-class TriggerDispatchedListener implements ShouldQueue
+/**
+ * Not a queued listener on purpose: Laravel skips a queued listener whose
+ * shouldQueue() returns false instead of running it inline, so the
+ * sync/async decision is taken here and the flow runs in a job either way.
+ */
+class TriggerDispatchedListener
 {
-    public function __construct(
-        protected FlowRunner $runner
-    ) {}
-
     /**
      * Handle the trigger dispatched event
      */
@@ -26,37 +27,21 @@ class TriggerDispatchedListener implements ShouldQueue
             'payload' => $event->payload,
         ]);
 
-        // Load the flow
-        $flow = Flow::find($event->flowId);
+        $job = new RunFlowJob($event->flowId, $event->trigger, $event->payload);
 
-        if (! $flow) {
-            AutoBuilderLogger::warning("[AutoBuilder] Flow {$event->flowId} not found");
-
-            return;
-        }
-
-        if (! $flow->active) {
-            AutoBuilderLogger::info("[AutoBuilder] Flow {$event->flowId} is not active, skipping");
+        if ($this->shouldQueue($event)) {
+            dispatch($job->onQueue($this->viaQueue()));
 
             return;
         }
 
-        // Run the flow
-        try {
-            $result = $this->runner->run($flow, $event->payload);
-
-            AutoBuilderLogger::info("[AutoBuilder] Flow {$event->flowId} completed with status: {$result->status}", [
-                'run_id' => $result->context->runId,
-            ]);
-        } catch (\Throwable $e) {
-            AutoBuilderLogger::error("[AutoBuilder] Flow {$event->flowId} execution failed: {$e->getMessage()}", [
-                'exception' => $e,
-            ]);
-        }
+        // dispatchNow() and not dispatch_sync(): the latter routes a ShouldQueue
+        // job through the "sync" queue connection instead of calling it directly.
+        app(Dispatcher::class)->dispatchNow($job);
     }
 
     /**
-     * Determine the queue the listener should be assigned to
+     * Determine the queue the flow run should be assigned to
      */
     public function viaQueue(): string
     {
@@ -64,7 +49,7 @@ class TriggerDispatchedListener implements ShouldQueue
     }
 
     /**
-     * Determine if the listener should be queued
+     * Determine if the flow run should be queued
      */
     public function shouldQueue(TriggerDispatched $event): bool
     {
@@ -76,6 +61,6 @@ class TriggerDispatchedListener implements ShouldQueue
         }
 
         // Fall back to global config
-        return config('autobuilder.execution.async', true);
+        return (bool) config('autobuilder.execution.async', true);
     }
 }
