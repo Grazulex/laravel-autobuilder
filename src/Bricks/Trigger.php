@@ -10,6 +10,13 @@ abstract class Trigger extends Brick
 {
     protected ?string $flowId = null;
 
+    /**
+     * Whether this trigger was unregistered. Laravel cannot detach a single
+     * model or event callback, so the callbacks added by register() stay
+     * attached; once unregistered, they no longer dispatch anything.
+     */
+    protected bool $unregistered = false;
+
     public function type(): string
     {
         return 'trigger';
@@ -21,11 +28,31 @@ abstract class Trigger extends Brick
     abstract public function register(): void;
 
     /**
-     * Unregister event listeners
+     * Unregister event listeners.
+     *
+     * Switches the trigger off: callbacks added by register() stop dispatching.
+     * Subclasses overriding this method to release extra resources should call
+     * parent::unregister().
      */
     public function unregister(): void
     {
-        // Override in subclasses if needed
+        $this->markAsUnregistered();
+    }
+
+    /**
+     * Switch the trigger off without running unregister().
+     */
+    public function markAsUnregistered(): void
+    {
+        $this->unregistered = true;
+    }
+
+    /**
+     * Whether the trigger was unregistered and no longer dispatches.
+     */
+    public function isUnregistered(): bool
+    {
+        return $this->unregistered;
     }
 
     /**
@@ -33,7 +60,7 @@ abstract class Trigger extends Brick
      */
     protected function dispatch(array $payload): void
     {
-        if ($this->flowId === null) {
+        if ($this->flowId === null || $this->unregistered) {
             return;
         }
 

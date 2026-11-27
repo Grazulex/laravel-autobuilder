@@ -108,6 +108,10 @@ class TriggerManager
                 return;
             }
 
+            // Switch off a trigger already registered for this flow, so
+            // registering twice does not run the flow twice per event
+            $this->unregisterFlow($flow);
+
             // Set flow ID and register
             $trigger->setFlowId((string) $flow->id);
             $trigger->register();
@@ -122,7 +126,10 @@ class TriggerManager
     }
 
     /**
-     * Unregister trigger for a specific flow
+     * Unregister trigger for a specific flow.
+     *
+     * The trigger's callbacks stay attached to their model or event until the
+     * process ends, but they no longer dispatch the flow.
      */
     public function unregisterFlow(Flow $flow): void
     {
@@ -131,9 +138,16 @@ class TriggerManager
         }
 
         $trigger = $this->registeredTriggers[$flow->id];
-        $trigger->unregister();
-
         unset($this->registeredTriggers[$flow->id]);
+
+        try {
+            $trigger->unregister();
+        } catch (\Throwable $e) {
+            AutoBuilderLogger::error("[AutoBuilder] Failed to unregister trigger for flow {$flow->id}: {$e->getMessage()}");
+        } finally {
+            // Also covers subclasses overriding unregister() without calling the parent
+            $trigger->markAsUnregistered();
+        }
 
         AutoBuilderLogger::info("[AutoBuilder] Unregistered trigger for flow {$flow->id}");
     }
