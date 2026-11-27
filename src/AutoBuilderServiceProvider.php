@@ -158,13 +158,38 @@ class AutoBuilderServiceProvider extends ServiceProvider
 
     protected function bootTriggers(): void
     {
-        // Only boot triggers if not running in console (migrations, etc.)
-        // and triggers are enabled
-        if (! $this->app->runningInConsole() && config('autobuilder.triggers.enabled', true)) {
-            $this->app->booted(function (): void {
-                $this->app->make(TriggerManager::class)->bootActiveFlows();
-            });
+        $this->app->booted(function (): void {
+            $this->registerActiveFlowTriggers();
+        });
+    }
+
+    /**
+     * Register the triggers of active flows, in HTTP requests and, unless
+     * autobuilder.triggers.console is false, in console processes (queue
+     * workers, artisan commands, scheduler). Long-running processes read the
+     * active flows once, so queue workers must be restarted after a flow change.
+     */
+    protected function registerActiveFlowTriggers(): void
+    {
+        if (! config('autobuilder.triggers.enabled', true)) {
+            return;
         }
+
+        $manager = $this->app->make(TriggerManager::class);
+
+        if (! $this->app->runningInConsole()) {
+            $manager->bootActiveFlows();
+
+            return;
+        }
+
+        if (! config('autobuilder.triggers.console', true)) {
+            return;
+        }
+
+        // A fresh install runs artisan commands (migrate...) before the flows
+        // table exists: stay silent in that case.
+        $manager->bootActiveFlowsIfInstalled();
     }
 
     protected function registerScheduledTasks(): void

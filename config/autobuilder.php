@@ -60,9 +60,21 @@ return [
     |--------------------------------------------------------------------------
     | Triggers
     |--------------------------------------------------------------------------
+    |
+    | enabled: register the triggers of active flows (model, login, logout,
+    |          event, failed job...) at boot.
+    | console: also register them in console processes (queue workers,
+    |          artisan commands, scheduler), so a model created by a queued
+    |          job or a command starts its flows too.
+    |
+    | Long-running processes such as queue workers read the active flows once
+    | at boot. Restart them (php artisan queue:restart) after a flow is
+    | activated, deactivated or edited.
+    |
     */
     'triggers' => [
         'enabled' => env('AUTOBUILDER_TRIGGERS_ENABLED', true),
+        'console' => env('AUTOBUILDER_TRIGGERS_CONSOLE', true),
     ],
 
     /*
@@ -70,7 +82,7 @@ return [
     | Active Flows Cache
     |--------------------------------------------------------------------------
     |
-    | Triggers of active flows are registered on every HTTP request. To avoid
+    | Triggers of active flows are registered in every process. To avoid
     | a database query each time, the list of active flows is cached. The
     | cache is cleared automatically whenever a flow is created, updated,
     | activated, deactivated, deleted or restored through Eloquent. If you

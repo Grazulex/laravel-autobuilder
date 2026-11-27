@@ -50,13 +50,9 @@ class FlowObserver
      */
     public function updated(Flow $flow): void
     {
-        // Check if active status changed
-        if ($flow->wasChanged('active')) {
-            $this->triggerManager->refreshFlow($flow);
-        }
-
-        // Check if nodes changed (trigger might have been modified)
-        if ($flow->wasChanged('nodes') && $flow->active) {
+        // Refresh once when the active status changed, or when the nodes of an
+        // active flow changed (the trigger might have been modified)
+        if ($flow->wasChanged('active') || ($flow->wasChanged('nodes') && $flow->active)) {
             $this->triggerManager->refreshFlow($flow);
         }
     }

@@ -36,9 +36,32 @@ class TriggerManager
      */
     public function bootActiveFlows(): void
     {
+        $this->bootFlows(quietWhenNotInstalled: false);
+    }
+
+    /**
+     * Register triggers for all active flows, staying silent when the flows
+     * table does not exist yet (fresh install, before `php artisan migrate`).
+     *
+     * Used in console processes, so a fresh install does not log a warning on
+     * every artisan command. Any other failure is reported like bootActiveFlows().
+     */
+    public function bootActiveFlowsIfInstalled(): void
+    {
+        $this->bootFlows(quietWhenNotInstalled: true);
+    }
+
+    protected function bootFlows(bool $quietWhenNotInstalled): void
+    {
         try {
             $activeFlows = $this->activeFlowsCache->get();
         } catch (\Throwable $e) {
+            if ($quietWhenNotInstalled && $this->flowsTableIsMissing()) {
+                AutoBuilderLogger::debug('[AutoBuilder] Flows table not migrated yet, triggers not registered');
+
+                return;
+            }
+
             AutoBuilderLogger::warning("[AutoBuilder] Could not load active flows, triggers not registered for this request: {$e->getMessage()}");
 
             return;
@@ -85,6 +108,10 @@ class TriggerManager
                 return;
             }
 
+            // Switch off a trigger already registered for this flow, so
+            // registering twice does not run the flow twice per event
+            $this->unregisterFlow($flow);
+
             // Set flow ID and register
             $trigger->setFlowId((string) $flow->id);
             $trigger->register();
@@ -99,7 +126,10 @@ class TriggerManager
     }
 
     /**
-     * Unregister trigger for a specific flow
+     * Unregister trigger for a specific flow.
+     *
+     * The trigger's callbacks stay attached to their model or event until the
+     * process ends, but they no longer dispatch the flow.
      */
     public function unregisterFlow(Flow $flow): void
     {
@@ -108,9 +138,16 @@ class TriggerManager
         }
 
         $trigger = $this->registeredTriggers[$flow->id];
-        $trigger->unregister();
-
         unset($this->registeredTriggers[$flow->id]);
+
+        try {
+            $trigger->unregister();
+        } catch (\Throwable $e) {
+            AutoBuilderLogger::error("[AutoBuilder] Failed to unregister trigger for flow {$flow->id}: {$e->getMessage()}");
+        } finally {
+            // Also covers subclasses overriding unregister() without calling the parent
+            $trigger->markAsUnregistered();
+        }
 
         AutoBuilderLogger::info("[AutoBuilder] Unregistered trigger for flow {$flow->id}");
     }
@@ -135,6 +172,22 @@ class TriggerManager
     public function getRegisteredTriggers(): array
     {
         return $this->registeredTriggers;
+    }
+
+    /**
+     * Whether the flows table is confirmed missing. Only called after a
+     * failure, so the normal boot path does not pay for the extra query.
+     * Returns false when the check itself fails (database unreachable...).
+     */
+    protected function flowsTableIsMissing(): bool
+    {
+        try {
+            $flow = new Flow;
+
+            return ! $flow->getConnection()->getSchemaBuilder()->hasTable($flow->getTable());
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
     /**
